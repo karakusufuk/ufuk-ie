@@ -123,6 +123,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .show.dark .show-link:hover,.contact .btn:hover{background:#fff;color:var(--night)}
 .btn svg{width:20px;height:20px;flex:none}
 .btn:focus-visible,.show-link:focus-visible,.hero-nav a:focus-visible,.card:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
+.bar a:focus-visible,a:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
 .show-steps{display:flex;gap:8px;margin-top:6px}
 .show-steps i{width:28px;height:3px;background:#D5DAE2;transition:background .4s}
 .show-steps i.on{background:var(--ink)}
@@ -483,6 +484,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   /* ---------- header returns when scrolling up past the hero ---------- */
   (function(){
     var bar=document.getElementById('bar'), hero=document.querySelector('.hero'), last=scrollY;
+    bar.addEventListener('focusin',function(){bar.classList.add('on');});
     addEventListener('scroll',function(){
       var y=scrollY, past=y>hero.offsetHeight*0.9;
       if(!past||y>last+2)bar.classList.remove('on');

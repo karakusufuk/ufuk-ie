@@ -49,14 +49,14 @@ html.pre body{visibility:hidden}
 .veil{position:fixed;left:0;right:0;top:0;height:120vh;background:var(--ground);z-index:29;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
 
 /* fixed buttons: the live site and the next project */
-.dock{position:fixed;right:32px;bottom:28px;z-index:35;display:flex;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
-.dock.on{opacity:1;transform:none;pointer-events:auto}
+.dock{position:fixed;right:32px;bottom:28px;z-index:35;display:flex;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;visibility:hidden;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s}
+.dock.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition-delay:0s}
 .dock.arrive{transition:none}
 
 /* buttons: the one ufuk.ie button */
 .btn{display:inline-flex;align-items:center;gap:10px;background:var(--pink);color:var(--night);font-weight:500;font-size:17px;line-height:1.2;padding:16px 26px;white-space:nowrap;transition:background .25s,color .25s}
 .btn:hover{background:var(--night);color:#fff}
-.btn:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
 
 /* ---------- the cover ---------- */
 .cover{margin:0 auto;width:min(1240px,calc(100vw - 2*var(--gap)))}

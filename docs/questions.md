@@ -12,3 +12,6 @@ Things that look like bugs or design mistakes. Nothing here has been changed.
 - Part 7: the homepage KUS button reads "How it was made". When it points to kus.html you may want "See the case study" like Brennock and Reilly. Only the href is changed in ADDING-KUS.md.
 - Part 8: on the github.io sub-path URL the 404 page's root-absolute links and styles do not resolve (they resolve on ufuk.ie). The brief asks for absolute paths; nothing to do once DNS is in place.
 - Part 8: `availableLanguage` was moved from `ProfessionalService` to a `ContactPoint` because schema.org does not define it on `ProfessionalService`.
+- Part 9: in `prefers-reduced-motion` the homepage still types the headline (it takes ~24 s; instant would be kinder) and every recording that is in view on a project page still autoplays (brief: only the cover should). Both need code, so nothing was changed.
+- Part 9: the pink focus ring (#F7D2DE, 2 px) is what the brief asks for, but on the grey ground (#EEF1F5) it has a contrast of about 1.2:1. It is visible as a soft frame, not a strong ring. A navy ring, or a navy ring inside the pink one, would be stronger.
+- Part 9: contrast failures are listed in docs/contrast-report.md (mostly the grey #7a8398 labels at 3.35–3.79:1, the pink "KUS" on About at 1.21:1 which is intentional, and a few homepage/Work card details). Nothing was changed.

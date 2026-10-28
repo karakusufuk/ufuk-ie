@@ -46,6 +46,7 @@
     if (['ArrowDown', 'PageDown', ' ', 'End'].indexOf(e.key) > -1) { user = true; e.preventDefault(); open(); }
   });
   addEventListener('mousedown', function () { user = true; });
+  addEventListener('keydown', function (e) { if (e.key === 'Tab') user = true; });
   addEventListener('scroll', function () { if (user && ready && scrollY > 30) open(); }, { passive: true });
 
   /* ---------- "Visit the live site": the first click scrolls on and the text becomes the pink button below it ---------- */

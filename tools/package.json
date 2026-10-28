@@ -10,11 +10,29 @@
     "check": "node check.mjs",
     "og": "node og.mjs",
     "heads": "node heads.mjs",
-    "heads-check": "node heads-check.mjs"
+    "heads-check": "node heads-check.mjs",
+    "fonts": "node fonts.mjs",
+    "net-check": "node net-check.mjs"
   },
   "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1",
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/figtree": "^5.3.0",
     "@fontsource/geist": "^5.3.0",
+    "@fontsource/geist-mono": "^5.3.0",
+    "@fontsource/gloock": "^5.3.0",
+    "@fontsource/hanken-grotesk": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-sans-condensed": "^5.3.0",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@fontsource/libre-caslon-display": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "@fontsource/outfit": "^5.3.0",
+    "@fontsource/rubik": "^5.3.0",
     "playwright": "^1.64.1"
   }
 }

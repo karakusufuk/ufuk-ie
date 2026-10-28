@@ -10,6 +10,14 @@ const sizes = [[1440, 900], [1920, 1080]];
 const type = { chromium, webkit, firefox }[bname];
 const browser = await type.launch(bname === 'chromium' ? { channel: 'chrome' } : {});
 let problems = 0;
+// Pin every loaded video to its first frame so screenshots do not depend on decode timing.
+const pin = async () => {
+  await Promise.all([...document.querySelectorAll('video')].filter((v) => v.readyState > 0).map((v) => new Promise((res) => {
+    v.pause(); if (v.currentTime === 0) return res();
+    v.addEventListener('seeked', res, { once: true }); v.currentTime = 0; setTimeout(res, 800);
+  })));
+  await new Promise((r) => setTimeout(r, 150));
+};
 for (const [w, h] of sizes) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'reduce' });
   for (const p of pages) {
@@ -21,12 +29,14 @@ for (const [w, h] of sizes) {
     page.on('response', (r) => r.status() >= 400 && errs.push(r.status() + ' ' + r.url()));
     await page.goto(base.replace(/\/?$/, '/') + p + '.html', { waitUntil: 'load' });
     await page.waitForTimeout(3000);
+    await page.evaluate(pin);
     const dir = path.join(out, `${w}`); fs.mkdirSync(dir, { recursive: true });
     await page.screenshot({ path: path.join(dir, p + '-0.png') });
     const total = await page.evaluate(() => document.documentElement.scrollHeight);
     for (let y = h, i = 1; y < total && i < 40; y += h, i++) {
       await page.evaluate((yy) => window.scrollTo(0, yy), y);
       await page.waitForTimeout(250);
+      await page.evaluate(pin);
       await page.screenshot({ path: path.join(dir, `${p}-${i}.png`) });
     }
     if (errs.length) { problems++; console.log(w, p, errs.slice(0, 5)); }

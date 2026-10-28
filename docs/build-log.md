@@ -26,3 +26,18 @@
 - `npm run heads-check`: 14 pages, unique valid titles/descriptions/canonicals/OG images, no `claude:` tags.
 - `npm run check`: 11 pages identical to what the generator produces.
 - Screenshots vs source: only the known flaky homepage set plus ashgrove-2 @1440 (video frame timing; compared visually, identical).
+
+## Part 13 (Midland Motors hero, separate repo) — done, 2026-10-28
+- Done between Part 3 and Part 4 at the owner's request. Repo karakusufuk/midland-motors, commit 0cfedaa, deploy green.
+- The three hero files were the only changes and matched the given SHA-256. They now load with `?v=plate2` (app.js ×3, Base.astro ×1). The live hero.mp4, hero-loop.mp4 and hero-poster.webp hashes match.
+- Live check in Chrome: the plate mark forms between 5.5 and 6.0 s of video time. It is visible at 6.4 s and 9.3 s, with no change at the switch to the loop (frames 7.9 → 8.1 identical), and on the phone poster at 390 px. At 6 s of wall-clock time from page load the video is only at about 5.0 s, so the plate is still blank there.
+
+## Part 4 — done (with documented sub-pixel residue)
+- `tools/fonts.mjs` (`npm run fonts`) copies 46 WOFF2 files (latin + latin-ext) from @fontsource packages into site/fonts/ and writes `fonts.css` (Bricolage Grotesque opsz variable, Geist variable) plus one `p-<slug>.css` per project page with specimen fonts. index/work/about links are swapped by the script; project pages via build.mjs. Preload: Bricolage latin + Geist latin. All Google preconnects removed.
+- Weight ranges are limited to what Google served (Bricolage 500–600, Geist 400–500, Archivo 800/125%, Source Serif 600), so text that asks for another weight is synthesised exactly as in the approved export (e.g. the Garvey "Tell us what happened." specimen at Geist 600 is browser faux-bold in source/, and stays so).
+- `tools/net-check.mjs`: all 14 pages, zero requests to fonts.googleapis.com / fonts.gstatic.com, zero ≥400 responses; every expected family loads.
+- Glyphs: Karakuş, Siobhán, SEISIÚN render in Bricolage and Geist (checked at 3x).
+- font-display: swap on every face, so there is no invisible-text period beyond the swap.
+- Screenshots (tools/shots.mjs now pins every loaded video to frame 0; source-vs-source control: 1 of 242 differ): identical except
+  - specimen panels on brennock, bawn, kenilworth, midland, tierney, ashgrove: anti-aliasing differences of up to 60/255 on glyph edges (the npm font builds are not byte-identical to Google's subsets); invisible at 4x zoom.
+  - homepage Brennock showcase (index-1, index-3): the paused video area renders with a per-pixel delta of up to 50/255 (mean colour unchanged to 0.4/255). It reproduces with only the font links swapped, and an identical layout box was measured. Cause not found; listed in questions.md.

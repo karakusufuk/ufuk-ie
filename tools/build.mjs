@@ -88,9 +88,9 @@ for (const pg of pages) {
 <title>${esc(docTitle)}</title>
 ${headMeta({ title: docTitle, desc: pg.desc || pg.sum, file: pg.slug + '.html', image: pg.slug })}
 <script>try{history.scrollRestoration='manual'}catch(e){}if(!location.hash){document.documentElement.className='pre';window.scrollTo(0,0);setTimeout(function(){document.documentElement.classList.remove('pre')},1500);}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Geist:wght@400;500&display=swap">
-${pg.fontLink ? `<link rel="stylesheet" href="${pg.fontLink}">\n` : ''}<link rel="stylesheet" href="work.css">
+<link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+${pg.fontLink ? `<link rel="stylesheet" href="fonts/p-${pg.slug}.css">\n` : ''}<link rel="stylesheet" href="work.css">
 </head><body>
 <header class="top"><a class="mark" href="index.html">ufuk.ie</a><nav aria-label="Main"><a href="work.html" aria-current="page">Work</a><a href="about.html">About</a><a href="index.html#contact">Contact</a></nav></header>
 <div class="veil" aria-hidden="true"></div><div class="laser" aria-hidden="true"></div>

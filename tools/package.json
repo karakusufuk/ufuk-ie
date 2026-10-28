@@ -20,7 +20,9 @@
     "icons": "node icons.mjs",
     "ld-check": "node ld-check.mjs",
     "phones": "node phones.mjs",
-    "contrast": "node contrast.mjs"
+    "contrast": "node contrast.mjs",
+    "contact": "node contact.mjs",
+    "ig-images": "node ig-images.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

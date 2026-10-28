@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const [base, out, bname = 'chromium'] = process.argv.slice(2);
-const pages = ['index', 'work', 'about', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
 const sizes = [[1440, 900], [1920, 1080]];
 const type = { chromium, webkit, firefox }[bname];
 const browser = await type.launch(bname === 'chromium' ? { channel: 'chrome' } : {});

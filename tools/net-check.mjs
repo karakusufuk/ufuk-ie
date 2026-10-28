@@ -1,7 +1,7 @@
 // Usage: node net-check.mjs <baseUrl>. Loads all 14 pages, fails on any request to Google, any >=400 response, or a missing font.
 import { chromium } from 'playwright';
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
-const pages = ['index', 'work', 'about', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
 const b = await chromium.launch({ channel: 'chrome' });
 let bad = 0;
 for (const p of pages) {

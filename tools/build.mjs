@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pages } from './content.mjs';
 import { addSizes } from './imgsize.mjs';
+import { igBlock, IG_HEAD, IG_SCRIPT } from './ig.mjs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const sharp = require('sharp');
@@ -93,8 +94,9 @@ ${headMeta({ title: docTitle, desc: pg.desc || pg.sum, file: pg.slug + '.html', 
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 ${pg.fontLink ? `<link rel="stylesheet" href="fonts/p-${pg.slug}.css">\n` : ''}<link rel="stylesheet" href="work.css">
+${IG_HEAD()}
 </head><body>
-<header class="top"><a class="mark" href="index.html">ufuk.ie</a><nav aria-label="Main"><a href="work.html" aria-current="page">Work</a><a href="about.html">About</a><a href="index.html#contact">Contact</a></nav></header>
+<header class="top"><a class="mark" href="index.html">ufuk.ie</a><nav aria-label="Main"><a href="work.html" aria-current="page">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></header>
 <div class="veil" aria-hidden="true"></div><div class="laser" aria-hidden="true"></div>
 
 <main>
@@ -119,10 +121,12 @@ ${deep(pg.deep)}
 <div class="end"><footer class="foot">
   <h2>Tell me about your business.</h2>
   <div class="row"><a class="btn" href="https://wa.me/353832079387?text=Hi%20Ufuk%2C%20I%20found%20you%20on%20ufuk.ie." target="_blank" rel="noopener">${WA}Chat on WhatsApp</a><span class="mail">hello@ufuk.ie</span></div>
+  ${igBlock()}
   <div class="base"><span>Ufuk Karakuş · Designer and developer · Ireland</span><span>© 2026 ufuk.ie</span></div>
 </footer></div>
 <div class="dock" aria-label="Quick links"><a class="btn" href="${pg.live}" target="_blank" rel="noopener">Visit the live site</a></div>
 <script src="work.js"></script>
+${IG_SCRIPT()}
 </body></html>
 `;
   fs.writeFileSync(path.join(OUT, pg.slug + '.html'), await addSizes(html, path.resolve(MEDIA, '../..')));
@@ -132,7 +136,7 @@ ${deep(pg.deep)}
 /* 404: same header and footer as the project pages, absolute paths because GitHub Pages serves it from any depth */
 {
   const last = fs.readFileSync(path.join(OUT, pages[0].slug + '.html'), 'utf8');
-  const abs = (s) => s.replace(/href="(index|work|about)\.html/g, 'href="/$1.html').replace(/ aria-current="page"/, '');
+  const abs = (s) => s.replace(/href="(index|work|about|contact)\.html/g, 'href="/$1.html').replace(/ aria-current="page"/, '').replace(/(src|data-base)="img\//g, '$1="/img/');
   const header = abs(last.match(/<header class="top">[\s\S]*?<\/header>/)[0]);
   const footer = abs(last.match(/<div class="end">[\s\S]*?<\/footer><\/div>/)[0]);
   const docTitle = 'Page not found · ufuk.ie';
@@ -145,13 +149,43 @@ ${deep(pg.deep)}
 <link rel="preload" as="font" type="font/woff2" href="/fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="/fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/work.css">
+${IG_HEAD('/')}
 <style>.nf{min-height:calc(100vh - 460px);padding-top:clamp(150px,22vh,240px);padding-bottom:clamp(72px,12vh,140px)}.nf h1{font-size:clamp(44px,7.4vw,112px);line-height:1;letter-spacing:-.035em}.nf p{display:flex;flex-wrap:wrap;gap:12px 36px;margin:44px 0 0;font-size:19px}.nf a{border-bottom:1px solid currentColor}</style>
 </head><body>
 ${header}
 <main><section class="nf wrap"><h1>This page isn't here.</h1><p><a href="/work.html">See the work</a><a href="/index.html">Back to the start</a></p></section></main>
 ${footer}
+${IG_SCRIPT('/')}
 </body></html>
 `;
   fs.writeFileSync(path.join(OUT, '404.html'), html404);
   console.log('built 404');
+}
+
+/* contact.html: the contact block as a page (same header and footer as the project pages, Contact marked as current) */
+{
+  const last = fs.readFileSync(path.join(OUT, pages[0].slug + '.html'), 'utf8');
+  const header = last.match(/<header class="top">[\s\S]*?<\/header>/)[0].replace(' aria-current="page"', '').replace('<a href="contact.html">', '<a href="contact.html" aria-current="page">');
+  const footer = last.match(/<div class="end">[\s\S]*?<\/footer><\/div>/)[0];
+  const docTitle = 'Contact · ufuk.ie';
+  const desc = 'Tell me about your business on WhatsApp or by email. Websites and software designed and built by one person in Ireland.';
+  const htmlC = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>${docTitle}</title>
+${headMeta({ title: docTitle, desc, file: 'contact.html', image: 'contact' })}
+<link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="work.css">
+${IG_HEAD()}
+<style>main.ct{padding-top:calc(var(--head,76px) + 56px)}.ct .end{margin-top:0}.ct .foot{min-height:calc(100vh - var(--head,76px) - 56px)}</style>
+</head><body>
+${header}
+<main class="ct">
+${footer}
+</main>
+${IG_SCRIPT()}
+</body></html>
+`;
+  fs.writeFileSync(path.join(OUT, 'contact.html'), htmlC);
+  console.log('built contact');
 }

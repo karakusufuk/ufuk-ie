@@ -23,9 +23,9 @@ const cover = (pg) => {
 const asData = (f) => 'data:image/jpeg;base64,' + fs.readFileSync(f).toString('base64');
 
 const cards = [
-  ...['index', 'work', 'about'].map((n) => ({
+  ...['index', 'work', 'about', 'contact'].map((n) => ({
     name: n,
-    html: `<body style="background:#151C2E"><h1 style="position:absolute;left:64px;right:64px;bottom:64px;font-size:84px;line-height:1.04;letter-spacing:-.02em;color:#F7D2DE;font-weight:600">You know your business. I know what it needs online.</h1><div style="position:absolute;left:64px;top:56px;font-size:34px;color:#EEF1F5">ufuk.ie</div></body>`,
+    html: `<body style="background:#151C2E"><h1 style="position:absolute;left:64px;right:64px;bottom:64px;font-size:84px;line-height:1.04;letter-spacing:-.02em;color:#F7D2DE;font-weight:600">${n === 'contact' ? 'Tell me about your business.' : 'You know your business. I know what it needs online.'}</h1><div style="position:absolute;left:64px;top:56px;font-size:34px;color:#EEF1F5">ufuk.ie</div></body>`,
   })),
   ...pages.map((pg) => ({
     name: pg.slug,

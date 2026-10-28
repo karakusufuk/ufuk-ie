@@ -6,7 +6,7 @@ import path from 'node:path';
 import { webkit } from 'playwright';
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
 const out = process.argv[3] || '/private/tmp/claude-501/phones';
-const pages = ['index', 'work', 'about', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', '404'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', '404'];
 const sizes = [[390, 844], [430, 932], [768, 1024]];
 const b = await webkit.launch();
 let bad = 0;

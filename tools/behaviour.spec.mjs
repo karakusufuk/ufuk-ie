@@ -23,6 +23,7 @@ async function newPage(opts = {}) {
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, ...opts });
   // live demo sites are never contacted by the tests
   await ctx.route(/^https:\/\/[a-z]+\.ufuk\.ie\/.*/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>demo</title>' }));
+  await ctx.route(/^https:\/\/www\.instagram\.com\/.*/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: 'ig' }));
   await ctx.route(/^https:\/\/wa\.me\/.*/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: 'wa' }));
   const page = await ctx.newPage();
   page.errors = [];
@@ -396,6 +397,107 @@ test('back: returns to the card the visitor came from (homepage grid, Work, Work
   }
 });
 
+test('contact: every header "Contact" link opens contact.html; the Instagram link opens the profile; hello@ufuk.ie is plain text', async () => {
+  const page = await newPage();
+  for (const f of ['index', 'work', 'about', 'contact', ...slugs]) {
+    await go(page, f + '.html'); await sleep(f === 'index' ? 500 : 300);
+    const links = await page.evaluate(() => [...document.querySelectorAll('header a, nav a')].filter((a) => a.textContent.trim() === 'Contact').map((a) => a.getAttribute('href')));
+    ok(links.length > 0 && links.every((h) => h === 'contact.html'), f + ': Contact links ' + JSON.stringify(links));
+  }
+  await go(page, '404.html'); ok(await page.evaluate(() => [...document.querySelectorAll('header a')].filter((a) => a.textContent === 'Contact').every((a) => a.getAttribute('href') === '/contact.html')), '404: Contact link');
+  for (const f of ['index', 'brennock', 'about']) {
+    await go(page, f + '.html'); await sleep(f === 'brennock' ? 1800 : 600);
+    if (f === 'index') { await page.locator('.bar nav a', { hasText: 'Contact' }).evaluate((a) => a.click()); }
+    else { await page.locator('header a', { hasText: 'Contact' }).first().evaluate((a) => a.click()); }
+    await page.waitForURL(/contact\.html$/, { timeout: 6000 });
+    ok(await page.title() === 'Contact · ufuk.ie', f + ': landed on ' + await page.title());
+  }
+  ok(await page.evaluate(() => !document.querySelector('a[href^="mailto:"]') && document.querySelector('.mail').textContent === 'hello@ufuk.ie' && document.querySelectorAll('form').length === 0), 'mail must be plain text and the page has no form');
+  const [pop] = await Promise.all([page.ctx.waitForEvent('page'), page.click('.ig-link')]);
+  ok(pop.url() === 'https://www.instagram.com/ufukkarakus/', 'Instagram link opened ' + pop.url());
+  ok(await page.evaluate(() => document.querySelector('.ig-link').getAttribute('rel').includes('noopener') && document.querySelector('.ig-link').target === '_blank'), 'link must open in a new tab');
+  ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+  await page.ctx.close();
+});
+
+test('contact: grid layout (3x5, link row, posts in the given cells) and the link row lines up with the top of the heading', async () => {
+  for (const [w, h] of [[1440, 900], [1920, 1080]]) {
+    const page = await newPage({ viewport: { width: w, height: h }, reducedMotion: 'reduce' });
+    for (const f of ['index', 'work', 'about', 'contact', 'brennock', 'midland']) {
+      await go(page, f + '.html'); await sleep(f === 'index' ? 800 : 500);
+      if (/brennock|midland/.test(f)) { await wheel(page, 200); await sleep(1500); }
+      const m = await page.evaluate(() => {
+        const g = document.querySelector('.ig'), r = g.getBoundingClientRect(), cell = (r.width - 1) / 3;
+        const ph = [...g.querySelectorAll('.ph')].map((p) => { const b = p.getBoundingClientRect(); return { n: +p.dataset.n, row: Math.round((b.top - r.top) / cell), col: Math.round((b.left - r.left) / cell), w: b.width, h: b.height, op: getComputedStyle(p).opacity, src: p.querySelector('img').getAttribute('src').split('/').pop() }; });
+        const l = g.querySelector('.ig-link').getBoundingClientRect(), hd = document.querySelector('.contact h2, .foot h2').getBoundingClientRect();
+        const mail = document.querySelector('.contact-mail, .mail'), lk = getComputedStyle(g.querySelector('.ig-link'));
+        return { cell, h: r.height, ph, link: { row: Math.round((l.top - r.top) / cell), left: l.left - r.left, w: l.width, hgt: l.height }, linkTop: l.top, h2Top: hd.top, fs: lk.fontSize, mailFs: getComputedStyle(mail).fontSize, anim: lk.transitionDuration + ' ' + lk.animationName, hs: document.documentElement.scrollWidth - innerWidth, foot: document.querySelector('.contact, .end .foot').getBoundingClientRect() };
+      });
+      const want = { 1: [0, 0], 2: [0, 1], 3: [0, 2], 7: [2, 0], 8: [2, 1], 9: [2, 2], 11: [3, 1], 14: [4, 1] };
+      ok(m.ph.length === 8, f + ': ' + m.ph.length + ' photo cells');
+      for (const p of m.ph) { ok(p.row === want[p.n][0] && p.col === want[p.n][1], `${f}: post ${p.n} is at row ${p.row + 1} col ${p.col + 1}`); near(p.w, p.h, 0.6, f + ': photo cell is not square'); ok(p.src === String(p.n).padStart(2, '0') + '.jpg', f + ': cell for post ' + p.n + ' shows ' + p.src); ok(p.op === '1', f + ': photo not shown with reduced motion'); }
+      near(m.cell * 5, m.h - 1, 1.2, f + ': five rows of equal height'); ok(m.link.row === 1 && m.link.left < 1 && Math.abs(m.link.w - m.cell * 3) < 2, f + ': link row spans the grid in row 2');
+      near(m.linkTop, m.h2Top, 0.6, `${w} ${f}: link row top vs heading top`);
+      ok(m.fs === m.mailFs, `${f}: link font ${m.fs} vs mail ${m.mailFs}`); ok(/^0s none$/.test(m.anim), f + ': link row animates: ' + m.anim); ok(m.hs <= 0, f + ': horizontal scroll');
+      if (f !== 'contact') ok(m.foot.height > 0, 'foot present');
+      console.log(`      ${w}x${h} ${f.padEnd(9)} link top ${m.linkTop.toFixed(1)} = heading top ${m.h2Top.toFixed(1)}, cell ${m.cell.toFixed(0)} px, font ${m.fs}`);
+    }
+    await page.ctx.close();
+  }
+});
+
+test('contact: Instagram grid cycle (wave in, hold, slot machine < 1 s, settle, wave out, rest, repeat) and it pauses when out of view', async () => {
+  const page = await newPage();
+  await page.addInitScript(() => {
+    window.__ig = []; const start = () => { const g = document.querySelector('.ig'); if (!g) return setTimeout(start, 20); const t0 = performance.now(); const cells = [...g.querySelectorAll('.ph')];
+      new MutationObserver((ms) => ms.forEach((m) => { const i = cells.indexOf(m.target.closest ? m.target.closest('.ph') : m.target); if (i < 0) return; if (m.attributeName === 'class') window.__ig.push([performance.now() - t0, 'class', i, m.target.classList.contains('on')]); else if (m.attributeName === 'src') window.__ig.push([performance.now() - t0, 'src', i, m.target.getAttribute('src').split('/').pop()]); })).observe(g, { subtree: true, attributes: true, attributeFilter: ['class', 'src'] }); };
+    document.addEventListener('DOMContentLoaded', start);
+  });
+  await go(page, 'contact.html'); await sleep(27500);
+  const ev = await page.evaluate(() => window.__ig);
+  const on = ev.filter((e) => e[1] === 'class' && e[3]), off = ev.filter((e) => e[1] === 'class' && !e[3] && e[0] > 800);
+  ok(on.length >= 16, 'expected two fade-in waves, got ' + on.length + ' fades in');
+  const wave1 = on.slice(0, 8), idx = wave1.map((e) => e[2]);
+  ok(idx.join() === '0,1,2,3,4,5,6,7', 'fade-in order is ' + idx.join() + ' (cells 1,2,3,7,8,9,11,14)');
+  const gaps = wave1.slice(1).map((e, i) => e[0] - wave1[i][0]); ok(gaps.every((g) => g > 150 && g < 280), 'fade-in steps (each starts as the previous is halfway, 210 ms): ' + gaps.map(Math.round).join(' '));
+  const allOn = wave1[7][0] + 420;
+  const slotEv = ev.filter((e) => e[1] === 'src' && e[0] > allOn);
+  ok(slotEv.length > 20, 'slot machine produced only ' + slotEv.length + ' changes');
+  const s0 = slotEv[0][0], s1 = slotEv.filter((e) => e[0] < s0 + 1500).pop()[0];
+  near(s0 - allOn, 3500, 400, 'hold before the slot moment'); ok(s1 - s0 < 1000, 'slot moment lasted ' + Math.round(s1 - s0) + ' ms (must be < 1000)');
+  const seen = new Set(slotEv.filter((e) => e[0] < s0 + 1500).map((e) => e[3])); ok(seen.size >= 6, 'slot showed only ' + seen.size + ' different posts');
+  const finalSrc = {}; slotEv.filter((e) => e[0] < s0 + 1500).forEach((e) => { finalSrc[e[2]] = e[3]; });
+  const mineSrc = ['01', '02', '03', '07', '08', '09', '11', '14'].map((n) => n + '.jpg'); ok(mineSrc.every((s, i) => finalSrc[i] === s), 'cells did not settle back on the exact order: ' + JSON.stringify(finalSrc));
+  ok(slotEv.some((e) => /^0[456]\.jpg$/.test(e[3])), 'posts 4, 5, 6 never appeared in the slot moment');
+  const outside = ev.filter((e) => e[1] === 'src' && (e[0] < allOn)); ok(outside.length === 0, 'photos changed outside the slot moment');
+  const out1 = off.slice(0, 8), oi = out1.map((e) => e[2]); ok(oi.join() === '0,1,2,3,4,5,6,7', 'fade-out order is ' + oi.join());
+  ok(on[8][0] - out1[7][0] > 1200 && on[8][0] - out1[7][0] < 2400, 'rest with the empty grid before the next cycle: ' + Math.round(on[8][0] - out1[7][0]) + ' ms (incl. last fade)');
+  console.log(`      wave-in steps ${gaps.map(Math.round).join('/')} ms; hold ${Math.round(s0 - allOn)} ms; slot ${Math.round(s1 - s0)} ms with ${seen.size} different posts; second cycle starts ${Math.round(on[8][0])} ms`);
+  // paused when out of view: scroll away, the grid resets and nothing moves any more
+  const p2 = await newPage();
+  await go(p2, 'index.html'); await sleep(1200);
+  await p2.evaluate(() => document.querySelector('.ig').scrollIntoView({ block: 'center' })); await sleep(1500);
+  ok(await p2.evaluate(() => document.querySelectorAll('.ig .ph.on').length) > 2, 'animation did not start in view');
+  await p2.evaluate(() => window.scrollTo(0, 0)); await sleep(800);
+  ok(await p2.evaluate(() => document.querySelectorAll('.ig .ph.on').length) === 0, 'grid kept showing after leaving the view');
+  await p2.evaluate(() => { window.__m = 0; new MutationObserver((m) => { window.__m += m.length; }).observe(document.querySelector('.ig'), { subtree: true, attributes: true }); }); await sleep(4000);
+  ok(await p2.evaluate(() => window.__m) === 0, 'grid kept animating while out of view (' + await p2.evaluate(() => window.__m) + ' changes)');
+  await p2.evaluate(() => document.querySelector('.ig').scrollIntoView({ block: 'center' })); await sleep(1200);
+  ok(await p2.evaluate(() => document.querySelectorAll('.ig .ph.on').length) > 1, 'animation did not resume');
+  ok(page.errors.length + p2.errors.length === 0, 'console: ' + page.errors.concat(p2.errors).join(' | '));
+  await page.ctx.close(); await p2.ctx.close();
+});
+
+test('contact: with reduced motion the photos are simply shown and nothing moves', async () => {
+  const page = await newPage({ reducedMotion: 'reduce' });
+  await go(page, 'contact.html'); await sleep(1000);
+  await page.evaluate(() => { window.__m = 0; new MutationObserver((m) => { window.__m += m.length; }).observe(document.querySelector('.ig'), { subtree: true, attributes: true }); });
+  await sleep(5000);
+  ok(await page.evaluate(() => window.__m) === 0, 'grid changed under reduced motion');
+  ok(await page.evaluate(() => [...document.querySelectorAll('.ig .ph')].every((p) => getComputedStyle(p).opacity === '1')), 'photos not all shown');
+  await page.ctx.close();
+});
+
 /* ---------------------------------------------------------------- about + KUS slot */
 test('about: print line reveals the page and lands on the footer; no console errors', async () => {
   const page = await newPage();
@@ -409,7 +511,7 @@ test('about: print line reveals the page and lands on the footer; no console err
 
 test('every page loads without console errors or failed requests', async () => {
   const page = await newPage();
-  for (const f of ['index', 'work', 'about', ...slugs]) { await go(page, f + '.html'); await sleep(1200); }
+  for (const f of ['index', 'work', 'about', 'contact', ...slugs]) { await go(page, f + '.html'); await sleep(1200); }
   ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
   await page.ctx.close();
 });

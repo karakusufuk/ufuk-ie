@@ -1,0 +1,22 @@
+skip   KUS slot: site/kus.html does not exist yet
+behaviour: http://localhost:8101/ webkit 1440x900
+      blur at 10.8 s, headline done at 23.9 s, caret animation-iteration-count 3
+pass   home: no headline at 2 s, blur after intro, headline typed in full (24.9 s)
+pass   home: header bar hides in the hero, returns on scroll up, hides on scroll down (2.2 s)
+pass   home: Brennock showcase steps 0 > 1 > 2 without moving the page, then the next gesture scrolls (4.3 s)
+pass   home: one long gesture (many wheel events) gives exactly one step (3.0 s)
+pass   home: scrolling down into KUS snaps it to the top, ArrowDown and ArrowUp step it (3.5 s)
+pass   home: Reilly showcase has one step and the page moves on (2.6 s)
+pass   home: grid hover fades the video in from frame 0, leaving fades it out (2.9 s)
+pass   home: right column drifts (parallax) and starts half a card lower (2.2 s)
+pass   work: filters show the right counts and re-deal the columns (2.0 s)
+pass   work: hover and parallax work like the homepage (2.3 s)
+pass   project: hidden until settled, line below the summary, one wheel opens it without moving the page (4.6 s)
+pass   project: dock hidden until the second scroll; first click on "Visit the live site" docks, second opens the live site (8.1 s)
+pass   project: line locks at the footer and hides; pins drawn; recordings load only near the viewport (5.1 s)
+pass   project: reduced motion opens the page at once and the recordings still start (1.8 s)
+pass   navigation: every project page opens at the top (Work card, Next project, back, forward) (26.8 s)
+      About "KUS" colour: rgb(247, 210, 222)
+pass   about: print line reveals the page and lands on the footer; no console errors (2.9 s)
+pass   every page loads without console errors or failed requests (17.9 s)
+all 17 passed

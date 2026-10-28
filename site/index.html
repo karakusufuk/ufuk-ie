@@ -84,10 +84,11 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .hero{position:relative;height:100vh;min-height:620px;background:var(--ground)}
 .hero-stage{position:absolute;top:var(--gap);left:var(--gap);right:0;bottom:0;overflow:hidden;background:var(--night)}
 .hero-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter 3s cubic-bezier(.45,0,.55,1),transform 3s cubic-bezier(.45,0,.55,1)}
-.hero-stage #vloop{opacity:0}
+.hero-stage #vloop{opacity:0;transition:filter 3s cubic-bezier(.45,0,.55,1),transform 3s cubic-bezier(.45,0,.55,1),opacity .5s ease}
 .hero-stage.loop #vloop{opacity:1}
-.hero-stage.loop #vid{opacity:0}
-.hero-stage.blur video{filter:blur(9px) brightness(.72);transform:scale(1.03)}
+.hero-stage.loop #vid{opacity:0;transition:filter 3s cubic-bezier(.45,0,.55,1),transform 3s cubic-bezier(.45,0,.55,1),opacity 0s .5s}
+.hero-stage.blur video{filter:blur(9px);transform:scale(1.03)}
+.hero-dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:1}
 .hero-title{opacity:0;transition:opacity .8s ease}.hero-stage.blur .hero-title{opacity:1}
 .hero-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:0 24px}
 .hero-title h1{color:var(--pink);font-size:clamp(40px,5.4vw,84px);line-height:.98;letter-spacing:-.035em;text-align:center}
@@ -232,8 +233,9 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   <div class="hero-mark">ufuk.ie</div>
   <nav class="hero-nav" aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="#contact">Contact</a></nav>
   <div class="hero-stage" id="stage">
-    <video id="vid" src="img/hero-intro.mp4?v=3" autoplay muted playsinline preload="auto"></video>
-    <video id="vloop" src="img/hero-loop.mp4?v=3" muted loop playsinline preload="auto"></video>
+    <video id="vid" src="img/hero-intro.mp4?v=4" autoplay muted playsinline preload="auto"></video>
+    <video id="vloop" src="img/hero-loop.mp4?v=4" muted loop playsinline preload="auto"></video>
+    <div class="hero-dim" id="dim" aria-hidden="true"></div>
     <div class="hero-title"><h1 id="headline" aria-label="You know your business. I know what it needs online."><span class="ln" aria-hidden="true">You know your business.</span><span class="ln" aria-hidden="true">I know what it needs online.</span><i class="caret" aria-hidden="true"></i></h1></div>
   </div>
 </section>
@@ -433,7 +435,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   var heroDone=false;
   function toLoop(){ if(heroDone) return; heroDone=true; try{vloop.currentTime=0;}catch(e){} var p=vloop.play(); if(p&&p.catch)p.catch(function(){}); stage.classList.add('loop'); requestAnimationFrame(function(){ requestAnimationFrame(function(){ stage.classList.add('blur'); }); }); setTimeout(function(){window.dispatchEvent(new Event('herotype'));},3000); }
   vid.addEventListener('ended',toLoop);
-  setTimeout(function(){ if(!heroDone && (vid.paused || vid.readyState<2)) toLoop(); },14500);
+  setTimeout(function(){ if(!heroDone && (vid.paused || vid.readyState<2)) toLoop(); },19000);
 
   /* ---------- headline: typed on every visit ---------- */
   (function(){
@@ -441,7 +443,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     var chars=lines.map(function(ln){var t=ln.textContent;ln.textContent='';return t.split('').map(function(c){var s=document.createElement('span');s.className='ch';s.textContent=c;ln.appendChild(s);return s;});});
     var total=chars[0].length+chars[1].length, typed=0, best=0;
     function depth(){}
-    function all(){chars.forEach(function(l){l.forEach(function(c){c.classList.add('v');});});typed=total;depth();}
+    function all(){chars.forEach(function(l){l.forEach(function(c){c.classList.add('v');});});typed=total;depth();var d=document.getElementById('dim');if(d){d.style.transition='none';d.style.opacity='.7';}}
     /* key script: [delay ms, line, slot, text] ; text null = delete that slot */
     var K=[], L1='You know your business.', L2='I know what it needs online.';
     var r1=[260,95,70,120,85,60,115,75,150];
@@ -456,6 +458,18 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     for(i=1;i<20;i++)K.push([i===6?560:r3[(i-1)%r3.length],1,i,L2[i]]);
     K.push([110,1,20,' '],[620,1,21,'o']);                       /* "needs" … "online" */
     for(i=22;i<L2.length;i++)K.push([r2[(i-22)%r2.length],1,i,L2[i]]);
+    /* darkening behind the headline: nothing while line 1 is typed, then linear up to 70 % over the typing of line 2 */
+    var dim=document.getElementById('dim'), calm=false; try{calm=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+    function stepMs(e){var m=K[e][0];return m<200?m*1.15:m*1.6;}
+    var end1=-1;for(var q=0;q<K.length;q++){if(K[q][1]===0&&K[q][2]===L1.length-1&&K[q][3]!==null)end1=q;}
+    var cum=[],sum=0;for(q=end1+1;q<K.length;q++){sum+=stepMs(q);cum[q]=sum;}
+    if(calm)dim.style.opacity='.7';
+    function dimTo(e){
+      if(calm||e<end1)return;
+      var n=e+1;
+      if(n>=K.length){dim.style.transition='none';dim.style.opacity='.7';return;}
+      dim.style.transition='opacity '+Math.round(stepMs(n))+'ms linear';dim.style.opacity=(0.7*cum[n]/sum).toFixed(4);
+    }
     var pos={l:0,i:0};
     function place(){
       var hr=h.getBoundingClientRect(), row=chars[pos.l], x, sr;
@@ -472,7 +486,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
         var el=chars[s[1]][s[2]];
         if(s[3]===null){el.classList.remove('v');el.textContent=(s[1]?L2:L1)[s[2]];typed--;pos={l:s[1],i:s[2]};}
         else{el.textContent=s[3];el.classList.add('v');typed++;pos={l:s[1],i:s[2]+1};}
-        depth();place();next();
+        depth();place();dimTo(k-1);next();
       },d);
     }
     function go(){place();caret.classList.add('live');setTimeout(next,500);}

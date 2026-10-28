@@ -52,9 +52,22 @@ test('home: no headline at 2 s, blur after intro, headline typed in full', async
   const blurAt = (Date.now() - t0) / 1000;
   await sleep(3400);
   const filter = await page.evaluate(() => getComputedStyle(document.getElementById('vloop')).filter);
-  ok(/blur\(9px\)/.test(filter) && /brightness\(0\.72\)/.test(filter), 'loop video is not blurred after the 3 s ramp: ' + filter);
+  ok(/blur\(9px\)/.test(filter) && !/brightness/.test(filter), 'loop video should be blurred (9px) with no static brightness(): ' + filter);
+  // the darkening overlay follows the typing: 0 while line 1 is typed, 0.7 exactly when the last letter of line 2 appears
+  await page.evaluate(() => { window.__dim = []; const dim = document.getElementById('dim'), chars = [...document.querySelectorAll('#headline .ln')].map((l) => [...l.querySelectorAll('.ch')]);
+    const snap = () => { const l1 = chars[0].filter((c) => c.classList.contains('v')).length, l2 = chars[1].filter((c) => c.classList.contains('v')).length; window.__dim.push([performance.now(), l1, l2, parseFloat(getComputedStyle(dim).opacity)]); };
+    new MutationObserver(snap).observe(document.getElementById('headline'), { subtree: true, attributes: true, attributeFilter: ['class'] }); });
   await page.waitForFunction(() => document.querySelector('#headline .caret').classList.contains('done'), null, { timeout: 60000 });
   const doneAt = (Date.now() - t0) / 1000;
+  const dimLog = await page.evaluate(() => window.__dim);
+  const l1done = dimLog.find((r) => r[1] === 23), last = dimLog.filter((r) => r[2] === 28).pop();
+  ok(l1done && l1done[3] < 0.02, 'overlay is ' + (l1done && l1done[3]) + ' when line 1 has just been typed (expected 0)');
+  ok(dimLog.filter((r) => r[2] === 0 && r[3] > 0.02).length === 0, 'overlay darkened before line 2 started');
+  const mid = dimLog.find((r) => r[2] === 14);
+  ok(mid && mid[3] > 0.15 && mid[3] < 0.55, 'overlay mid line 2 is ' + (mid && mid[3]) + ' (expected partial)');
+  ok(last && Math.abs(last[3] - 0.7) < 0.015, 'overlay is ' + (last && last[3]) + ' when the last letter appears (expected 0.70)');
+  ok(Math.abs(parseFloat(await page.evaluate(() => getComputedStyle(document.getElementById('dim')).opacity)) - 0.7) < 0.001, 'overlay does not stay at 0.70');
+  console.log(`      overlay: ${l1done[3].toFixed(3)} after line 1, ${mid[3].toFixed(3)} mid line 2, ${last[3].toFixed(3)} at the last letter`);
   const typed = await page.evaluate(() => [...document.querySelectorAll('#headline .ln')].map((l) => [...l.querySelectorAll('.ch.v')].map((c) => c.textContent).join('')).join(' '));
   ok(typed === 'You know your business. I know what it needs online.', 'typed text is "' + typed + '"');
   const caretStopped = await page.evaluate(() => getComputedStyle(document.querySelector('#headline .caret')).animationIterationCount);

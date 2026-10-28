@@ -60,3 +60,9 @@ Section 2, item by item (browsers: C = Chrome, W = WebKit, F = Firefox; all at b
 - 2.4 About: loads clean; "KUS" in the proof row is pink rgb(247,210,222) (CWF).
 - Part 6.3 "opens at the bottom, then jumps to the top": for all 11 pages from the Work card (page scrolled to the bottom first), from the homepage cards, along the whole Next-project chain from the bottom of each page, then back x3 and forward x3: always scrollY 0, and a per-frame monitor saw the page revealed away from the top zero times (CWF).
 - By eye: docs/recordings/01–04 (.webm, git-ignored for size; regenerate with `npm run record`): hero blur ramp (8th clip partly, 9th fully blurred), typing with the "t" slip and the pauses, Brennock truck arriving at "to your door.", the sectors band drifting, the pin line inverting inside a light and inside a dark (Bawn) recording, line printing and dropping, dock appearing.
+
+## Part 7 — done
+- `docs/ADDING-KUS.md` (media, fill the object, chain Brennock → KUS → Reilly with `NEXT.kus`, build/og/sitemap, the two exact link lines in work.html and index.html, tests) and `docs/ADDING-BAWN-PHONES.md` exist. `tools/sitemap.mjs` (`npm run sitemap`) added so the sitemap follows `pages`.
+- The Playwright "KUS slot" check in `tools/behaviour.spec.mjs` is skipped while `site/kus.html` does not exist (the run prints "skip").
+- Dry run on a throwaway branch with dummy files (copies of Brennock media, dummy words) following ADDING-KUS.md step by step: `kus.html` built, title "KUS · ufuk.ie", OG image made, sitemap 15 URLs, heads-check OK on 15 pages, Brennock → KUS → Reilly chain correct, Work card and homepage button point to kus.html, "KUS slot" check passed, page rendered with the pin and the dock. Branch deleted; `npm run build` on main: 11 pages byte-identical, working tree clean, KUS still commented, Bawn phones still off.
+- Nothing placeholder-like exists on the live pages.

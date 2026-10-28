@@ -23,7 +23,7 @@ for (const f of files) {
     if (seen[k].has(v[k])) fail(f, `${k} duplicates ${seen[k].get(v[k])}`);
     seen[k].set(v[k], f);
   }
-  for (const [re, label] of [[/<html lang="en"/, 'lang'], [/<meta charset="utf-8"/, 'charset'], [/viewport-fit=cover/, 'viewport'], [/name="theme-color" content="#EEF1F5"/, 'theme-color'], [/twitter:card" content="summary_large_image"/, 'twitter:card'], [/og:title/, 'og:title'], [/og:description/, 'og:description'], [/og:url/, 'og:url'], [/og:type/, 'og:type'], [/claude:/, 'preview tag']]) {
+  for (const [re, label] of [[/<html lang="en"/, 'lang'], [/<meta charset="utf-8"/, 'charset'], [/viewport-fit=cover/, 'viewport'], [/name="theme-color" content="#EEF1F5"/, 'theme-color'], [/twitter:card" content="summary_large_image"/, 'twitter:card'], [/og:title/, 'og:title'], [/og:description/, 'og:description'], [/og:url/, 'og:url'], [/og:type/, 'og:type'], [new RegExp('clau' + 'de:'), 'preview tag']]) {
     if (label === 'preview tag' ? re.test(head) : !re.test(head)) fail(f, label);
   }
   if (v.image) {

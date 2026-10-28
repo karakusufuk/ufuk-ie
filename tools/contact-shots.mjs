@@ -2,6 +2,7 @@
 import { chromium } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs';
+import os from 'node:os';
 const out = path.join(path.dirname(new URL(import.meta.url).pathname), '../docs/contact-check');
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -16,7 +17,7 @@ for (const [w, h] of [[1440, 900], [1920, 1080]]) for (const f of ['index', 'bre
   await c.close();
 }
 // one full cycle, recorded
-const tmp = fs.mkdtempSync('/private/tmp/claude-501/igrec-');
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'igrec-'));
 const c = await b.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: tmp, size: { width: 1440, height: 900 } } }); const p = await c.newPage();
 await p.goto(base + 'contact.html'); await sleep(14500); const v = p.video(); await c.close();
 fs.copyFileSync(await v.path(), path.join(out, 'cycle.webm')); console.log('recorded cycle.webm');

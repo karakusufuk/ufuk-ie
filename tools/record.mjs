@@ -2,12 +2,13 @@
 import { chromium } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs';
+import os from 'node:os';
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
 const out = path.join(path.dirname(new URL(import.meta.url).pathname), '../docs/recordings');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const b = await chromium.launch({ channel: 'chrome' });
 async function rec(name, fn) {
-  const tmp = fs.mkdtempSync('/private/tmp/claude-501/rec-');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'rec-'));
   const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, recordVideo: { dir: tmp, size: { width: 1440, height: 900 } } });
   await ctx.route(/^https:\/\/[a-z]+\.ufuk\.ie\/.*/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: 'demo' }));
   const page = await ctx.newPage(); await fn(page); const v = page.video(); await ctx.close();

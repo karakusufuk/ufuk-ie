@@ -40,3 +40,5 @@ pass   contact: Instagram grid cycle (wave in, hold, slot machine < 1 s, settle,
 pass   contact: with reduced motion the photos are simply shown and nothing moves (6.7 s)
       About "KUS" colour: rgb(247, 210, 222)
 pass   about: print line reveals the page and lands on the footer; no console errors (3.3 s)
+pass   every page loads without console errors or failed requests (46.0 s)
+1 failed, 23 passed

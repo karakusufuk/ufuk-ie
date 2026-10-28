@@ -1,6 +1,9 @@
 // Joins the recorded scenes into hero-intro.mp4 and hero-loop.mp4 with short crossfades (node build-videos.mjs [fade] [out dir]).
-//   intro: 7 shots, shot 1 = 2.5 s, the others 2.0 s (centre of one crossfade to the centre of the next), 14.5 s in all.
-//   loop : 10 shots x 2.0 s = 20 s; the last shot fades into the first, so the file loops without a seam.
+//   intro: 8 shots. Shot 1 = 2.4 s, shots 2-7 = 2.0 s (centre of one crossfade to the centre of the next), shot 8 = the lane clip,
+//          which runs until the screen is completely solid green and holds it for HOLD frames; the file ends there.
+//   loop : dark-ground shots only, 2.0 s each; the last shot fades into the first, so the file loops without a seam.
+// The first fully solid green frame of the intro is measured in the finished file and written into index.html (data-green).
+import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { order } from './scenes.mjs';
@@ -9,8 +12,19 @@ const here = path.dirname(new URL(import.meta.url).pathname);
 const clips = path.join(here, 'clips');
 const FADE = +(process.argv[2] ?? 0.3);
 const out = process.argv[3] || path.join(here, '../../site/img');
-const H = FADE / 2, SHOT = 2.0, CLIP = SHOT + FADE;
+const H = FADE / 2, SHOT = 2.0, CLIP = SHOT + FADE, FPS = 30, HOLD = 5;
 const ENC = ['-c:v', 'libx264', '-profile:v', 'high', '-preset', 'veryfast', '-crf', process.env.CRF || '28', '-pix_fmt', 'yuv420p', '-r', '30', '-an', '-movflags', '+faststart'];
+
+// frame index of the first fully solid green frame of a clip / video (green = the colour of the clip's last frame)
+function solidFrames(file) {
+  const W = 160, Hh = 90, FS = W * Hh * 3;
+  const raw = execFileSync('ffmpeg', ['-v', 'error', '-i', file, '-vf', `scale=${W}:${Hh}`, '-pix_fmt', 'rgb24', '-f', 'rawvideo', '-'], { maxBuffer: 1 << 29 });
+  const n = raw.length / FS, ref = [raw[(n - 1) * FS], raw[(n - 1) * FS + 1], raw[(n - 1) * FS + 2]];
+  const solid = (f) => { for (let i = 0; i < W * Hh; i++) { const o = f * FS + i * 3; if (Math.abs(raw[o] - ref[0]) > 14 || Math.abs(raw[o + 1] - ref[1]) > 14 || Math.abs(raw[o + 2] - ref[2]) > 24) return false; } return true; };
+  let first = -1; for (let f = 0; f < n; f++) if (solid(f)) { first = f; break; }
+  let run = 0; if (first >= 0) while (first + run < n && solid(first + run)) run++;
+  return { first, run, n, ref };
+}
 
 function chain(names, offsets, lens, tail) {
   const args = ['-v', 'error', '-y'];
@@ -22,17 +36,28 @@ function chain(names, offsets, lens, tail) {
   return { args, f };
 }
 
-// intro
+// ---- intro
+const laneClip = solidFrames(path.join(clips, 'lane.mp4'));
+if (laneClip.first < 0 || laneClip.run < HOLD) throw new Error('the lane clip has no solid green frames');
+const laneLen = (laneClip.first + HOLD) / FPS;             // the clip is cut HOLD frames after the first solid frame: lanes are never cut while still growing
 {
-  const names = order.intro;
-  const first = 2.4;                                   // on-screen time of shot 1
+  const names = order.intro, first = 2.4;
   const offsets = names.slice(1).map((_, i) => first - H + i * SHOT);
-  const lens = names.map((n, i) => (i === 0 ? 0 : CLIP));
-  const { args, f } = chain(names, offsets, lens, `trim=duration=${first + (names.length - 1) * SHOT},setpts=PTS-STARTPTS`);
-  execFileSync('ffmpeg', [...args, '-filter_complex', f, '-map', '[v]', ...ENC, path.join(out, 'hero-intro.mp4')]);
-  console.log('intro', names.join(' > '), 'offsets', offsets.map((o) => o.toFixed(2)).join(' '));
+  const lens = names.map((n, i) => (i === 0 ? 0 : n === 'lane' ? +laneLen.toFixed(4) : CLIP));
+  const total = offsets[offsets.length - 1] + laneLen;
+  const { args, f } = chain(names, offsets, lens, `trim=duration=${total.toFixed(4)},setpts=PTS-STARTPTS`);
+  const file = path.join(out, 'hero-intro.mp4');
+  execFileSync('ffmpeg', [...args, '-filter_complex', f, '-map', '[v]', ...ENC, file]);
+  const g = solidFrames(file);
+  const tG = g.first / FPS;
+  console.log('intro', names.join(' > '), '\n  lane clip: first solid frame', laneClip.first, `-> cut after ${laneLen.toFixed(3)} s; intro ${(g.n / FPS).toFixed(3)} s; first full-green frame #${g.first} = ${tG.toFixed(4)} s, ${g.run} solid frames until the end`);
+  if (g.first < 0 || g.first + g.run !== g.n || g.run < HOLD) throw new Error('intro does not end on a solid green hold');
+  // the page blurs on this frame
+  const idx = path.join(here, '../../site/index.html'), html = fs.readFileSync(idx, 'utf8');
+  const patched = html.replace(/(<video id="vid"[^>]*?)( data-green="[^"]*")?( autoplay)/, `$1 data-green="${tG.toFixed(4)}"$3`);
+  if (patched === html && !html.includes(`data-green="${tG.toFixed(4)}"`)) console.log('  (index.html: data-green attribute not found, set it by hand)'); else fs.writeFileSync(idx, patched);
 }
-// loop (first shot repeated at the end for the seam)
+// ---- loop (the first shot is repeated at the end for the seam)
 {
   const names = [...order.loop, order.loop[0]];
   const offsets = names.slice(1).map((_, i) => (i + 1) * SHOT);

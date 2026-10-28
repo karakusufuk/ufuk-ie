@@ -74,6 +74,37 @@ export const scenes = {
     async setup(page) { await at(page, 960, 1500); },
     async act(page, mark) { await sleep(300); mark('click'); await page.locator('button.tbtn').nth(2).click(); },
   },
+
+  // lane clip: the Tierney road. Lanes rush past, the lime trapezoid grows until the whole screen is solid lime; the scroll then stops, so the page holds on solid green
+  lane: {
+    name: 'lane', url: 'https://tierney.ufuk.ie/', seconds: 4.2, total: 4.2,
+    async setup(page) {
+      // the green panel prints its words the moment it fills the screen; for this recording only, they stay hidden so the full-green frames are really solid
+      await page.addStyleTag({ content: '.choice,.choice *{opacity:0!important}' });
+      await at(page, +(process.env.LANE_FROM || 1240), 1500);
+    },
+    async act(page, mark) { mark('scroll'); await glide(page, +(process.env.LANE_FROM || 1240), +(process.env.LANE_TO || 1312), +(process.env.LANE_MS || 1700), 100, true); mark('stop'); },
+  },
+  // Brennock after nightfall: truck with headlights on, dark ground (for the dark-only loop)
+  brennockNight: {
+    name: 'brennockNight', url: 'https://brennock.ufuk.ie/', seconds: L(2.0), keepScroll: true,
+    async setup(page) {
+      await page.waitForTimeout(2500); await page.mouse.move(800, 450);
+      for (let i = 0; i < 5; i++) { await page.keyboard.press('ArrowDown'); await page.waitForTimeout(1700); }
+      await page.waitForTimeout(9000);                                     // night has fallen and every detail has faded in
+    },
+    async act(page, mark) { mark('still'); },
+  },
+  // Garvey Lennon, dark slate ground: the language section, the visitor switches language
+  garveyDark: {
+    name: 'garveyDark', url: 'https://garveylennon.ufuk.ie/', seconds: L(2.0),
+    async setup(page) { await at(page, 1480, 1800); },
+    async act(page, mark) {
+      const btn = page.locator('button', { hasText: /Polski|PL/ }).first();
+      await sleep(350); mark('pl'); await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /^Polski$/.test(x.textContent.trim())); if (b) b.click(); });
+      await sleep(900); mark('pt'); await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /^Português$/.test(x.textContent.trim())); if (b) b.click(); });
+    },
+  },
   // loop only: Bawn Growers (its subdomain has no valid certificate yet, so the certificate error is ignored for the recording only)
   bawn: {
     name: 'bawn', url: 'https://bawn.ufuk.ie/', seconds: L(2.0), ignoreHTTPSErrors: true,
@@ -102,4 +133,10 @@ export const scenes = {
     },
   },
 };
-export const order = { intro: ['brennock', 'garvey', 'reilly', 'tierney', 'lear', 'ashgrove', 'fennel'], loop: ['midland', 'bawn', 'monument', 'brennock', 'garvey', 'reilly', 'tierney', 'lear', 'ashgrove', 'fennel'] };
+// intro: sharp, light and dark shots, closing on the lane clip that ends in solid green (the blur starts on that frame).
+// loop: after the green only shots with a dark ground play behind the headline (mean luma <= 90, see luma.mjs). Light-ground sites live in the intro only.
+export const order = {
+  intro: ['brennock', 'garvey', 'reilly', 'lear', 'ashgrove', 'fennel', 'monument', 'lane'],
+  // order chosen with order-search.mjs: the clips with bright details under the headline (Reilly implant, Brennock truck) come when the overlay is already darker
+  loop: ['midland', 'lear', 'bawn', 'reilly', 'brennockNight'],
+};

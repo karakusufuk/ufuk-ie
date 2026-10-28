@@ -15,7 +15,8 @@
     "net-check": "node net-check.mjs",
     "imgsize": "node imgsize.mjs",
     "behaviour": "node behaviour.spec.mjs",
-    "record": "node record.mjs"
+    "record": "node record.mjs",
+    "sitemap": "node sitemap.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

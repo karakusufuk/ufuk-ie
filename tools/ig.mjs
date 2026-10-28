@@ -9,5 +9,6 @@ const LOGO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"
 
 /** prefix: '' for pages next to the img folder, '/' for the 404 page (served from any depth) */
 export const igBlock = (prefix = '') => `<div class="ig" data-ig data-base="${prefix}img/ig/" data-pool="${IG_POOL.join(',')}">${CELLS.map(([n, a]) => `<span class="ph" data-n="${n}" style="grid-area:${a}"><img src="${prefix}img/ig/${pad(n)}.jpg" width="600" height="600" alt="" loading="lazy"></span>`).join('')}<a class="ig-link" href="${IG_PROFILE}" target="_blank" rel="noopener" aria-label="Instagram: ufukkarakus">${LOGO}<span>/ufukkarakus</span></a></div>`;
-export const IG_HEAD = (prefix = '') => `<link rel="stylesheet" href="${prefix}ig.css">`;
+// below-the-fold blocks load their stylesheet without blocking the first paint (async=true); contact.html and the 404 show the grid at once, so they block
+export const IG_HEAD = (prefix = '', async = false) => (async ? `<link rel="stylesheet" href="${prefix}ig.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="${prefix}ig.css"></noscript>` : `<link rel="stylesheet" href="${prefix}ig.css">`);
 export const IG_SCRIPT = (prefix = '') => `<script src="${prefix}ig.js" defer></script>`;

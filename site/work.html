@@ -8,10 +8,34 @@
 <meta property="og:title" content="Work · ufuk.ie"><meta property="og:description" content="Fifteen websites, apps and systems, each designed and built for one business and how it sells."><meta property="og:url" content="https://ufuk.ie/work.html">
 <meta property="og:image" content="https://ufuk.ie/img/og/work.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><script src="nav.js"></script>
+<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><script id="nav">/* Reload and fresh visits start at the top; Back and Forward return to where the visitor was. */
+(function () {
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+  var back = nav.type === 'back_forward', key = 'ufuk-scroll:' + location.pathname, y = 0;
+  window.ufukBack = back;
+  try { history.scrollRestoration = 'manual'; } catch (e) {}
+  function save() { try { sessionStorage.setItem(key, String(Math.round(window.scrollY))); } catch (e) {} }
+  addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') save(); });
+  if (!back) {
+    try { sessionStorage.removeItem(key); sessionStorage.removeItem('ufuk-filter'); } catch (e) {}
+    if (!location.hash) window.scrollTo(0, 0);
+    return;
+  }
+  try { y = +sessionStorage.getItem(key) || 0; } catch (e) {}
+  if (!y || location.hash) return;
+  var moved = false;
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (t) { addEventListener(t, function () { moved = true; }, { passive: true }); });
+  function go() { if (!moved) window.scrollTo(0, y); }
+  go();
+  document.addEventListener('DOMContentLoaded', go);
+  addEventListener('load', go);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(go);
+  setTimeout(go, 350); setTimeout(go, 900); setTimeout(function () { moved = true; }, 1600);
+})();</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="ig.css">
+<link rel="stylesheet" href="ig.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="ig.css"></noscript>
 <style>
 /* Layout: gallery page — work fills the frame, the page itself stays quiet; asymmetric white gaps (top + left) recur in hero and showcases */
 :root{

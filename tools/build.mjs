@@ -94,7 +94,7 @@ ${headMeta({ title: docTitle, desc: pg.desc || pg.sum, file: pg.slug + '.html', 
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 ${pg.fontLink ? `<link rel="stylesheet" href="fonts/p-${pg.slug}.css">\n` : ''}<link rel="stylesheet" href="work.css">
-${IG_HEAD()}
+${IG_HEAD('', true)}
 </head><body>
 <header class="top"><a class="mark" href="index.html">ufuk.ie</a><nav aria-label="Main"><a href="work.html" aria-current="page">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></header>
 <div class="veil" aria-hidden="true"></div><div class="laser" aria-hidden="true"></div>

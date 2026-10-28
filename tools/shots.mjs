@@ -12,6 +12,8 @@ const browser = await type.launch(bname === 'chromium' ? { channel: 'chrome' } :
 let problems = 0;
 // Pin every loaded video to its first frame so screenshots do not depend on decode timing.
 const pin = async () => {
+  // slow connections: wait until the videos in and near the viewport have really loaded their first frame
+  for (let t0 = Date.now(); Date.now() - t0 < 8000;) { const pending = [...document.querySelectorAll('video')].filter((v) => (v.currentSrc || v.getAttribute('src')) && v.readyState < 2 && v.getBoundingClientRect().bottom > -300 && v.getBoundingClientRect().top < innerHeight + 300); if (!pending.length) break; await new Promise((r) => setTimeout(r, 150)); }
   await Promise.all([...document.querySelectorAll('video')].filter((v) => v.readyState > 0).map((v) => new Promise((res) => {
     v.pause(); if (v.currentTime === 0) return res();
     v.addEventListener('seeked', res, { once: true }); v.currentTime = 0; setTimeout(res, 800);
@@ -28,7 +30,7 @@ for (const [w, h] of sizes) {
     page.on('pageerror', (e) => errs.push(String(e)));
     page.on('response', (r) => r.status() >= 400 && errs.push(r.status() + ' ' + r.url()));
     await page.goto(base.replace(/\/?$/, '/') + p + '.html', { waitUntil: 'load' });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(+(process.env.WAIT || 3000));
     await page.evaluate(pin);
     const dir = path.join(out, `${w}`); fs.mkdirSync(dir, { recursive: true });
     await page.screenshot({ path: path.join(dir, p + '-0.png') });

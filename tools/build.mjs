@@ -72,10 +72,21 @@ function deep(d) {
 
 const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.76 4.88-1.28A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-2.9.76.78-2.83-.2-.3A8.2 8.2 0 1 1 12 20.2z"/><path fill="currentColor" d="M16.6 14.1c-.25-.13-1.48-.73-1.7-.81-.23-.08-.4-.13-.56.12-.17.25-.65.81-.8.98-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.43 1.03 2.6.12.16 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.48-.6 1.69-1.19.21-.58.21-1.08.15-1.19-.06-.1-.23-.17-.48-.29z"/></svg>';
 
+const SITE = 'https://ufuk.ie';
+export const headMeta = ({ title, desc, file, image }) => `<meta name="theme-color" content="#EEF1F5">
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${SITE}/${file}">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ufuk.ie"><meta property="og:locale" content="en_IE">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${SITE}/${file}">
+<meta property="og:image" content="${SITE}/img/og/${image}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">`;
+
 for (const pg of pages) {
+  const docTitle = `${pg.title} · ufuk.ie`;
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>${esc(pg.title)}</title>
+<title>${esc(docTitle)}</title>
+${headMeta({ title: docTitle, desc: pg.desc || pg.sum, file: pg.slug + '.html', image: pg.slug })}
 <script>try{history.scrollRestoration='manual'}catch(e){}if(!location.hash){document.documentElement.className='pre';window.scrollTo(0,0);setTimeout(function(){document.documentElement.classList.remove('pre')},1500);}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Geist:wght@400;500&display=swap">

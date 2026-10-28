@@ -17,3 +17,12 @@
 - Read tools/build.mjs and tools/content.mjs. `npm run build` (writes ../site) and `npm run check` exist in tools/package.json.
 - `npm run build` regenerated the 11 pages: `git status` shows no change under site/ (identical).
 - README states the rule: edit tools/content.mjs, run `npm run build`, review, commit both.
+
+## Part 3 — done
+- Heads: title, description (exact texts from the brief), canonical, theme-color, Open Graph, Twitter card on all 14 pages. Project pages via `build.mjs` (`headMeta`, description = `desc` field if present, otherwise `sum`); index/work/about via `tools/heads.mjs` (idempotent).
+- Project titles are now `<Name> · ufuk.ie`; the section `aria-label` keeps the plain name.
+- OG images: `tools/og.mjs` (`npm run og`), 14 JPEGs in site/img/og/, 1200x630, 30–61 KB. Deviation from the brief: text is rendered in Chromium with the real Bricolage Grotesque file (librsvg has no access to the web font) and saved with sharp. Checked by eye: index, brennock, garvey.
+- Favicon links are NOT added yet, to keep "zero 404s" true; they arrive with the files in Part 8.
+- `npm run heads-check`: 14 pages, unique valid titles/descriptions/canonicals/OG images, no `claude:` tags.
+- `npm run check`: 11 pages identical to what the generator produces.
+- Screenshots vs source: only the known flaky homepage set plus ashgrove-2 @1440 (video frame timing; compared visually, identical).

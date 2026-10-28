@@ -536,7 +536,9 @@ if (kusExists) test('KUS slot: links and chain', async () => {
 }); else console.log('skip   KUS slot: site/kus.html does not exist yet');
 
 /* ---------------------------------------------------------------- run */
-browser = await type.launch(bname === 'chromium' ? { channel: 'chrome' } : {});
+// PIN_DNS=1: map ufuk.ie to a GitHub Pages address (Chrome only), so a stale local DNS cache cannot hide the live result
+const pin = process.env.PIN_DNS ? ['--host-resolver-rules=MAP ufuk.ie 185.199.108.153, MAP www.ufuk.ie 185.199.108.153'] : [];
+browser = await type.launch(bname === 'chromium' ? { channel: 'chrome', args: pin } : {});
 console.log(`behaviour: ${base} ${bname} ${W}x${H}`);
 for (const [name, fn] of tests) {
   if (only && !name.includes(only)) continue;

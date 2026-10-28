@@ -1,0 +1,2 @@
+skip   KUS slot: site/kus.html does not exist yet
+behaviour: https://ufuk.ie/ chromium 1440x900

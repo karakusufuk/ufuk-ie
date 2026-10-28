@@ -4,7 +4,7 @@
    On every page the line can never pass the footer's top edge: the footer itself carries the line once they meet. */
 (function(){
   try{history.scrollRestoration='manual';}catch(e){}
-  function toTop(){ if(!location.hash) window.scrollTo(0,0); }
+  function toTop(){ if(!location.hash && !window.ufukBack) window.scrollTo(0,0); }
   toTop(); addEventListener('pageshow',toTop);
   var line=document.querySelector('.laser'), veil=document.querySelector('.veil'), end=document.querySelector('.end'), bar=document.querySelector('.top'), head=document.querySelector('.p-head');
   var reduce=false; try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}

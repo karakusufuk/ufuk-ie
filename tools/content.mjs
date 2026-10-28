@@ -48,7 +48,7 @@ export const pages = [
 {
   slug: 'brennock', title: 'Brennock Haulage', name: ['Brennock', 'Haulage'],
   sum: 'A ten-truck haulier that won work by phone. The new site lets a buyer see the trucks, check the paperwork for their load and ask for a price in two minutes.',
-  facts: { sector: 'Road haulage, Co. Meath', role: 'Research, design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'Road haulage, Co. Meath', role: 'Research, design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://brennock.ufuk.ie', next: NEXT.reilly,
   fontLink: GF('family=Archivo:wdth,wght@125,800&family=Instrument+Sans:wght@400;600'),
   sections: [
@@ -102,7 +102,7 @@ export const pages = [
 {
   slug: 'reilly', title: 'Reilly Engineering', name: ['Reilly', 'Engineering'],
   sum: 'A CNC machine dealer selling €100,000 decisions. The site starts from the part a buyer needs to make and stays with the machine for its whole working life.',
-  facts: { sector: 'CNC machine distributor, Swords', role: 'Research, design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'CNC machine distributor, Swords', role: 'Research, design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://reilly.ufuk.ie', next: NEXT.bawn,
   fontLink: GF('family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400&family=IBM+Plex+Mono:wght@400'),
   sections: [
@@ -158,7 +158,7 @@ export const pages = [
 {
   slug: 'bawn', title: 'Bawn Growers', name: ['Bawn', 'Growers'],
   sum: 'A mushroom grower selling by the pallet. Buyers order back from the day the mushrooms must be on the shelf, and the farm shows them every step until then.',
-  facts: { sector: 'Fresh produce grower, Co. Monaghan', role: 'Research, design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'Fresh produce grower, Co. Monaghan', role: 'Research, design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://bawn.ufuk.ie', next: NEXT.fennel,
   fontLink: GF('family=Outfit:wght@600;700&family=Figtree:wght@400;500'),
   sections: [
@@ -213,7 +213,7 @@ export const pages = [
 {
   slug: 'fennel', title: 'Fennel Dental', name: ['Fennel', 'Dental'],
   sum: 'A dental clinic that answers a nervous patient’s questions before they sit in the chair: what will happen, how long it takes and what it costs.',
-  facts: { sector: 'Dental clinic, Dublin', role: 'Design and build', built: 'Astro, TypeScript, Claude Code' },
+  facts: { sector: 'Dental clinic, Dublin', role: 'Design and build', built: 'Figma, Astro, TypeScript' },
   live: 'https://fennel.ufuk.ie', next: NEXT.kenilworth,
   fontLink: GF('family=Geist+Mono:wght@400'),
   sections: [
@@ -243,7 +243,7 @@ export const pages = [
 {
   slug: 'kenilworth', title: 'Kenilworth Vets', name: ['Kenilworth', 'Vets'],
   sum: 'A neighbourhood vet that feels like the practice itself: small, warm and quick to reach when something is wrong.',
-  facts: { sector: 'Veterinary clinic, Dublin 6', role: 'Design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'Veterinary clinic, Dublin 6', role: 'Design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://kenilworth.ufuk.ie', next: NEXT.garvey,
   fontLink: GF('family=Source+Serif+4:opsz,wght@8..60,600&family=Hanken+Grotesk:wght@400;600'),
   sections: [
@@ -273,7 +273,7 @@ export const pages = [
 {
   slug: 'garvey', title: 'Garvey Lennon', name: ['Garvey', 'Lennon'],
   sum: 'A law firm site that starts with the client’s story instead of the firm’s credentials, and ends with the name of the solicitor who will handle it.',
-  facts: { sector: 'Solicitors, Dublin 2', role: 'Design and build', built: 'Astro, TypeScript, Claude Code' },
+  facts: { sector: 'Solicitors, Dublin 2', role: 'Design and build', built: 'Figma, Astro, TypeScript' },
   live: 'https://garveylennon.ufuk.ie', next: NEXT.tierney,
   fontLink: '',
   sections: [
@@ -298,7 +298,7 @@ export const pages = [
 {
   slug: 'tierney', title: 'Tierney', name: ['Tierney', 'Recruitment'],
   sum: 'A recruitment agency for drivers, forklift operators and warehouse staff. Jobs read like shifts, not adverts, and a new driver can see the road to a licence.',
-  facts: { sector: 'Logistics recruitment, Leinster', role: 'Design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'Logistics recruitment, Leinster', role: 'Design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://tierney.ufuk.ie', next: NEXT.midland,
   fontLink: GF('family=Rubik:wght@500;700'),
   sections: [
@@ -326,7 +326,7 @@ export const pages = [
 {
   slug: 'midland', title: 'Midland Motors', name: ['Midland', 'Motors'],
   sum: 'A family car dealer that sells on proof. Every car comes with its full history and the workshop’s own inspection.',
-  facts: { sector: 'Used car dealer, Athlone', role: 'Design and build', built: 'Astro, TypeScript, Claude Code' },
+  facts: { sector: 'Used car dealer, Athlone', role: 'Design and build', built: 'Figma, Astro, TypeScript' },
   live: 'https://midland.ufuk.ie', next: NEXT.monument,
   fontLink: GF('family=Archivo:wdth,wght@125,800&family=IBM+Plex+Sans:wght@400'),
   sections: [
@@ -356,7 +356,7 @@ export const pages = [
 {
   slug: 'monument', title: 'Monument', name: ['Monument', 'Dublin'],
   sum: 'An independent estate agency built around Dublin’s neighbourhoods and the homes on its books.',
-  facts: { sector: 'Estate agency, Dublin', role: 'Design and build', built: 'Astro, TypeScript, Claude Code' },
+  facts: { sector: 'Estate agency, Dublin', role: 'Design and build', built: 'Figma, Astro, TypeScript' },
   live: 'https://monument.ufuk.ie', next: NEXT.lear,
   fontLink: GF('family=Libre+Caslon+Display&family=Hanken+Grotesk:wght@400'),
   sections: [
@@ -384,7 +384,7 @@ export const pages = [
 {
   slug: 'lear', title: 'Lear Residence', name: ['Lear', 'Residence'],
   sum: 'A developer selling one estate of three house types, presented as architecture rather than listings.',
-  facts: { sector: 'Design-build developer, Kildare', role: 'Design and build', built: 'Astro, TypeScript, Claude Code' },
+  facts: { sector: 'Design-build developer, Kildare', role: 'Design and build', built: 'Figma, Astro, TypeScript' },
   live: 'https://lear.ufuk.ie', next: NEXT.ashgrove,
   fontLink: GF('family=Gloock&family=Instrument+Sans:wght@400'),
   sections: [
@@ -413,7 +413,7 @@ export const pages = [
 {
   slug: 'ashgrove', title: 'Ashgrove House', name: ['Ashgrove', 'House'],
   sum: 'A Georgian country house selling themed weekends: spa by day, live music by night.',
-  facts: { sector: 'Country house hotel, Kilkenny', role: 'Design and build', built: 'HTML, CSS, JavaScript, Claude Code' },
+  facts: { sector: 'Country house hotel, Kilkenny', role: 'Design and build', built: 'Figma, HTML, CSS, JavaScript' },
   live: 'https://ashgrove.ufuk.ie', next: NEXT.brennock,
   fontLink: GF('family=Anton&family=Manrope:wght@400;600'),
   sections: [

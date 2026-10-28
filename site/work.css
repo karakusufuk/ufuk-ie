@@ -37,7 +37,7 @@ p{margin:0}
 .facts dl{display:contents}
 .facts dt{font-size:14px;color:var(--ink-3);margin-bottom:6px}
 .facts dd{margin:0;font-size:17px}
-.live-top{display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--ink);padding-top:22px;white-space:nowrap}
+.live-top{cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--ink);padding-top:22px;white-space:nowrap}
 .live-top i{font-style:normal;display:inline-block;animation:nudge 1.6s ease-in-out infinite;transform-origin:50% 30%}
 @keyframes nudge{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(4px) scale(1.25)}}
 .live-ghost{position:fixed;z-index:36;display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--ink);white-space:nowrap;pointer-events:none;transition:transform .8s cubic-bezier(.65,0,.35,1),opacity .5s ease .3s}

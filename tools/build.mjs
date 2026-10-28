@@ -105,7 +105,7 @@ ${pg.fontLink ? `<link rel="stylesheet" href="fonts/p-${pg.slug}.css">\n` : ''}<
     <div><dt>Role</dt><dd>${esc(pg.facts.role)}</dd></div>
     <div><dt>Built with</dt><dd>${esc(pg.facts.built)}</dd></div>
   </dl>
-  <a class="live-top" href="${pg.live}" target="_blank" rel="noopener">Visit the live site <i aria-hidden="true">↓</i></a></div></div></div>
+  <a class="live-top" role="button" tabindex="0">Visit the live site <i aria-hidden="true">↓</i></a></div></div></div>
 </section>
 
 ${pg.sections.map((s) => section(s, pg.slug)).join('\n\n')}

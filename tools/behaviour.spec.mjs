@@ -248,6 +248,33 @@ test('project: dock hidden until the second scroll; first click on "Visit the li
   await p2.ctx.close();
 });
 
+test('project: on all 11 pages the text link never opens the live site; it scrolls and becomes the pink button, which opens the right URL', async () => {
+  const { pages } = await import('./content.mjs');
+  for (const pg of pages) {
+    const page = await newPage();
+    await go(page, pg.slug + '.html'); await sleep(1800);
+    let popups = 0; page.ctx.on('page', () => popups++);
+    ok(await page.evaluate(() => !document.querySelector('.live-top').hasAttribute('href')), pg.slug + ': text link still has an address');
+    const from = await page.evaluate(() => { const r = document.querySelector('.live-top').getBoundingClientRect(); return { x: r.left, y: r.top, right: r.right }; });
+    await page.click('.live-top'); await sleep(250);
+    // the text flies: a ghost exists while it travels
+    await page.click('.live-top', { button: 'middle', force: true, timeout: 500 }).catch(() => {});
+    await sleep(2600);
+    ok(popups === 0, pg.slug + ': clicking the text link opened ' + popups + ' new page(s)');
+    const st = await page.evaluate(() => { const d = document.querySelector('.dock'), b = d.querySelector('.btn').getBoundingClientRect(); return { y: scrollY, on: d.classList.contains('on'), op: getComputedStyle(d.querySelector('.btn')).opacity, vis: getComputedStyle(d).visibility, right: b.right, top: b.top, h: innerHeight, textVis: getComputedStyle(document.querySelector('.live-top')).visibility, ghost: !!document.querySelector('.live-ghost'), arrow: getComputedStyle(document.querySelector('.live-top i')).animationName, dockLinks: d.querySelectorAll('a').length, href: d.querySelector('.btn').href }; });
+    ok(st.y > 100, pg.slug + ': page did not scroll (scrollY ' + st.y + ')');
+    ok(st.on && st.vis === 'visible' && st.op === '1', pg.slug + ': pink button not shown in place');
+    ok(st.textVis === 'hidden' && !st.ghost, pg.slug + ': text link still visible or ghost left over');
+    ok(st.dockLinks === 1, pg.slug + ': dock has ' + st.dockLinks + ' links (expected only the pink button)');
+    ok(st.href.replace(/\/$/, '') === pg.live, pg.slug + ': pink button points to ' + st.href);
+    ok(popups === 0, pg.slug + ': new page before the pink button was clicked');
+    const [pop] = await Promise.all([page.ctx.waitForEvent('page'), page.click('.dock .btn')]);
+    ok(pop.url().replace(/\/$/, '') === pg.live, pg.slug + ': pink button opened ' + pop.url());
+    ok(page.errors.length === 0, pg.slug + ' console: ' + page.errors.join(' | '));
+    await page.ctx.close();
+  }
+});
+
 test('project: line locks at the footer and hides; pins drawn; recordings load only near the viewport', async () => {
   const page = await newPage();
   await go(page, 'brennock.html'); await sleep(1800);
@@ -319,6 +346,41 @@ test('navigation: every project page opens at the top (Work card, Next project, 
   ok((await page.evaluate(() => window.__bad)).length === 0, 'page was visible away from the top after back/forward');
   ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
   await page.ctx.close();
+});
+
+test('reload: every kind of page starts at the top', async () => {
+  for (const f of ['index', 'work', 'about', 'brennock', 'midland']) {
+    const page = await newPage();
+    await go(page, f + '.html'); await sleep(2200);
+    if (/brennock|midland/.test(f)) { await wheel(page, 200); await sleep(1500); }
+    await page.evaluate(() => window.scrollTo(0, 1800)); await sleep(500);
+    ok(await page.evaluate(() => scrollY) > 1000, f + ': could not scroll down for the test');
+    await page.reload(); await sleep(2500);
+    ok(await page.evaluate(() => scrollY) === 0, f + ': reload kept scrollY ' + await page.evaluate(() => scrollY));
+    await page.ctx.close();
+  }
+});
+
+test('back: returns to the card the visitor came from (homepage grid, Work, Work with a filter)', async () => {
+  const cases = [['index.html', 'garvey', null], ['work.html', 'midland', null], ['work.html', 'tierney', 'site']];
+  for (const [file, slug, filter] of cases) {
+    const page = await newPage();
+    await go(page, file); await sleep(1800);
+    if (filter) { await page.click(`.filters button[data-f="${filter}"]`); await sleep(300); }
+    const card = page.locator(`a.card[href="${slug}.html"]`).first();
+    await card.evaluate((c) => c.scrollIntoView({ block: 'center' })); await sleep(500);
+    const before = { y: await page.evaluate(() => scrollY), top: await card.evaluate((c) => c.getBoundingClientRect().top) };
+    ok(before.y > 500, file + ': card was not below the fold');
+    await card.click();
+    await page.waitForURL(new RegExp(slug + '\\.html')); await sleep(1500);
+    await page.goBack(); await sleep(2200);
+    const after = { y: await page.evaluate(() => scrollY), top: await page.locator(`a.card[href="${slug}.html"]`).first().evaluate((c) => c.getBoundingClientRect().top) };
+    near(after.y, before.y, 3, `${file} ${slug}${filter ? ' (' + filter + ')' : ''}: scrollY after Back`);
+    near(after.top, before.top, 3, `${file} ${slug}: card position after Back`);
+    if (filter) ok(await page.evaluate((f) => document.querySelector(`.filters button[data-f="${f}"]`).getAttribute('aria-pressed') === 'true', filter), 'filter lost after Back');
+    ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+    await page.ctx.close();
+  }
 });
 
 /* ---------------------------------------------------------------- about + KUS slot */

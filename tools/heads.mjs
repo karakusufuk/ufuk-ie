@@ -24,6 +24,7 @@ for (const [name, p] of Object.entries(pages)) {
   let html = fs.readFileSync(f, 'utf8');
   const had = html.includes('rel="canonical"');
   const icons = '<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest">';
+  if (!html.includes('src="nav.js"')) html = html.replace('<link rel="manifest" href="site.webmanifest">', '<link rel="manifest" href="site.webmanifest"><script src="nav.js"></script>');
   if (!html.includes('rel="icon"')) html = html.replace(/(<meta name="twitter:card"[^>]*>)/, `$1\n${icons}`);
   html = html.replace(/\n?<script type="application\/ld\+json">[\s\S]*?<\/script>/, '');
   if (name !== 'work') html = html.replace('<link rel="manifest" href="site.webmanifest">', `<link rel="manifest" href="site.webmanifest">\n<script type="application/ld+json">\n${JSON.stringify(ld, null, 2)}\n</script>`);

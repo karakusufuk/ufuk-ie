@@ -57,10 +57,14 @@
     dock.style.right = Math.max(16, innerWidth - r.right) + 'px';
   }
   addEventListener('resize', placeDock); addEventListener('load', placeDock); placeDock();
-  if (liveTop && dock) liveTop.addEventListener('click', function (e) {
+  /* the text link never leaves the page: it has no address, so no click, middle click or menu can open the live site;
+     only the pink button in the dock does */
+  function liveTopGo(e) {
     e.preventDefault(); user = true;
+    if (docked) return;
     var from = liveTop.getBoundingClientRect();
-    if (!opened) open(); else window.scrollBy({ top: innerHeight * 0.7, behavior: 'smooth' });
+    if (!opened) { open(); setTimeout(function () { window.scrollBy({ top: innerHeight * 0.7, behavior: 'smooth' }); }, 1100); }
+    else window.scrollBy({ top: innerHeight * 0.7, behavior: 'smooth' });
     placeDock(); docked = true;
     var btn = dock.querySelector('.btn'); dock.classList.add('on', 'arrive');
     var to = btn.getBoundingClientRect();
@@ -73,7 +77,12 @@
     }); });
     setTimeout(function () { btn.style.opacity = ''; }, 420);
     setTimeout(function () { ghost.remove(); dock.classList.remove('arrive'); }, 900);
-  });
+  }
+  if (liveTop && dock) {
+    liveTop.addEventListener('click', liveTopGo);
+    liveTop.addEventListener('auxclick', function (e) { e.preventDefault(); });
+    liveTop.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') liveTopGo(e); });
+  }
 
   /* ---------- the line ---------- */
   function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }

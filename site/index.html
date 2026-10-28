@@ -54,7 +54,7 @@
     }
   ]
 }
-</script>
+</script><script src="nav.js"></script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -392,7 +392,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
         <div class="opts"><span>Any adult passenger</span><span class="ok">A full licence holder of 2+ years</span><span>Nobody, if L-plates are on</span></div>
       </div></div></div><div class="card-meta"><h3>Passpad</h3></div></div>
       <a class="card" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Kenilworth Vets</h3></div></a>
-      <a class="card" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Midland Motors</h3></div></a>
+      <a class="card" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=6" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=6" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Midland Motors</h3></div></a>
     </div>
   </div>
 </section>
@@ -424,7 +424,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 <script>
 (function(){
   try{history.scrollRestoration='manual';}catch(e){}
-  function toTop(){ if(!location.hash) window.scrollTo(0,0); }
+  function toTop(){ if(!location.hash && !window.ufukBack) window.scrollTo(0,0); }
   toTop(); window.addEventListener('pageshow',toTop);
 
   /* ---------- hero video ---------- */

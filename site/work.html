@@ -8,7 +8,7 @@
 <meta property="og:title" content="Work · ufuk.ie"><meta property="og:description" content="Fifteen websites, apps and systems, each designed and built for one business and how it sells."><meta property="og:url" content="https://ufuk.ie/work.html">
 <meta property="og:image" content="https://ufuk.ie/img/og/work.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><script src="nav.js"></script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -220,7 +220,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     <a class="card" data-kind="site" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Kenilworth Vets</h2></div></a>
     <a class="card" data-kind="site" href="tierney.html"><div class="card-img"><img src="img/g_tierney.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Tierney</h2></div></a>
     <a class="card" data-kind="site" href="lear.html"><div class="card-img"><img src="img/g_lear.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Lear Residence</h2></div></a>
-    <a class="card" data-kind="site" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Midland Motors</h2></div></a>
+    <a class="card" data-kind="site" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=6" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=6" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Midland Motors</h2></div></a>
     <div class="card" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
         <div class="mid-top"><span>Master ID</span><span style="color:#C4577D">Q 7/10</span></div>
         <div class="q">Which river runs through the centre of Lisbon?</div>
@@ -246,7 +246,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 </section>
 <script>
 (function(){
-  try{history.scrollRestoration='manual';}catch(e){} window.scrollTo(0,0);
+  try{history.scrollRestoration='manual';}catch(e){} if(!window.ufukBack) window.scrollTo(0,0);
   var pool=document.getElementById('pool'), all=[].slice.call(pool.children), colL=document.querySelector('.col.l'), colR=document.querySelector('.col.r');
   var btns=[].slice.call(document.querySelectorAll('.filters button'));
   /* the visible cards are dealt into two columns again on every filter */
@@ -256,7 +256,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     vis.forEach(function(c,i){ (i%2?colR:colL).appendChild(c); });
     offset(); drift();
   }
-  btns.forEach(function(b){ b.addEventListener('click',function(){ btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); deal(b.dataset.f); }); });
+  btns.forEach(function(b){ b.addEventListener('click',function(){ btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); try{sessionStorage.setItem('ufuk-filter',b.dataset.f);}catch(e){} deal(b.dataset.f); }); });
   /* hover plays the site video from the start */
   all.forEach(function(card){
     var v=card.querySelector('video.hv'); if(!v) return; var t=0;
@@ -277,7 +277,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     colR.style.transform='translate3d(0,'+(-pad*p).toFixed(1)+'px,0)';
   }
   window.addEventListener('scroll',drift,{passive:true}); window.addEventListener('resize',function(){offset();drift();}); window.addEventListener('load',function(){offset();drift();});
-  deal('all');
+  var f0='all'; if(window.ufukBack){ try{ f0=sessionStorage.getItem('ufuk-filter')||'all'; }catch(e){} btns.forEach(function(x){x.setAttribute('aria-pressed',x.dataset.f===f0?'true':'false');}); }
+  deal(f0);
 })();
 </script>
 </body></html>

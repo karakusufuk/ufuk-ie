@@ -20,12 +20,12 @@
 <main>
 <section class="open" aria-label="Reilly Engineering">
   <div class="open-in"><div class="wrap"><h1><span>Reilly</span><span>Engineering</span></h1><p class="sum">A CNC machine dealer selling €100,000 decisions. The site starts from the part a buyer needs to make and stays with the machine for its whole working life.</p></div></div>
-  <div class="facts"><div class="wrap"><dl>
+  <div class="facts"><div class="wrap"><div class="facts-row"><dl>
     <div><dt>Sector</dt><dd>CNC machine distributor, Swords</dd></div>
     <div><dt>Role</dt><dd>Research, design and build</dd></div>
     <div><dt>Built with</dt><dd>HTML, CSS, JavaScript, Claude Code</dd></div>
-    <a class="live-top" href="https://reilly.ufuk.ie" target="_blank" rel="noopener">Visit the live site <i aria-hidden="true">↓</i></a>
-  </dl></div></div>
+  </dl>
+  <a class="live-top" href="https://reilly.ufuk.ie" target="_blank" rel="noopener">Visit the live site <i aria-hidden="true">↓</i></a></div></div></div>
 </section>
 
 <figure class="cover" style="margin:0 auto"><div class="frame" style="aspect-ratio:1440/900"><video data-src="img/d/reilly/strip.mp4?v=4" poster="img/d/reilly/strip.jpg?v=4" muted loop playsinline preload="none" aria-label=""></video></div></figure>
@@ -84,13 +84,13 @@
 </section>
 
 <section class="sec wrap"><h2>On the phone</h2>
-<div class="phones"><figure><div class="frame phone"><img src="img/d/reilly/m1.jpg?v=4" alt="" loading="lazy"></div><figcaption>Home</figcaption></figure><figure><div class="frame phone"><img src="img/d/reilly/m2.jpg?v=4" alt="" loading="lazy"></div><figcaption>A machine</figcaption></figure><figure><div class="frame phone"><img src="img/d/reilly/m3.jpg?v=4" alt="" loading="lazy"></div><figcaption>Parts</figcaption></figure></div>
+<div class="phones"><figure><div class="frame phone"><img src="img/d/reilly/m1.jpg?v=4" width="780" height="1688" alt="" loading="lazy"></div><figcaption>Home</figcaption></figure><figure><div class="frame phone"><img src="img/d/reilly/m2.jpg?v=4" width="780" height="1688" alt="" loading="lazy"></div><figcaption>A machine</figcaption></figure><figure><div class="frame phone"><img src="img/d/reilly/m3.jpg?v=4" width="780" height="1688" alt="" loading="lazy"></div><figcaption>Parts</figcaption></figure></div>
 </section>
 
 <section class="deep wrap"><h2>Behind it</h2><p class="lede">How a machine dealer’s site was turned around: from a catalogue of machines to a guide that starts from the work.</p><div class="deep-row"><h3>The problem</h3><div class="tx"><p>A CNC distributor sells six machines that each cost as much as a house, to engineers who will run them for twenty years. Their sites read like brochures from the manufacturer: a photo, a spec table, a contact form.</p><p>The real sale is long and technical, and most of the money comes after it: service, spare parts, upgrades and trade-ins. The site had to help a buyer narrow down the machine, and then keep being useful to the people already running one.</p></div></div><div class="deep-row"><h3>What others do, what I did</h3><div class="tx"><div class="vs"><div><p class="o">Machines grouped by brand, which means nothing to a buyer who knows the part, not the model.</p><p class="me">I added a switch that turns the machine strip into a strip of parts, each linked to the machines that make it.</p></div><div><p class="o">“Aerospace, Medical, Automotive” pages that repeat the same machines with new photos.</p><p class="me">I made sectors into tags on machines and parts, and gave the medical work one scene that shows the precision instead of claiming it.</p></div><div><p class="o">Demo forms that ask for drawings up front.</p><p class="me">I ended the pages on a phone number and a line about signing an NDA, because toolmakers do not send drawings to a dealer they have never met.</p></div><div><p class="o">The site stops at the sale.</p><p class="me">I gave every machine page a second view for owners, with service plans, spare parts and upgrades, where most of a dealer’s money is made.</p></div></div></div></div><div class="deep-row"><h3>What I left out</h3><div class="tx"><ul><li>A sector menu. Sectors appear as tags on machines and parts, and the medical work has its own scene.</li><li>Any upload or quote form. The demo section is a phone number, an address and a line about signing an NDA.</li><li>Underlines, small eyebrow labels and step numbers. They added noise to pages that are already dense with figures.</li></ul></div></div><div class="deep-row"><h3>How it is built</h3><div class="tx"><p>Plain HTML, CSS and JavaScript on GitHub Pages: six machine pages, six part families, used machines, service, about and contact, all generated from one data file so a spec only lives in one place.</p><ul><li><b>Machine strip.</b> The centre machine is a dead zone; the sides start a slow drift that speeds up near the edge, and it settles on the nearest machine when the pointer comes back.</li><li><b>Implant scene.</b> An SVG drawing pinned for the length of the section. The thread band is a masked copy of the implant body shifted by the thread pitch, so it looks like it turns.</li><li><b>Same data, two views.</b> The switch on each machine page swaps between two sets of the same record without reloading or moving the page.</li></ul></div></div></section>
 
 <section class="closing wrap"><p>Every screen above is a recording of the live site, not a mock-up.</p><a class="btn" href="https://reilly.ufuk.ie" target="_blank" rel="noopener">Visit the live site</a></section>
-<section class="next wrap" aria-label="Next project"><a href="bawn.html"><div><small>Next project</small><b>Bawn Growers</b><span>Mushroom grower, Co. Monaghan</span></div><div class="frame"><img src="img/d/bawn/hero.jpg" alt="" loading="lazy"></div></a></section>
+<section class="next wrap" aria-label="Next project"><a href="bawn.html"><div><small>Next project</small><b>Bawn Growers</b><span>Mushroom grower, Co. Monaghan</span></div><div class="frame"><img src="img/d/bawn/hero.jpg" width="1440" height="900" alt="" loading="lazy"></div></a></section>
 </main>
 
 <div class="end"><footer class="foot">

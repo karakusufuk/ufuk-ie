@@ -41,3 +41,11 @@
 - Screenshots (tools/shots.mjs now pins every loaded video to frame 0; source-vs-source control: 1 of 242 differ): identical except
   - specimen panels on brennock, bawn, kenilworth, midland, tierney, ashgrove: anti-aliasing differences of up to 60/255 on glyph edges (the npm font builds are not byte-identical to Google's subsets); invisible at 4x zoom.
   - homepage Brennock showcase (index-1, index-3): the paused video area renders with a per-pixel delta of up to 50/255 (mean colour unchanged to 0.4/255). It reproduces with only the font links swapped, and an identical layout box was measured. Cause not found; listed in questions.md.
+
+## Part 5 — done
+- `<img>` width/height: every `<img>` on all 14 pages now carries its real pixel size (`tools/imgsize.mjs`, called from build.mjs for project pages and run with `npm run imgsize` for index/work). Because images with a height attribute would otherwise lose auto height when `max-width` shrinks them, the base `img` rules (work.css, index.html, work.html) gained `height:auto`; rules that already set a height (`.frame>img`, `.card-img img`, `.show-frame img`) are more specific and unchanged.
+- Hero: measured with `tools/hero-timing.mjs` (Chrome, throttled): intro playing after 0.58 s median on 10 Mbit with the loop video preloading as today (A) vs 0.59 s with the loop held back (B); Fast 3G 3.6 s in both. No gain, so `hero-loop.mp4` keeps `preload="auto"`. All other videos untouched; `?v=` queries untouched.
+- Lighthouse (desktop, Chrome, local server; JSON in docs/lighthouse/): index 99/96/96/100, work 98/96/96/100, brennock 98/96/96/100 (Performance / Accessibility / Best Practices / SEO), CLS 0 on all.
+- Fixes without visible change: work.html card titles `h3` → `h2` (heading order; CSS selector updated); project pages: the "Visit the live site" link moved out of the `<dl>` into a `.facts-row` grid wrapper with `dl{display:contents}` (valid definition list, same layout).
+- Remaining items, by design and not changed: colour contrast of `#7a8398` small labels and the pink/“d” spans, and the favicon 404 console error (arrives in Part 8).
+- Screenshots: same set of differences as after Part 4 (nothing new).

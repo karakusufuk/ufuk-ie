@@ -29,9 +29,9 @@
 html,body{background:var(--ground)}
 body{margin:0;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
+img{display:block;max-width:100%;height:auto}
 h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance}
-.how h2,.work-head h2,.show:not(.dark) .show-text h2,.card-meta h3{color:var(--ink)}
+.how h2,.work-head h2,.show:not(.dark) .show-text h2,.card-meta h2{color:var(--ink)}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;height:100vh;min-height:620px;background:var(--ground)}
@@ -128,7 +128,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .card-img .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease;pointer-events:none}
 .card.hv-on .card-img .hv{opacity:1}
 .card-meta{grid-column:1;grid-row:1;display:flex;align-items:center;justify-content:center;min-height:0}
-.card-meta h3{writing-mode:vertical-rl;transform:rotate(180deg);font-size:19px;letter-spacing:-.02em;line-height:1;white-space:nowrap}
+.card-meta h2{writing-mode:vertical-rl;transform:rotate(180deg);font-size:19px;letter-spacing:-.02em;line-height:1;white-space:nowrap}
 
 .app-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#E6E9EF}
 .app-stage .phone{width:auto;height:150%;margin-top:42%;aspect-ratio:9/19.5;transition:transform 4s cubic-bezier(.25,.6,.3,1)}
@@ -207,33 +207,33 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 <section class="work" id="work" aria-label="All work">
   <div class="cols"><div class="col l"></div><div class="col r"></div></div>
   <div id="pool" hidden>
-        <a class="card" href="brennock.html" data-kind="site case"><div class="card-img"><img src="img/d/brennock/hero.jpg" alt="" loading="lazy"><video class="hv" src="img/d/brennock/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h3>Brennock Haulage</h3></div></a>
-    <a class="card" href="reilly.html" data-kind="site case"><div class="card-img"><img src="img/d/reilly/strip.jpg" alt="" loading="lazy"><video class="hv" src="img/d/reilly/strip.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h3>Reilly Engineering</h3></div></a>
-    <a class="card" data-kind="site case" href="bawn.html"><div class="card-img"><img src="img/g_bawn.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_bawn.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h3>Bawn Growers</h3></div></a>
-    <a class="card" href="index.html#kus" data-kind="app case"><div class="card-img"><div class="app-stage dark"><div class="phone"><div class="ph-top"><b>Roll call</b><span>Night shift · 22:00 · Aisle 4–12</span></div><div class="ph-body"><div class="ph-row"><span>Present</span><em class="ph-big">38</em></div><div class="ph-row"><span>A. Byrne</span><span class="pill g">In</span></div><div class="ph-row"><span>D. Silva</span><span class="pill r">Absent</span></div><div class="ph-row"><span>S. Kelly</span><span class="pill a">Late 12m</span></div></div></div></div><span class="tag">Case study</span></div><div class="card-meta"><h3>KUS</h3></div></a>
-    <a class="card" data-kind="site" href="garvey.html"><div class="card-img"><img src="img/g_garvey.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_garvey.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Garvey Lennon</h3></div></a>
-    <a class="card" data-kind="site" href="ashgrove.html"><div class="card-img"><img src="img/g_ashgrove.jpg?v=6" alt="" loading="lazy"><video class="hv" src="img/h_ashgrove.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Ashgrove House</h3></div></a>
-    <a class="card" data-kind="site" href="fennel.html"><div class="card-img"><img src="img/g_fennel.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_fennel.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Fennel Dental</h3></div></a>
-    <a class="card" data-kind="site" href="monument.html"><div class="card-img"><img src="img/g_monument.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_monument.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Monument</h3></div></a>
-    <a class="card" data-kind="site" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Kenilworth Vets</h3></div></a>
-    <a class="card" data-kind="site" href="tierney.html"><div class="card-img"><img src="img/g_tierney.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Tierney</h3></div></a>
-    <a class="card" data-kind="site" href="lear.html"><div class="card-img"><img src="img/g_lear.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Lear Residence</h3></div></a>
-    <a class="card" data-kind="site" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Midland Motors</h3></div></a>
+        <a class="card" href="brennock.html" data-kind="site case"><div class="card-img"><img src="img/d/brennock/hero.jpg" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/d/brennock/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Brennock Haulage</h2></div></a>
+    <a class="card" href="reilly.html" data-kind="site case"><div class="card-img"><img src="img/d/reilly/strip.jpg" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/d/reilly/strip.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Reilly Engineering</h2></div></a>
+    <a class="card" data-kind="site case" href="bawn.html"><div class="card-img"><img src="img/g_bawn.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_bawn.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Bawn Growers</h2></div></a>
+    <a class="card" href="index.html#kus" data-kind="app case"><div class="card-img"><div class="app-stage dark"><div class="phone"><div class="ph-top"><b>Roll call</b><span>Night shift · 22:00 · Aisle 4–12</span></div><div class="ph-body"><div class="ph-row"><span>Present</span><em class="ph-big">38</em></div><div class="ph-row"><span>A. Byrne</span><span class="pill g">In</span></div><div class="ph-row"><span>D. Silva</span><span class="pill r">Absent</span></div><div class="ph-row"><span>S. Kelly</span><span class="pill a">Late 12m</span></div></div></div></div><span class="tag">Case study</span></div><div class="card-meta"><h2>KUS</h2></div></a>
+    <a class="card" data-kind="site" href="garvey.html"><div class="card-img"><img src="img/g_garvey.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_garvey.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Garvey Lennon</h2></div></a>
+    <a class="card" data-kind="site" href="ashgrove.html"><div class="card-img"><img src="img/g_ashgrove.jpg?v=6" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_ashgrove.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Ashgrove House</h2></div></a>
+    <a class="card" data-kind="site" href="fennel.html"><div class="card-img"><img src="img/g_fennel.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_fennel.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Fennel Dental</h2></div></a>
+    <a class="card" data-kind="site" href="monument.html"><div class="card-img"><img src="img/g_monument.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_monument.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Monument</h2></div></a>
+    <a class="card" data-kind="site" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Kenilworth Vets</h2></div></a>
+    <a class="card" data-kind="site" href="tierney.html"><div class="card-img"><img src="img/g_tierney.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Tierney</h2></div></a>
+    <a class="card" data-kind="site" href="lear.html"><div class="card-img"><img src="img/g_lear.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Lear Residence</h2></div></a>
+    <a class="card" data-kind="site" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Midland Motors</h2></div></a>
     <div class="card" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
         <div class="mid-top"><span>Master ID</span><span style="color:#C4577D">Q 7/10</span></div>
         <div class="q">Which river runs through the centre of Lisbon?</div>
         <div class="opts"><span>Douro</span><span class="ok">Tagus</span><span>Guadiana</span><span>Mondego</span></div>
-      </div></div></div><div class="card-meta"><h3>Master ID</h3></div></div>
+      </div></div></div><div class="card-meta"><h2>Master ID</h2></div></div>
     <div class="card" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
         <div class="mid-top"><span>Match ID</span><span style="color:#4B3A9A">Level 12</span></div>
         <div class="q">Match each word to its pair</div>
         <div class="tiles"><span class="m">harbour</span><span class="m">port</span><span>swift</span><span class="d">calm</span><span>brave</span><span>quick</span><span class="d">still</span><span>bold</span></div>
-      </div></div></div><div class="card-meta"><h3>Match ID</h3></div></div>
+      </div></div></div><div class="card-meta"><h2>Match ID</h2></div></div>
     <div class="card" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
         <div class="mid-top"><span>Passpad</span><span style="color:#2F7D5B">Learner · 23/40</span></div>
         <div class="q">On a learner permit, who must sit in the front passenger seat?</div>
         <div class="opts"><span>Any adult passenger</span><span class="ok">A full licence holder of 2+ years</span><span>Nobody, if L-plates are on</span></div>
-      </div></div></div><div class="card-meta"><h3>Passpad</h3></div></div>
+      </div></div></div><div class="card-meta"><h2>Passpad</h2></div></div>
   </div>
 </section>
 </main>

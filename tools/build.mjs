@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pages } from './content.mjs';
+import { addSizes } from './imgsize.mjs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const sharp = require('sharp');
@@ -98,12 +99,12 @@ ${pg.fontLink ? `<link rel="stylesheet" href="fonts/p-${pg.slug}.css">\n` : ''}<
 <main>
 <section class="open" aria-label="${esc(pg.title)}">
   <div class="open-in"><div class="wrap"><h1>${pg.name.map((n) => `<span>${esc(n)}</span>`).join('')}</h1><p class="sum">${esc(pg.sum)}</p></div></div>
-  <div class="facts"><div class="wrap"><dl>
+  <div class="facts"><div class="wrap"><div class="facts-row"><dl>
     <div><dt>Sector</dt><dd>${esc(pg.facts.sector)}</dd></div>
     <div><dt>Role</dt><dd>${esc(pg.facts.role)}</dd></div>
     <div><dt>Built with</dt><dd>${esc(pg.facts.built)}</dd></div>
-    <a class="live-top" href="${pg.live}" target="_blank" rel="noopener">Visit the live site <i aria-hidden="true">↓</i></a>
-  </dl></div></div>
+  </dl>
+  <a class="live-top" href="${pg.live}" target="_blank" rel="noopener">Visit the live site <i aria-hidden="true">↓</i></a></div></div></div>
 </section>
 
 ${pg.sections.map((s) => section(s, pg.slug)).join('\n\n')}
@@ -123,6 +124,6 @@ ${deep(pg.deep)}
 <script src="work.js"></script>
 </body></html>
 `;
-  fs.writeFileSync(path.join(OUT, pg.slug + '.html'), html);
+  fs.writeFileSync(path.join(OUT, pg.slug + '.html'), await addSizes(html, path.resolve(MEDIA, '../..')));
   console.log('built', pg.slug);
 }

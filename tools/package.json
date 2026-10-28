@@ -12,7 +12,8 @@
     "heads": "node heads.mjs",
     "heads-check": "node heads-check.mjs",
     "fonts": "node fonts.mjs",
-    "net-check": "node net-check.mjs"
+    "net-check": "node net-check.mjs",
+    "imgsize": "node imgsize.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
@@ -33,6 +34,7 @@
     "@fontsource/manrope": "^5.3.0",
     "@fontsource/outfit": "^5.3.0",
     "@fontsource/rubik": "^5.3.0",
+    "lighthouse": "^13.6.0",
     "playwright": "^1.64.1"
   }
 }

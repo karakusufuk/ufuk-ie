@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ufuk Karakuş · Designer and developer · ufuk.ie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Geist:wght@400;500&display=swap">
+<style>
+/* Layout: gallery page — work fills the frame, the page itself stays quiet; asymmetric white gaps (top + left) recur in hero and showcases */
+:root{
+  --ground:#EEF1F5;      /* very light cool grey */
+  --panel:#FFFFFF;       /* card panel: pure white */
+  --ink:#1A2238;          /* navy-leaning fume: headings */
+  --ink-2:#4D5873;        /* one step lighter: body */
+  --pink:#F7D2DE;        /* the one pink (light) */
+  --pink-ink:var(--pink);
+  --night:#151C2E;
+  --f-display:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --f-body:'Geist','Helvetica Neue',Arial,sans-serif;
+  --gap:100px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ground)}
+body{margin:0;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance}
+.how h2,.work-head h2,.show:not(.dark) .show-text h2,.card-meta h3{color:var(--ink)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:100vh;min-height:620px;background:var(--ground)}
+.hero-stage{position:absolute;top:var(--gap);left:var(--gap);right:0;bottom:0;overflow:hidden;background:var(--night)}
+.hero-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter 3s cubic-bezier(.45,0,.55,1),transform 3s cubic-bezier(.45,0,.55,1)}
+.hero-stage #vloop{opacity:0}
+.hero-stage.loop #vloop{opacity:1}
+.hero-stage.loop #vid{opacity:0}
+.hero-stage.blur video{filter:blur(9px) brightness(.72);transform:scale(1.03)}
+.hero-title{opacity:0;transition:opacity .8s ease}.hero-stage.blur .hero-title{opacity:1}
+.hero-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:0 24px}
+.hero-title h1{color:var(--pink);font-size:clamp(40px,5.4vw,84px);line-height:.98;letter-spacing:-.035em;text-align:center}
+.hero-title h1{position:relative}
+.hero-title h1 .ln{display:block;white-space:pre}
+.hero-title h1 .ch{visibility:hidden}
+.hero-title h1 .ch.v{visibility:visible}
+.caret{position:absolute;left:0;top:0;width:.06em;min-width:3px;background:var(--pink);opacity:0;pointer-events:none}
+.caret.live{opacity:1}
+.caret.done{animation:blink 1s steps(1,end) 3 forwards}
+@keyframes blink{0%{opacity:1}50%{opacity:0}100%{opacity:0}}
+/* header that comes back when you scroll up */
+.bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:76px;z-index:40;background:var(--ground);display:flex;align-items:center;justify-content:space-between;
+  padding-left:max(var(--gap),env(safe-area-inset-left,0px));padding-right:max(var(--gap),env(safe-area-inset-right,0px));
+  transform:translateY(-110%);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.bar.on{transform:none}
+.bar .m{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+.bar nav{display:flex;gap:32px;font-size:16px}
+.bar nav a{color:var(--ink-2);transition:color .2s}.bar nav a:hover{color:var(--ink)}
+.hero-nav{position:absolute;top:0;right:var(--gap);height:var(--gap);display:flex;align-items:center;gap:32px;font-size:16px;z-index:3}
+.hero-nav a{color:var(--ink-2);transition:color .2s}.hero-nav a:hover{color:var(--ink)}
+.hero-mark{position:absolute;top:0;left:var(--gap);height:var(--gap);display:flex;align-items:center;font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+
+/* ---------- SHOWCASES ---------- */
+.show{position:relative}
+.show-pin{position:sticky;top:0;height:100vh;min-height:620px;display:grid;grid-template-columns:1fr 1fr;background:var(--ground);overflow:hidden}
+.show-text{padding:0 64px 0 var(--gap);display:flex;flex-direction:column;justify-content:center;gap:22px;min-width:0}
+.show-text h2{font-size:clamp(44px,4.6vw,76px);line-height:.95;letter-spacing:-.04em}
+.show-sector{font-size:17px;color:var(--ink-2)}
+.show-text p{margin:0;max-width:30em;font-size:19px;line-height:1.5;color:var(--ink-2)}
+.btn,.show-link{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;background:var(--pink);color:var(--night);font-family:var(--f-body);font-weight:500;font-size:17px;line-height:1.2;padding:16px 26px;border:0;cursor:pointer;white-space:nowrap;transition:background .25s,color .25s}
+.btn:hover,.show-link:hover{background:var(--night);color:#fff}
+.show.dark .show-link:hover,.contact .btn:hover{background:#fff;color:var(--night)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn:focus-visible,.show-link:focus-visible,.hero-nav a:focus-visible,.card:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
+.show-steps{display:flex;gap:8px;margin-top:6px}
+.show-steps i{width:28px;height:3px;background:#D5DAE2;transition:background .4s}
+.show-steps i.on{background:var(--ink)}
+.show-frame{position:relative;margin-top:var(--gap);margin-left:56px;overflow:hidden;background:#E4E8EE}
+.show-frame > *{position:absolute;inset:0;opacity:0;transition:opacity .7s ease,transform 1.4s cubic-bezier(.2,.7,.2,1);transform:scale(1.04)}
+.show-frame > .on{opacity:1;transform:scale(1)}
+.show-frame img,.show-frame video{width:100%;height:100%;object-fit:cover}
+.show-frame video.fit{object-fit:contain;background:#ECEEF0}
+.show-frame video.band{background:#2A332E}
+.show-frame video.sq{background:var(--ground)}
+.show-frame:has(video.sq.on){background:var(--ground)}
+
+/* KUS screens */
+.kus-stage{display:flex;align-items:center;justify-content:center;gap:28px;background:#E2E6EC}
+.phone{width:min(300px,30%);aspect-ratio:9/19.5;background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;font-size:12px;color:#1C2330;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.phone.mid{width:min(330px,34%)}
+.ph-top{background:#1E3A5F;color:#fff;padding:22px 16px 14px;display:flex;flex-direction:column;gap:4px}
+.ph-top b{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.01em}
+.ph-top span{opacity:.75;font-size:11px}
+.ph-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.ph-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#F2F4F7;border-radius:10px}
+.ph-row em{font-style:normal;font-weight:600}
+.pill{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600}
+.pill.g{background:#DDF3E4;color:#1F7A44}.pill.a{background:#FFF0D6;color:#8A5A00}.pill.r{background:#FBE1E1;color:#A23030}
+.ph-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
+.ph-cal span{padding:7px 0;border-radius:7px;background:#F2F4F7}
+.ph-cal span.x{background:#1E3A5F;color:#fff}.ph-cal span.f{background:#FBE1E1;color:#A23030}.ph-cal span.h{color:#9AA3B2;background:none}
+.ph-btn{margin-top:auto;background:#1E3A5F;color:#fff;text-align:center;padding:12px;border-radius:10px;font-weight:600}
+.ph-big{font-family:var(--f-display);font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1;color:#1E3A5F}
+.ph-bar{height:8px;border-radius:8px;background:#E6E9EE;overflow:hidden}.ph-bar i{display:block;height:100%;background:#2F7D5B}
+
+/* ---------- WORK GRID ---------- */
+.work{padding:160px var(--gap) 120px}
+.work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:72px}
+.work-head h2{font-size:clamp(44px,4.6vw,76px);line-height:.95;letter-spacing:-.04em}
+.work-head p{margin:0;max-width:22em;color:var(--ink-2);font-size:19px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:96px;align-items:start;max-width:1200px;margin:0 auto}
+.col{display:flex;flex-direction:column;gap:56px;min-width:0}
+
+.card{background:var(--panel);padding:14px 14px 14px 0;display:grid;grid-template-columns:52px minmax(0,1fr);transition:background .3s}
+.card:hover{background:#fff}
+/* dark showcase (middle one) */
+.show.dark .show-pin{background:var(--night);color:#EEF0F4}
+.show.dark .show-sector{color:#9AA2B1}
+.show.dark .show-text p{color:#D9DDE5}
+.show.dark .show-steps i{background:#2A303B}
+.show.dark .show-steps i.on{background:var(--pink)}
+.show.dark .show-frame,.show.dark .kus-stage{background:#1A1F28}
+.card-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#E4E8EE;grid-column:2;grid-row:1}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform 4s cubic-bezier(.25,.6,.3,1)}
+
+.card-img .hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease;pointer-events:none}
+.card.hv-on .card-img .hv{opacity:1}
+.card-meta{grid-column:1;grid-row:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.card-meta h3{writing-mode:vertical-rl;transform:rotate(180deg);font-size:19px;letter-spacing:-.02em;line-height:1;white-space:nowrap}
+
+.app-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#E6E9EF}
+.app-stage .phone{width:auto;height:150%;margin-top:42%;aspect-ratio:9/19.5;transition:transform 4s cubic-bezier(.25,.6,.3,1)}
+.card:hover .app-stage .phone{transform:translateY(-3%)}
+.mid-top{padding:26px 16px 10px;display:flex;justify-content:space-between;font-weight:600}
+.q{font-family:var(--f-display);font-size:17px;font-weight:600;line-height:1.2;letter-spacing:-.01em;padding:6px 16px 14px}
+.opts{display:flex;flex-direction:column;gap:7px;padding:0 14px}
+.opts span{padding:10px 12px;border-radius:10px;background:#F2F4F7}
+.opts span.ok{background:#DDF3E4;color:#1F7A44;font-weight:600}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:8px 14px}
+.tiles span{padding:14px 6px;border-radius:10px;background:#F2F4F7;text-align:center;font-weight:600}
+.tiles span.m{background:#E7E0FA;color:#4B3A9A}.tiles span.d{opacity:.35}
+
+/* ---------- HOW I WORK ---------- */
+.how{padding:120px var(--gap);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:96px;align-items:center}
+.portrait{aspect-ratio:4/5;background:linear-gradient(180deg,#E7EAF0 0%,#DCE1E8 100%);position:relative;overflow:hidden}
+.portrait::after{content:"";position:absolute;left:50%;bottom:-6%;width:66%;aspect-ratio:1/1.15;transform:translateX(-50%);border-radius:48% 48% 0 0/38% 38% 0 0;background:#CDD3DC}
+.portrait::before{content:"";position:absolute;left:50%;top:22%;width:30%;aspect-ratio:1/1.2;transform:translateX(-50%);border-radius:50%;background:#CDD3DC;z-index:1}
+.how h2{font-size:clamp(44px,4.6vw,76px);line-height:.95;letter-spacing:-.04em;margin-bottom:56px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:40px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 24px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--f-display);font-weight:600;font-size:44px;line-height:1;color:var(--pink);grid-row:span 2}
+.steps b{font-family:var(--f-display);font-weight:600;font-size:26px;letter-spacing:-.02em;line-height:1.15}
+.steps p{margin:0;color:var(--ink-2);max-width:32em;font-size:18px}
+.how-more{margin-top:48px}
+
+/* ---------- CONTACT ---------- */
+.contact{margin-left:var(--gap);background:var(--night);color:#EEF0F4;padding:140px var(--gap) 56px;display:flex;flex-direction:column;gap:48px}
+.contact h2{font-size:clamp(52px,7vw,120px);line-height:.92;letter-spacing:-.045em;color:var(--pink);max-width:12ch}
+.contact-row{display:flex;flex-wrap:wrap;gap:28px;align-items:center}
+.contact-mail{font-size:20px;user-select:all;cursor:text}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-top:96px;color:#8D95A3;font-size:15px}
+
+@media (max-width:900px){
+  :root{--gap:24px}
+  .show-pin{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .show-text{padding:48px 24px 24px}
+  .show-frame{margin:0 0 0 24px}
+  .cols,.how{grid-template-columns:1fr}
+  .col.r{padding-top:0!important}
+  .cols{max-width:none}
+  .work,.how{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .work-head{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<!-- HERO -->
+<header class="bar" id="bar"><a class="m" href="#top">ufuk.ie</a><nav aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="#contact">Contact</a></nav></header>
+<section class="hero" id="top" aria-label="Intro">
+  <div class="hero-mark">ufuk.ie</div>
+  <nav class="hero-nav" aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="#contact">Contact</a></nav>
+  <div class="hero-stage" id="stage">
+    <video id="vid" src="img/hero-intro.mp4?v=3" autoplay muted playsinline preload="auto"></video>
+    <video id="vloop" src="img/hero-loop.mp4?v=3" muted loop playsinline preload="auto"></video>
+    <div class="hero-title"><h1 id="headline" aria-label="You know your business. I know what it needs online."><span class="ln" aria-hidden="true">You know your business.</span><span class="ln" aria-hidden="true">I know what it needs online.</span><i class="caret" aria-hidden="true"></i></h1></div>
+  </div>
+</section>
+
+<!-- SHOWCASE 1 -->
+<section class="show" data-frames="3" data-steps="0,0,1" data-play="0:-,1:play,2:play" aria-label="Brennock Haulage">
+  <div class="show-pin">
+    <div class="show-text">
+      <h2>Brennock Haulage</h2>
+      <p>A ten-truck haulier that used to win work by phone. Buyers now see the real fleet, check the certificates for their load and request a quote in two minutes, and drivers apply straight from the careers page.</p>
+      <div class="show-steps"><i></i><i></i><i></i></div>
+      <a class="show-link" href="brennock.html">See the case study</a>
+    </div>
+    <div class="show-frame">
+      <video class="fit sq" src="img/sc/brennock-1.mp4" poster="img/sc/brennock-1.jpg" muted playsinline preload="auto" aria-label="Brennock homepage: the truck arrives at the dock"></video>
+      <video class="fit band" src="img/sc/brennock-2.mp4?v=3" poster="img/sc/brennock-2.jpg?v=3" muted loop playsinline preload="auto" aria-label="Brennock homepage: the sectors band drifts across"></video>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE 2: KUS -->
+<section class="show dark" id="kus" data-frames="3" aria-label="KUS">
+  <div class="show-pin">
+    <div class="show-text">
+      <h2>KUS</h2>
+      <div class="show-sector">Internal software · Distribution warehouse</div>
+      <p>Rosters, roll call, holiday booking and training for a 150-person warehouse floor. Designed on the floor by someone who works it, used by real staff every shift.</p>
+      <div class="show-steps"><i></i><i></i><i></i></div>
+      <a class="show-link" href="#how">How it was made</a>
+    </div>
+    <div class="show-frame">
+      <div class="kus-stage">
+        <div class="phone">
+          <div class="ph-top"><b>My roster</b><span>Week 44 · Chilled picking</span></div>
+          <div class="ph-body">
+            <div class="ph-row"><span>Mon 27</span><em>06:00 – 14:30</em></div>
+            <div class="ph-row"><span>Tue 28</span><em>06:00 – 14:30</em></div>
+            <div class="ph-row"><span>Wed 29</span><em>14:00 – 22:30</em></div>
+            <div class="ph-row"><span>Thu 30</span><span class="pill a">Holiday</span></div>
+            <div class="ph-row"><span>Fri 31</span><span class="pill a">Holiday</span></div>
+            <div class="ph-row"><span>Sat 1</span><em>Off</em></div>
+          </div>
+        </div>
+        <div class="phone mid">
+          <div class="ph-top"><b>Roll call</b><span>Night shift · 22:00 · Aisle 4–12</span></div>
+          <div class="ph-body">
+            <div class="ph-row"><span>Present</span><em class="ph-big">38</em></div>
+            <div class="ph-row"><span>A. Byrne</span><span class="pill g">In</span></div>
+            <div class="ph-row"><span>K. Nowak</span><span class="pill g">In</span></div>
+            <div class="ph-row"><span>D. Silva</span><span class="pill r">Absent</span></div>
+            <div class="ph-row"><span>S. Kelly</span><span class="pill a">Late 12m</span></div>
+            <div class="ph-row"><span>M. Rossi</span><span class="pill g">In</span></div>
+            <div class="ph-btn">Submit roll call</div>
+          </div>
+        </div>
+      </div>
+      <div class="kus-stage">
+        <div class="phone mid">
+          <div class="ph-top"><b>Holiday booking</b><span>November · Max 5 off per day</span></div>
+          <div class="ph-body">
+            <div class="ph-cal">
+              <span class="h">M</span><span class="h">T</span><span class="h">W</span><span class="h">T</span><span class="h">F</span><span class="h">S</span><span class="h">S</span>
+              <span>3</span><span>4</span><span>5</span><span>6</span><span class="f">7</span><span>8</span><span>9</span>
+              <span>10</span><span class="x">11</span><span class="x">12</span><span class="x">13</span><span>14</span><span>15</span><span>16</span>
+              <span>17</span><span>18</span><span class="f">19</span><span class="f">20</span><span>21</span><span>22</span><span>23</span>
+              <span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+            </div>
+            <div class="ph-row"><span>11–13 Nov</span><span class="pill g">3 days free</span></div>
+            <div class="ph-row"><span>19–20 Nov</span><span class="pill r">Full</span></div>
+            <div class="ph-btn">Request 11–13 Nov</div>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="ph-top"><b>Requests</b><span>Team lead · 6 waiting</span></div>
+          <div class="ph-body">
+            <div class="ph-row"><span>Holiday · J. Walsh</span><span class="pill a">Review</span></div>
+            <div class="ph-row"><span>Uniform · size L</span><span class="pill g">Sent</span></div>
+            <div class="ph-row"><span>Work letter</span><span class="pill g">Ready</span></div>
+            <div class="ph-row"><span>Payslip query</span><span class="pill a">Open</span></div>
+            <div class="ph-row"><span>Holiday · P. Lynch</span><span class="pill r">Declined</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="kus-stage">
+        <div class="phone mid">
+          <div class="ph-top"><b>Training</b><span>New starter · Chilled picking</span></div>
+          <div class="ph-body">
+            <div class="ph-row"><span>Safe lifting</span><span class="pill g">Passed</span></div>
+            <div class="ph-row"><span>Pallet build</span><span class="pill g">Passed</span></div>
+            <div class="ph-row"><span>Damage &amp; claims</span><span class="pill a">In progress</span></div>
+            <div class="ph-bar"><i style="width:68%"></i></div>
+            <div class="ph-row"><span>Voice picking</span><span class="pill r">Locked</span></div>
+            <div class="ph-row"><span>Final test</span><span class="pill r">Locked</span></div>
+            <div class="ph-btn">Continue lesson 3</div>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="ph-top"><b>This week</b><span>Performance · Picker 2214</span></div>
+          <div class="ph-body">
+            <div class="ph-row"><span>Cases picked</span><em>4,862</em></div>
+            <div class="ph-row"><span>BSI score</span><em>104%</em></div>
+            <div class="ph-row"><span>Errors</span><em>2</em></div>
+            <div class="ph-row"><span>Announcements</span><span class="pill a">1 new</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE 3 -->
+<section class="show" data-frames="1" aria-label="Reilly Engineering">
+  <div class="show-pin">
+    <div class="show-text">
+      <h2>Reilly Engineering</h2>
+      <div class="show-sector">CNC machines · Swords</div>
+      <p>Six machines, every part they can make, and the service that follows them for twenty years. A distributor site built for €100,000 decisions.</p>
+      <a class="show-link" href="reilly.html">See the case study</a>
+    </div>
+    <div class="show-frame">
+      <video class="fit" src="img/sc/reilly-1.mp4" poster="img/sc/reilly-1.jpg" muted loop playsinline preload="auto" aria-label="Reilly Engineering: four stages of the service life"></video>
+    </div>
+  </div>
+</section>
+
+<!-- WORK GRID -->
+<section class="work" id="work" aria-label="More work">
+  <div class="work-head">
+    <h2>More work</h2>
+    <p>Websites and apps, each made for one business and how it sells.</p>
+  </div>
+  <div class="cols">
+    <div class="col l">
+      <a class="card" href="garvey.html"><div class="card-img"><img src="img/g_garvey.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_garvey.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Garvey Lennon</h3></div></a>
+      <a class="card" href="ashgrove.html"><div class="card-img"><img src="img/g_ashgrove.jpg?v=6" alt="" loading="lazy"><video class="hv" src="img/h_ashgrove.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Ashgrove House</h3></div></a>
+      <a class="card" href="fennel.html"><div class="card-img"><img src="img/g_fennel.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_fennel.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Fennel Dental</h3></div></a>
+      <div class="card"><div class="card-img"><div class="app-stage"><div class="phone">
+        <div class="mid-top"><span>Master ID</span><span style="color:#C4577D">Q 7/10</span></div>
+        <div class="q">Which river runs through the centre of Lisbon?</div>
+        <div class="opts"><span>Douro</span><span class="ok">Tagus</span><span>Guadiana</span><span>Mondego</span></div>
+      </div></div></div><div class="card-meta"><h3>Master ID</h3></div></div>
+      <a class="card" href="monument.html"><div class="card-img"><img src="img/g_monument.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_monument.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Monument</h3></div></a>
+      <div class="card"><div class="card-img"><div class="app-stage"><div class="phone">
+        <div class="mid-top"><span>Match ID</span><span style="color:#4B3A9A">Level 12</span></div>
+        <div class="q">Match each word to its pair</div>
+        <div class="tiles"><span class="m">harbour</span><span class="m">port</span><span>swift</span><span class="d">calm</span><span>brave</span><span>quick</span><span class="d">still</span><span>bold</span></div>
+      </div></div></div><div class="card-meta"><h3>Match ID</h3></div></div>
+    </div>
+    <div class="col r">
+      <a class="card" href="bawn.html"><div class="card-img"><img src="img/g_bawn.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_bawn.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Bawn Growers</h3></div></a>
+      <a class="card" href="tierney.html"><div class="card-img"><img src="img/g_tierney.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Tierney</h3></div></a>
+      <a class="card" href="lear.html"><div class="card-img"><img src="img/g_lear.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Lear Residence</h3></div></a>
+      <div class="card"><div class="card-img"><div class="app-stage"><div class="phone">
+        <div class="mid-top"><span>Passpad</span><span style="color:#2F7D5B">Learner · 23/40</span></div>
+        <div class="q">On a learner permit, who must sit in the front passenger seat?</div>
+        <div class="opts"><span>Any adult passenger</span><span class="ok">A full licence holder of 2+ years</span><span>Nobody, if L-plates are on</span></div>
+      </div></div></div><div class="card-meta"><h3>Passpad</h3></div></div>
+      <a class="card" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Kenilworth Vets</h3></div></a>
+      <a class="card" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=5" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Midland Motors</h3></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW I WORK -->
+<section class="how" id="how" aria-label="How I work">
+  <div class="portrait" role="img" aria-label="Portrait of Ufuk"></div>
+  <div>
+    <h2>How I work</h2>
+    <ol class="steps">
+      <li><b>I listen to your business.</b><p>How you sell, who buys from you, and what slows your team down every day.</p></li>
+      <li><b>I look at the world around it.</b><p>What works in your sector in other countries, and what your competitors still get wrong.</p></li>
+      <li><b>I design it and build it myself.</b><p>One solution made for you, from the first sketch to the day it goes live. No hand-offs in between.</p></li>
+    </ol>
+    <a class="btn how-more" href="about.html">More about me</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact" aria-label="Contact">
+  <h2>Tell me about your business.</h2>
+  <div class="contact-row">
+    <a class="btn" href="https://wa.me/353832079387?text=Hi%20Ufuk%2C%20I%20found%20you%20on%20ufuk.ie." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.76 4.88-1.28A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-2.9.76.78-2.83-.2-.3A8.2 8.2 0 1 1 12 20.2z"/><path fill="currentColor" d="M16.6 14.1c-.25-.13-1.48-.73-1.7-.81-.23-.08-.4-.13-.56.12-.17.25-.65.81-.8.98-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.43 1.03 2.6.12.16 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.48-.6 1.69-1.19.21-.58.21-1.08.15-1.19-.06-.1-.23-.17-.48-.29z"/></svg>Chat on WhatsApp</a>
+    <span class="contact-mail">hello@ufuk.ie</span>
+  </div>
+  <div class="foot"><span>Ufuk Karakuş · Designer and developer · Ireland</span><span>© 2026 ufuk.ie</span></div>
+</section>
+
+<script>
+(function(){
+  try{history.scrollRestoration='manual';}catch(e){}
+  function toTop(){ if(!location.hash) window.scrollTo(0,0); }
+  toTop(); window.addEventListener('pageshow',toTop);
+
+  /* ---------- hero video ---------- */
+  var vid=document.getElementById('vid'), vloop=document.getElementById('vloop'), stage=document.getElementById('stage');
+  if(vid.play) vid.play().catch(function(){});
+  var heroDone=false;
+  function toLoop(){ if(heroDone) return; heroDone=true; try{vloop.currentTime=0;}catch(e){} var p=vloop.play(); if(p&&p.catch)p.catch(function(){}); stage.classList.add('loop'); requestAnimationFrame(function(){ requestAnimationFrame(function(){ stage.classList.add('blur'); }); }); setTimeout(function(){window.dispatchEvent(new Event('herotype'));},3000); }
+  vid.addEventListener('ended',toLoop);
+  setTimeout(function(){ if(!heroDone && (vid.paused || vid.readyState<2)) toLoop(); },14500);
+
+  /* ---------- headline: typed on every visit ---------- */
+  (function(){
+    var h=document.getElementById('headline'), caret=h.querySelector('.caret'), lines=[].slice.call(h.querySelectorAll('.ln'));
+    var chars=lines.map(function(ln){var t=ln.textContent;ln.textContent='';return t.split('').map(function(c){var s=document.createElement('span');s.className='ch';s.textContent=c;ln.appendChild(s);return s;});});
+    var total=chars[0].length+chars[1].length, typed=0, best=0;
+    function depth(){}
+    function all(){chars.forEach(function(l){l.forEach(function(c){c.classList.add('v');});});typed=total;depth();}
+    /* key script: [delay ms, line, slot, text] ; text null = delete that slot */
+    var K=[], L1='You know your business.', L2='I know what it needs online.';
+    var r1=[260,95,70,120,85,60,115,75,150];
+    for(var i=0;i<9;i++)K.push([r1[i],0,i,L1[i]]);
+    K.push([95,0,9,'t'],[80,0,10,'o'],[70,0,11,'u']);           /* slip: t instead of y */
+    K.push([400,0,11,null],[75,0,10,null],[75,0,9,null]);
+    K.push([160,0,9,'y'],[85,0,10,'o'],[75,0,11,'u'],[420,0,12,'r'],[95,0,13,' ']);
+    var r2=[110,70,95,60,85,120,65,90,140];
+    for(i=14;i<L1.length;i++)K.push([r2[(i-14)%r2.length],0,i,L1[i]]);
+    K.push([340,1,0,L2[0]]);                                     /* enter */
+    var r3=[90,70,110,65,80,95,60,130,75,85,70,100,60,90,75,85,105,70,95];
+    for(i=1;i<20;i++)K.push([i===6?560:r3[(i-1)%r3.length],1,i,L2[i]]);
+    K.push([110,1,20,' '],[620,1,21,'o']);                       /* "needs" … "online" */
+    for(i=22;i<L2.length;i++)K.push([r2[(i-22)%r2.length],1,i,L2[i]]);
+    var pos={l:0,i:0};
+    function place(){
+      var hr=h.getBoundingClientRect(), row=chars[pos.l], x, sr;
+      if(pos.i>0){sr=row[pos.i-1].getBoundingClientRect();x=sr.right;}else{sr=row[0].getBoundingClientRect();x=sr.left;}
+      caret.style.height=sr.height*0.82+'px';
+      caret.style.transform='translate('+(x-hr.left+2)+'px,'+(sr.top-hr.top+sr.height*0.1)+'px)';
+    }
+    var k=0;
+    function next(){
+      if(k>=K.length){caret.classList.add('done');return;}
+      var s=K[k++];
+      var d=s[0]<200?s[0]*1.15:s[0]*1.6;
+      setTimeout(function(){
+        var el=chars[s[1]][s[2]];
+        if(s[3]===null){el.classList.remove('v');el.textContent=(s[1]?L2:L1)[s[2]];typed--;pos={l:s[1],i:s[2]};}
+        else{el.textContent=s[3];el.classList.add('v');typed++;pos={l:s[1],i:s[2]+1};}
+        depth();place();next();
+      },d);
+    }
+    function go(){place();caret.classList.add('live');setTimeout(next,500);}
+    addEventListener('resize',function(){if(caret.classList.contains('live'))place();});
+    var started=false;function once(){if(!started){started=true;go();}}
+    addEventListener('herotype',once);
+  })();
+
+  /* ---------- header returns when scrolling up past the hero ---------- */
+  (function(){
+    var bar=document.getElementById('bar'), hero=document.querySelector('.hero'), last=scrollY;
+    addEventListener('scroll',function(){
+      var y=scrollY, past=y>hero.offsetHeight*0.9;
+      if(!past||y>last+2)bar.classList.remove('on');
+      else if(y<last-2)bar.classList.add('on');
+      last=y;
+    },{passive:true});
+  })();
+
+  /* ---------- showcases: one scroll gesture shows one new step and nothing else; the page only moves on after the last step ---------- */
+  var shows=[].slice.call(document.querySelectorAll('.show'));
+  var wide=function(){ return window.innerWidth>900; };
+  shows.forEach(function(s){
+    s._frames=[].slice.call(s.querySelectorAll('.show-frame > *'));
+    s._dots=[].slice.call(s.querySelectorAll('.show-steps i'));
+    var n=+s.dataset.frames;
+    s._map=(s.dataset.steps||'').split(',').filter(Boolean).map(Number); if(!s._map.length){ s._map=[]; for(var i=0;i<n;i++) s._map.push(i); }
+    s._play={}; (s.dataset.play||'').split(',').filter(Boolean).forEach(function(x){ var kv=x.split(':'); s._play[kv[0]]=kv[1]; });
+    s._max=s._map.length-1; s._step=-1;
+  });
+  function setStep(s,i){
+    if(s._step===i) return; s._step=i;
+    var fi=s._map[i];
+    s._frames.forEach(function(f,j){
+      var on=j===fi; f.classList.toggle('on',on);
+      if(f.tagName==='VIDEO'){
+        if(!on){ f.pause(); return; }
+        var mode=s._play[i]||'play';
+        if(mode==='-'){ f.pause(); try{f.currentTime=0;}catch(e){} }
+        else { if(i===0||s._map[i-1]!==fi){ try{f.currentTime=0;}catch(e){} } var p=f.play(); if(p&&p.catch)p.catch(function(){}); }
+      }
+    });
+    s._dots.forEach(function(d,j){d.classList.toggle('on',j<=i);});
+  }
+  function layout(){
+    shows.forEach(function(s){
+      if(wide()){ s.style.height='100vh'; }
+      else { s.style.height=((s._max+1)*100+40)+'vh'; }
+    });
+  }
+  layout(); shows.forEach(function(s){ setStep(s,0); });
+  /* phones and tablets: the steps follow the scroll through a taller section */
+  function onScroll(){
+    if(wide()) return;
+    var vh=window.innerHeight;
+    shows.forEach(function(s){
+      var r=s.getBoundingClientRect(), prog=(-r.top)/(s.offsetHeight-vh); prog=Math.max(0,Math.min(0.9999,prog));
+      setStep(s,Math.floor(prog*(s._max+1)));
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){layout();onScroll();});
+  /* desktop: wheel gestures are read one at a time */
+  var lastWheel=0, busyUntil=0;
+  function snapTo(s){ window.scrollTo({top:s.getBoundingClientRect().top+window.scrollY,behavior:'smooth'}); }
+  window.addEventListener('wheel',function(e){
+    if(!wide()||e.ctrlKey) return;
+    var now=performance.now(), fresh=now-lastWheel>200; lastWheel=now;
+    var dir=e.deltaY>0?1:e.deltaY<0?-1:0; if(!dir) return;
+    var vh=window.innerHeight;
+    for(var k=0;k<shows.length;k++){
+      var s=shows[k], top=s.getBoundingClientRect().top;
+      if(Math.abs(top)<3){
+        var can=dir>0? s._step<s._max : s._step>0;
+        if(can){ e.preventDefault(); if(fresh&&now>busyUntil){ setStep(s,s._step+dir); busyUntil=now+700; } return; }
+        if(now<busyUntil){ e.preventDefault(); return; }
+      } else if(dir>0 && top>0 && top<vh*0.92 && s._step<s._max){
+        e.preventDefault(); if(fresh&&now>busyUntil){ snapTo(s); busyUntil=now+850; } return;
+      } else if(dir<0 && top<0 && top>-vh*0.92 && s._step>0){
+        e.preventDefault(); if(fresh&&now>busyUntil){ snapTo(s); busyUntil=now+850; } return;
+      }
+    }
+  },{passive:false});
+  window.addEventListener('keydown',function(e){
+    if(!wide()) return; var dir=({ArrowDown:1,PageDown:1,' ':1,ArrowUp:-1,PageUp:-1})[e.key]; if(!dir) return;
+    for(var k=0;k<shows.length;k++){ var s=shows[k]; if(Math.abs(s.getBoundingClientRect().top)<3){ var can=dir>0? s._step<s._max : s._step>0; if(can){ e.preventDefault(); setStep(s,s._step+dir); } return; } }
+  });
+
+  /* ---------- grid: hover plays the site video from the start ---------- */
+  [].slice.call(document.querySelectorAll('.card')).forEach(function(card){
+    var v=card.querySelector('video.hv'); if(!v) return; var t=0;
+    card.addEventListener('mouseenter',function(){clearTimeout(t);try{v.currentTime=0;}catch(e){} var p=v.play(); if(p&&p.catch)p.catch(function(){}); card.classList.add('hv-on');});
+    card.addEventListener('mouseleave',function(){card.classList.remove('hv-on');t=setTimeout(function(){v.pause();},380);});
+  });
+
+  /* ---------- grid: hover videos load before the pointer gets there ---------- */
+  var hvs=[].slice.call(document.querySelectorAll('video.hv'));
+  function warm(v){ if(v._w) return; v._w=1; v.preload='auto'; try{v.load();}catch(e){} }
+  if('IntersectionObserver' in window){ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){warm(e.target);io.unobserve(e.target);}});},{rootMargin:'900px 0px'}); hvs.forEach(function(v){io.observe(v);}); }
+  else hvs.forEach(warm);
+  window.addEventListener('load',function(){setTimeout(function(){hvs.forEach(warm);},2500);});
+
+  /* ---------- grid: right column starts half a card lower ---------- */
+  var colR=document.querySelector('.col.r'), firstCard=document.querySelector('.col.l .card');
+  function offset(){ if(window.innerWidth>900){colR.style.paddingTop=(firstCard.offsetHeight/2)+'px';} else colR.style.paddingTop='0'; }
+  window.addEventListener('resize',offset); window.addEventListener('load',offset); offset();
+  var grid=document.querySelector('.cols');
+  function drift(){
+    if(window.innerWidth<=900){ colR.style.transform=''; return; }
+    var r=grid.getBoundingClientRect(), vh=window.innerHeight, pad=parseFloat(colR.style.paddingTop)||0;
+    var p=(vh-r.top)/(r.height+vh); p=Math.max(0,Math.min(1,p));
+    colR.style.transform='translate3d(0,'+(-pad*p).toFixed(1)+'px,0)';
+  }
+  window.addEventListener('scroll',drift,{passive:true}); window.addEventListener('resize',drift); drift();
+
+})();
+</script>
+
+</body></html>

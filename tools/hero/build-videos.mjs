@@ -26,10 +26,15 @@ function solidFrames(file) {
   return { first, run, n, ref };
 }
 
+// The recordings carry the site's own header bar on top (and, for Bawn, the next section sliding in at the bottom). Those bands are cut off
+// and the rest is scaled up to fill the whole 16:9 frame, so no shot has a strip above or below it. [rows cut at top, rows cut at bottom], measured per clip.
+const CUT = { brennock: [102, 0], brennockNight: [102, 0], garvey: [88, 84], reilly: [72, 0], midland: [76, 0], bawn: [0, 108] };
+const cropFor = (n) => { const c = CUT[n]; if (!c) return ''; const h = 900 - c[0] - c[1], w = Math.floor(h * 16 / 9 / 2) * 2, x = Math.floor((1600 - w) / 2 / 2) * 2; return `crop=${w}:${h}:${x}:${c[0]},`; };
+
 function chain(names, offsets, lens, tail) {
   const args = ['-v', 'error', '-y'];
   names.forEach((n) => args.push('-i', path.join(clips, n + '.mp4')));
-  let f = names.map((n, i) => `[${i}:v]${lens[i] ? `trim=duration=${lens[i]},` : ''}setpts=PTS-STARTPTS,fps=30,scale=1600:900,setsar=1,format=yuv420p[c${i}]`).join(';') + ';';
+  let f = names.map((n, i) => `[${i}:v]${lens[i] ? `trim=duration=${lens[i]},` : ''}setpts=PTS-STARTPTS,fps=30,${cropFor(n)}scale=1600:900,setsar=1,format=yuv420p[c${i}]`).join(';') + ';';
   let prev = 'c0';
   for (let i = 1; i < names.length; i++) { const o = `x${i}`; f += `[${prev}][c${i}]xfade=transition=fade:duration=${FADE}:offset=${offsets[i - 1].toFixed(3)}[${o}];`; prev = o; }
   f += `[${prev}]${tail}[v]`;

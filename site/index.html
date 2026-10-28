@@ -112,7 +112,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .hero-stage #vloop{opacity:0}
 .hero-stage.loop #vloop{opacity:1}
 .hero-stage.loop #vid{opacity:0}
-.hero-stage video{filter:blur(var(--bl,0px));transform:scale(var(--bs,1))}
+.hero-stage.blur video{filter:blur(9px);transform:scale(1.03)}
 .hero-dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:1}
 .hero-title{opacity:0;transition:opacity .8s ease}.hero-stage.blur .hero-title{opacity:1}
 .hero-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:0 24px}
@@ -135,7 +135,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .bar nav a{color:var(--ink-2);transition:color .2s}.bar nav a:hover{color:var(--ink)}
 .hero-nav{position:absolute;top:0;right:var(--gap);height:var(--gap);display:flex;align-items:center;gap:32px;font-size:16px;z-index:3}
 .hero-nav a{color:var(--ink-2);transition:color .2s}.hero-nav a:hover{color:var(--ink)}
-.hero-mark{position:absolute;top:0;left:var(--gap);height:var(--gap);display:flex;align-items:center;font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+.hero-mark{position:absolute;top:0;left:var(--gap);height:var(--gap);z-index:3;display:flex;align-items:center;font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
 
 /* ---------- SHOWCASES ---------- */
 .show{position:relative}
@@ -254,13 +254,12 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   .hero{height:auto;min-height:0;display:flow-root;--gap:clamp(36px,6.9vw,100px)}
   .hero-stage{position:relative;inset:auto;margin:var(--gap) 0 0 var(--gap);aspect-ratio:16/9}
 }
-/* phone: the 16:9 picture sits whole and centred on the screen (never cropped to a slice), headline sized to fit */
+/* phone: the 16:9 picture sits whole, at its own proportions, centred on the screen (never cropped to a slice); headline sized to fit */
 @media (max-width:600px){
   .hero{height:100vh;height:100svh;min-height:480px}
   .hero-mark,.hero-nav{height:56px}
   .hero-mark{left:16px}.hero-nav{right:16px;gap:20px;font-size:15px}
-  .hero-stage{top:56px;left:16px;right:16px;bottom:16px}
-  .hero-stage video{object-fit:contain}
+  .hero-stage{top:calc(50% + 28px);bottom:auto;left:16px;right:16px;aspect-ratio:16/9;transform:translateY(-50%)}
   .hero-title{padding:0 12px}
   .hero-title h1{font-size:min(6.6vw,40px)}
 }
@@ -276,11 +275,11 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 <!-- HERO -->
 <header class="bar" id="bar"><a class="m" href="#top">ufuk.ie</a><nav aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></header>
 <section class="hero" id="top" aria-label="Intro">
-  <div class="hero-mark">ufuk.ie</div>
+  <a class="hero-mark" href="index.html" aria-label="ufuk.ie, home">ufuk.ie</a>
   <nav class="hero-nav" aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
   <div class="hero-stage" id="stage">
-    <video id="vid" src="img/hero-intro.mp4?v=5" data-green="16.2000" autoplay muted playsinline preload="auto"></video>
-    <video id="vloop" src="img/hero-loop.mp4?v=5" muted loop playsinline preload="auto"></video>
+    <video id="vid" src="img/hero-intro.mp4?v=6" data-green="16.2000" autoplay muted playsinline preload="auto"></video>
+    <video id="vloop" src="img/hero-loop.mp4?v=6" muted loop playsinline preload="auto"></video>
     <div class="hero-dim" id="dim" aria-hidden="true"></div>
     <div class="hero-title"><h1 id="headline" aria-label="You know your business. I know what it needs online."><span class="ln" aria-hidden="true">You know your business.</span><span class="ln" aria-hidden="true">I know what it needs online.</span><i class="caret" aria-hidden="true"></i></h1></div>
   </div>
@@ -483,23 +482,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   /* the intro ends on a lane clip that fills the screen with solid green. On that very frame (read from the video, not from a timer)
      the picture turns blurred and the headline starts; the solid green hides the switch. After the green only dark shots play. */
   var heroDone=false, blurred=false, greenAt=parseFloat(vid.getAttribute('data-green'))||0;
-  /* blur is a slow ramp, not a switch: it starts faintly several seconds before the green frame, reaches B1 on it, then keeps growing to B2 while the headline types */
-  var B0=0.5, B1=3.5, B2=9, LEAD=7, POST=10000, cur=0, postT0=0, calmB=false; try{calmB=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
-  function setBlur(px){ cur=px; stage.style.setProperty('--bl',px.toFixed(2)+'px'); stage.style.setProperty('--bs',(1+px*0.0033).toFixed(4)); }
-  function ramp(now){
-    if(!blurred){
-      var ct=vid.currentTime, from=greenAt-LEAD;
-      if(greenAt>0 && ct>from) setBlur(B0+(B1-B0)*Math.min(1,(ct-from)/LEAD));
-      requestAnimationFrame(ramp); return;
-    }
-    if(!postT0){ postT0=now||performance.now(); postFrom=cur; }
-    var f=Math.min(1,((now||performance.now())-postT0)/POST), e=1-(1-f)*(1-f);
-    setBlur(postFrom+(B2-postFrom)*e);
-    if(f<1) requestAnimationFrame(ramp);
-  }
-  var postFrom=0;
-  function blurNow(){ if(blurred) return; blurred=true; stage.classList.add('blur'); window.dispatchEvent(new Event('herotype')); if(calmB) setBlur(B2); }
-  if(calmB) setBlur(B2); else requestAnimationFrame(ramp);
+  function blurNow(){ if(blurred) return; blurred=true; stage.classList.add('blur'); window.dispatchEvent(new Event('herotype')); }
   function toLoop(){ if(heroDone) return; heroDone=true; blurNow(); try{vloop.currentTime=0;}catch(e){} var p=vloop.play(); if(p&&p.then){ p.then(function(){ stage.classList.add('loop'); }, function(){ stage.classList.add('loop'); }); } else stage.classList.add('loop'); }
   vid.addEventListener('ended',toLoop);
   if(greenAt>0){

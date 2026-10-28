@@ -254,12 +254,13 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   .hero{height:auto;min-height:0;display:flow-root;--gap:clamp(36px,6.9vw,100px)}
   .hero-stage{position:relative;inset:auto;margin:var(--gap) 0 0 var(--gap);aspect-ratio:16/9}
 }
-/* phone: the 16:9 picture sits whole, at its own proportions, centred on the screen (never cropped to a slice); headline sized to fit */
+/* phone: logo and menu stacked to save height, the 16:9 banner right under them on the normal light ground, so the first project's title shows below it */
 @media (max-width:600px){
-  .hero{height:100vh;height:100svh;min-height:480px}
-  .hero-mark,.hero-nav{height:56px}
-  .hero-mark{left:16px}.hero-nav{right:16px;gap:20px;font-size:15px}
-  .hero-stage{top:calc(50% + 28px);bottom:auto;left:16px;right:16px;aspect-ratio:16/9;transform:translateY(-50%)}
+  .hero{height:auto;min-height:0;display:flow-root}
+  .hero-mark,.hero-nav{position:relative;top:auto;left:auto;right:auto;height:auto;padding-left:16px;padding-right:16px}
+  .hero-mark{padding-top:18px}
+  .hero-nav{padding-top:6px;padding-bottom:16px;gap:24px;font-size:16px;justify-content:flex-start}
+  .hero-stage{position:relative;inset:auto;margin:0 16px;aspect-ratio:16/9;background:var(--ground)}
   .hero-title{padding:0 12px}
   .hero-title h1{font-size:min(6.6vw,40px)}
 }
@@ -278,8 +279,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   <a class="hero-mark" href="index.html" aria-label="ufuk.ie, home">ufuk.ie</a>
   <nav class="hero-nav" aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
   <div class="hero-stage" id="stage">
-    <video id="vid" src="img/hero-intro.mp4?v=6" data-green="16.2000" autoplay muted playsinline preload="auto"></video>
-    <video id="vloop" src="img/hero-loop.mp4?v=6" muted loop playsinline preload="auto"></video>
+    <video id="vid" src="img/hero-intro.mp4?v=7" data-green="16.4000" autoplay muted playsinline preload="auto"></video>
+    <video id="vloop" src="img/hero-loop.mp4?v=7" muted loop playsinline preload="auto"></video>
     <div class="hero-dim" id="dim" aria-hidden="true"></div>
     <div class="hero-title"><h1 id="headline" aria-label="You know your business. I know what it needs online."><span class="ln" aria-hidden="true">You know your business.</span><span class="ln" aria-hidden="true">I know what it needs online.</span><i class="caret" aria-hidden="true"></i></h1></div>
   </div>

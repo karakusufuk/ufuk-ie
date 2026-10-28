@@ -77,13 +77,20 @@ export const scenes = {
 
   // lane clip: the Tierney road. Lanes rush past, the lime trapezoid grows until the whole screen is solid lime; the scroll then stops, so the page holds on solid green
   lane: {
-    name: 'lane', url: 'https://tierney.ufuk.ie/', seconds: 4.2, total: 4.2,
+    // The road plays its own 3.4 s canvas sequence the moment the page scrolls down to it, and holds the page on the band. We jump straight onto the band
+    // (instant scroll, so no white section is ever on screen), start recording first, and trim the slow opening so the shot is ~2.1 s up to solid lime.
+    name: 'lane', url: 'https://tierney.ufuk.ie/', seconds: 4.2, total: 5.6, trim: () => +(process.env.LANE_SKIP || 1.3),
     async setup(page) {
       // the green panel prints its words the moment it fills the screen; for this recording only, they stay hidden so the full-green frames are really solid
       await page.addStyleTag({ content: '.choice,.choice *{opacity:0!important}' });
-      await at(page, +(process.env.LANE_FROM || 1240), 1500);
+      // park just above the band (it is still 70 % down the screen, so the sequence has not been triggered)
+      await page.evaluate(() => { const r = document.getElementById('road'); window.scrollTo({ top: Math.round(r.getBoundingClientRect().top + scrollY - innerHeight * 0.7), behavior: 'instant' }); });
+      await page.waitForTimeout(1200);
     },
-    async act(page, mark) { mark('scroll'); await glide(page, +(process.env.LANE_FROM || 1240), +(process.env.LANE_TO || 1312), +(process.env.LANE_MS || 1700), 100, true); mark('stop'); },
+    async act(page, mark) {
+      mark('scroll');
+      await page.evaluate(() => { const r = document.getElementById('road'); window.scrollTo({ top: Math.round(r.getBoundingClientRect().top + scrollY), behavior: 'instant' }); });
+    },
   },
   // Brennock after nightfall: truck with headlights on, dark ground (for the dark-only loop)
   brennockNight: {

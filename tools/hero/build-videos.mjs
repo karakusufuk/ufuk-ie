@@ -28,7 +28,7 @@ function solidFrames(file) {
 
 // The recordings carry the site's own header bar on top (and, for Bawn, the next section sliding in at the bottom). Those bands are cut off
 // and the rest is scaled up to fill the whole 16:9 frame, so no shot has a strip above or below it. [rows cut at top, rows cut at bottom], measured per clip.
-const CUT = { brennock: [102, 0], brennockNight: [102, 0], garvey: [88, 84], reilly: [72, 0], midland: [76, 0], bawn: [0, 108] };
+const CUT = { brennock: [102, 0], brennockNight: [102, 0], garvey: [88, 84], reilly: [72, 0], midland: [76, 0], bawn: [0, 108], monument: [100, 0] };
 const cropFor = (n) => { const c = CUT[n]; if (!c) return ''; const h = 900 - c[0] - c[1], w = Math.floor(h * 16 / 9 / 2) * 2, x = Math.floor((1600 - w) / 2 / 2) * 2; return `crop=${w}:${h}:${x}:${c[0]},`; };
 
 function chain(names, offsets, lens, tail) {

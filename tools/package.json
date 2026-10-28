@@ -16,7 +16,9 @@
     "imgsize": "node imgsize.mjs",
     "behaviour": "node behaviour.spec.mjs",
     "record": "node record.mjs",
-    "sitemap": "node sitemap.mjs"
+    "sitemap": "node sitemap.mjs",
+    "icons": "node icons.mjs",
+    "ld-check": "node ld-check.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
@@ -24,6 +26,7 @@
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/source-serif-4": "^5.3.1",
     "@fontsource/anton": "^5.3.0",
+    "@fontsource/bricolage-grotesque": "^5.3.0",
     "@fontsource/figtree": "^5.3.0",
     "@fontsource/geist": "^5.3.0",
     "@fontsource/geist-mono": "^5.3.0",
@@ -37,7 +40,9 @@
     "@fontsource/manrope": "^5.3.0",
     "@fontsource/outfit": "^5.3.0",
     "@fontsource/rubik": "^5.3.0",
+    "fontkit": "^2.0.4",
     "lighthouse": "^13.6.0",
-    "playwright": "^1.64.1"
+    "playwright": "^1.64.1",
+    "wawoff2": "^2.0.1"
   }
 }

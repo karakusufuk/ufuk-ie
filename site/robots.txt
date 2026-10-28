@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ufuk.ie/sitemap.xml

@@ -80,7 +80,8 @@ export const headMeta = ({ title, desc, file, image }) => `<meta name="theme-col
 <meta property="og:type" content="website"><meta property="og:site_name" content="ufuk.ie"><meta property="og:locale" content="en_IE">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${SITE}/${file}">
 <meta property="og:image" content="${SITE}/img/og/${image}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">`;
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest">`;
 
 for (const pg of pages) {
   const docTitle = `${pg.title} · ufuk.ie`;
@@ -126,4 +127,31 @@ ${deep(pg.deep)}
 `;
   fs.writeFileSync(path.join(OUT, pg.slug + '.html'), await addSizes(html, path.resolve(MEDIA, '../..')));
   console.log('built', pg.slug);
+}
+
+/* 404: same header and footer as the project pages, absolute paths because GitHub Pages serves it from any depth */
+{
+  const last = fs.readFileSync(path.join(OUT, pages[0].slug + '.html'), 'utf8');
+  const abs = (s) => s.replace(/href="(index|work|about)\.html/g, 'href="/$1.html').replace(/ aria-current="page"/, '');
+  const header = abs(last.match(/<header class="top">[\s\S]*?<\/header>/)[0]);
+  const footer = abs(last.match(/<div class="end">[\s\S]*?<\/footer><\/div>/)[0]);
+  const docTitle = 'Page not found · ufuk.ie';
+  const html404 = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>${docTitle}</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#EEF1F5">
+<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="preload" as="font" type="font/woff2" href="/fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="/fonts/geist-latin-wght-normal.woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/work.css">
+<style>.nf{min-height:calc(100vh - 460px);padding-top:clamp(150px,22vh,240px);padding-bottom:clamp(72px,12vh,140px)}.nf h1{font-size:clamp(44px,7.4vw,112px);line-height:1;letter-spacing:-.035em}.nf p{display:flex;flex-wrap:wrap;gap:12px 36px;margin:44px 0 0;font-size:19px}.nf a{border-bottom:1px solid currentColor}</style>
+</head><body>
+${header}
+<main><section class="nf wrap"><h1>This page isn't here.</h1><p><a href="/work.html">See the work</a><a href="/index.html">Back to the start</a></p></section></main>
+${footer}
+</body></html>
+`;
+  fs.writeFileSync(path.join(OUT, '404.html'), html404);
+  console.log('built 404');
 }

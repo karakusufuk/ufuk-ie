@@ -11,10 +11,23 @@ const pages = {
   work: { title: 'Work · ufuk.ie', file: 'work.html', desc: 'Fifteen websites, apps and systems, each designed and built for one business and how it sells.' },
   about: { title: 'About Ufuk · ufuk.ie', file: 'about.html', desc: 'Fifteen years of design, six running my own studio, now designing and building end to end in Ireland.' },
 };
+// Person and business, on the homepage and About
+const ld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'Person', '@id': `${SITE}/#person`, name: 'Ufuk Karakuş', jobTitle: 'Designer and developer', url: `${SITE}/`, address: { '@type': 'PostalAddress', addressCountry: 'IE' }, sameAs: [] },
+    { '@type': 'ProfessionalService', '@id': `${SITE}/#business`, name: 'ufuk.ie', url: `${SITE}/`, founder: { '@id': `${SITE}/#person` }, areaServed: [{ '@type': 'Country', name: 'Ireland' }, { '@type': 'Continent', name: 'Europe' }], contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: ['English', 'Turkish'] } },
+  ],
+};
 for (const [name, p] of Object.entries(pages)) {
   const f = path.join(site, name + '.html');
   let html = fs.readFileSync(f, 'utf8');
-  if (html.includes('rel="canonical"')) continue;
+  const had = html.includes('rel="canonical"');
+  const icons = '<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest">';
+  if (!html.includes('rel="icon"')) html = html.replace(/(<meta name="twitter:card"[^>]*>)/, `$1\n${icons}`);
+  html = html.replace(/\n?<script type="application\/ld\+json">[\s\S]*?<\/script>/, '');
+  if (name !== 'work') html = html.replace('<link rel="manifest" href="site.webmanifest">', `<link rel="manifest" href="site.webmanifest">\n<script type="application/ld+json">\n${JSON.stringify(ld, null, 2)}\n</script>`);
+  if (had) { fs.writeFileSync(f, html); continue; }
   const meta = `<meta name="theme-color" content="#EEF1F5">
 <meta name="description" content="${esc(p.desc)}">
 <link rel="canonical" href="${SITE}/${p.file}">

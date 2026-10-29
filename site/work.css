@@ -164,6 +164,9 @@ html.pre body{visibility:hidden}
   .blk .media,.blk .note{grid-column:1!important;grid-row:auto}
   .blk svg.pin,.blk svg.pin-in{display:none}
   .phones{gap:14px}.phones figure{width:31%}
+  /* the phone screens shrink with the page, so their corners do too: 28/300 of the width, as on desktop (circular corners, so the vertical radius is 28/649 of the height) */
+  .frame.phone{border-radius:9.3333%/4.3128%;isolation:isolate}
+  .frame.phone>img,.frame.phone>video{border-radius:inherit}
   .kit,.deep-row,.next a{grid-template-columns:1fr}
   .closing{flex-direction:column;align-items:flex-start}
   .sec{margin-top:140px}.sec>h2{margin-bottom:44px}

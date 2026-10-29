@@ -240,14 +240,29 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 
 @media (max-width:900px){
   :root{--gap:24px}
-  .show-pin{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-  .show-text{padding:48px 24px 24px}
-  .show-frame{margin:0 0 0 24px}
+  /* showcases on a phone, top to bottom: the title, the picture (it gets the middle of the screen), then the text, the steps and the button */
+  .show-pin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto auto}
+  .show-text{display:contents}
+  .show-text h2{grid-row:1;padding:48px 24px 0}
+  .show-sector{grid-row:2;padding:10px 24px 0}
+  .show-frame{grid-row:3;margin:20px 0 20px 24px}
+  .show-text p{grid-row:4;padding:0 24px}
+  .show-steps{grid-row:5;margin:18px 24px 0}
+  .show-link{grid-row:6;justify-self:start;margin:22px 24px 28px}
   .cols,.how{grid-template-columns:1fr}
   .col.r{padding-top:0!important}
   .cols{max-width:none}
   .work,.how{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
   .work-head{flex-direction:column;align-items:flex-start}
+}
+/* short phones: a little tighter so the picture keeps room */
+@media (max-width:900px) and (max-height:720px){
+  .show-text h2{padding-top:28px}
+  .show-sector{padding-top:6px;font-size:15px}
+  .show-frame{margin:14px 0 14px 24px}
+  .show-text p{font-size:16.5px;line-height:1.45}
+  .show-steps{margin-top:12px}
+  .show-link{margin-top:14px;margin-bottom:20px;padding:13px 22px}
 }
 /* tablet, upright: the desktop composition scaled down — the whole 16:9 picture, same gaps in proportion */
 @media (min-width:601px) and (max-aspect-ratio:1/1){
@@ -592,6 +607,16 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
       if(wide()){ s.style.height='100vh'; }
       else { s.style.height=((s._max+1)*100+40)+'vh'; }
     });
+    fitKus();
+  }
+  /* phones and tablets: the KUS mock-ups keep their real proportions and are zoomed down together so they fit the picture's height, never cut */
+  function fitKus(){
+    var st=document.querySelector('.kus-stage'); if(!st) return;
+    if(wide()){ st.style.zoom=''; return; }
+    var vw=window.innerWidth, fh=st.parentNode.clientHeight, base=vw<=360?.42:vw<=600?.5:1;
+    var natural=vw<=600?715:Math.min(330,.34*(vw-24))*19.5/9;        /* the tall phone's height at zoom 1 */
+    var z=Math.min(base,(fh-16)/natural);
+    st.style.zoom=z>=1?'':String(Math.max(.2,+z.toFixed(3)));
   }
   layout(); shows.forEach(function(s){ setStep(s,0); });
   /* phones and tablets: the steps follow the scroll through a taller section */
@@ -605,6 +630,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   }
   window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('resize',function(){layout();onScroll();});
+  window.addEventListener('load',fitKus); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitKus);
   /* desktop: wheel gestures are read one at a time */
   var lastWheel=0, busyUntil=0;
   function snapTo(s){ window.scrollTo({top:s.getBoundingClientRect().top+window.scrollY,behavior:'smooth'}); }

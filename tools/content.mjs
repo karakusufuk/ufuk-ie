@@ -183,7 +183,7 @@ export const pages = [
       { name: 'Deep navy', hex: '#0F1F3D' }, { name: 'Mushroom beige', hex: '#E8DCC4' },
       { name: 'Limestone', hex: '#EBE7E0', edge: true }, { name: 'Cutoff amber', hex: '#F2C27A' },
     ] },
-    // phones removed until the Bawn mobile layout is redone: { t: 'phones', h: 'On the phone', items: [{ m: ph('m1'), cap: 'Home' }, { m: ph('m2'), cap: 'Products' }, { m: ph('m3'), cap: 'Customer panel' }] },
+    { t: 'phones', h: 'On the phone', items: [{ m: ph('m1'), cap: 'Home' }, { m: ph('m2'), cap: 'Products' }, { m: ph('m3'), cap: 'Customer panel' }] },
   ],
   deep: {
     h: 'Behind it',

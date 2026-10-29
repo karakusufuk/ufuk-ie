@@ -32,9 +32,9 @@ function media(m, slug, cls = '') {
   const arv = m.phone ? null : (real || m.ar);
   const ar = arv ? ` style="aspect-ratio:${arv}"` : '';
   const k = ['frame', m.phone ? 'phone' : '', m.dark ? 'dark' : '', m.pair ? 'pair' : '', cls].filter(Boolean).join(' ');
-  if (m.v) return `<div class="${k}"${ar}><video data-src="${base}${m.v}?v=4" poster="${base}${m.v.replace(/\.mp4$/, '.jpg')}?v=4" muted loop playsinline preload="none" aria-label="${esc(m.alt || '')}"></video></div>`;
-  if (m.pair) return `<div class="${k}"${ar} role="img" aria-label="${esc(m.alt || '')}">${m.pair.map((f) => `<img src="${base}${f}?v=4" alt="" loading="lazy">`).join('')}</div>`;
-  return `<div class="${k}"${ar}><img src="${base}${m.i}?v=4" alt="${esc(m.alt || '')}" loading="lazy"></div>`;
+  if (m.v) return `<div class="${k}"${ar}><video data-src="${base}${m.v}?v=5" poster="${base}${m.v.replace(/\.mp4$/, '.jpg')}?v=5" muted loop playsinline preload="none" aria-label="${esc(m.alt || '')}"></video></div>`;
+  if (m.pair) return `<div class="${k}"${ar} role="img" aria-label="${esc(m.alt || '')}">${m.pair.map((f) => `<img src="${base}${f}?v=5" alt="" loading="lazy">`).join('')}</div>`;
+  return `<div class="${k}"${ar}><img src="${base}${m.i}?v=5" alt="${esc(m.alt || '')}" loading="lazy"></div>`;
 }
 
 function block(b, slug) {

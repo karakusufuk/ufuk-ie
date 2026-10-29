@@ -275,7 +275,7 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
   drawPins();
 })();</script>
 <script>
-var COVER = {"kind": "bar", "rect": [106, 298, 190, 13], "track": "#0B1430", "fill": "linear-gradient(90deg,#1E8AE6,#7FD8FF)", "w": 190};
+var COVER = {"kind": "bar", "rect": [106, 298, 190, 13], "once": true, "track": "#0B1430", "fill": "linear-gradient(90deg,#1E8AE6,#7FD8FF)", "w": 190};
 var FLOW = {"b-rules": {"steps": [["h", 1400], ["g", 1], ["h", 1400], ["f", 2], ["h", 1300], ["g", 3], ["h", 1400]], "dur": 7500}, "b-snow": {"steps": [["h", 300], ["t", 201, 326], ["v", 1], ["h", 900]], "dur": 7800}, "b-mud": {"steps": [["h", 1300], ["f", 1], ["h", 1700], ["f", 2], ["h", 1900]], "dur": 6000}, "b-duel": {"steps": [["h", 1600], ["f", 1], ["h", 1500], ["g", 2], ["h", 2000]], "dur": 6500}, "b-done": {"steps": [["h", 4500]], "dur": 4500}};
 /* ---------- app blocks ----------
    The screens arrive one after another as soon as a block comes into view: a tap, then the next screen pushes in,
@@ -391,6 +391,7 @@ var FLOW = {"b-rules": {"steps": [["h", 1400], ["g", 1], ["h", 1400], ["f", 2], 
       for (;;) {
         fill.style.opacity = 1;
         await anim(fill, [{ width: '0px' }, { width: (c.w * .55) + 'px', offset: .55 }, { width: c.w + 'px' }], { duration: 1600, easing: 'cubic-bezier(.45,.05,.3,1)' });
+        if (c.once) return;                                        /* a loading bar that fills once and stays full */
         await wait(800);
         await anim(fill, [{ opacity: 1 }, { opacity: 0 }], { duration: 380 }); fill.style.width = '0px'; await wait(500);
       }

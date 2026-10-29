@@ -1,5 +1,6 @@
 // Joins the recorded scenes into hero-intro.mp4 and hero-loop.mp4 with short crossfades (node build-videos.mjs [fade] [out dir]).
-//   intro: 8 shots. Shot 1 = 2.4 s, shots 2-7 = 2.0 s (centre of one crossfade to the centre of the next), shot 8 = the lane clip,
+//   intro: 7 shots (Monument removed 29 Oct). Lengths in SHOT_LEN (centre of one crossfade to the centre of the next); the Brennock truck and the Reilly
+//          implant are 25 % shorter than before (2.4 -> 1.8 s, 2.0 -> 1.5 s, cut from the end, not sped up), the others a little tighter. Last shot = the lane clip,
 //          which runs until the screen is completely solid green and holds it for HOLD frames; the file ends there.
 //   loop : dark-ground shots only, 2.0 s each; the last shot fades into the first, so the file loops without a seam.
 // The first fully solid green frame of the intro is measured in the finished file and written into index.html (data-green).
@@ -13,6 +14,7 @@ const clips = path.join(here, 'clips');
 const FADE = +(process.argv[2] ?? 0.3);
 const out = process.argv[3] || path.join(here, '../../site/img');
 const H = FADE / 2, SHOT = 2.0, CLIP = SHOT + FADE, FPS = 30, HOLD = 5;
+const SHOT_LEN = { brennock: 1.8, garvey: 1.8, reilly: 1.5, lear: 1.8, ashgrove: 1.8, fennel: 1.8 };
 const ENC = ['-c:v', 'libx264', '-profile:v', 'high', '-preset', 'veryfast', '-crf', process.env.CRF || '28', '-pix_fmt', 'yuv420p', '-r', '30', '-an', '-movflags', '+faststart'];
 
 // frame index of the first fully solid green frame of a clip / video (green = the colour of the clip's last frame)
@@ -46,9 +48,10 @@ const laneClip = solidFrames(path.join(clips, 'lane.mp4'));
 if (laneClip.first < 0 || laneClip.run < HOLD) throw new Error('the lane clip has no solid green frames');
 const laneLen = (laneClip.first + HOLD) / FPS;             // the clip is cut HOLD frames after the first solid frame: lanes are never cut while still growing
 {
-  const names = order.intro, first = 2.4;
-  const offsets = names.slice(1).map((_, i) => first - H + i * SHOT);
-  const lens = names.map((n, i) => (i === 0 ? 0 : n === 'lane' ? +laneLen.toFixed(4) : CLIP));
+  const names = order.intro;
+  let acc = 0;
+  const offsets = names.slice(1).map((_, i) => { acc += SHOT_LEN[names[i]]; return acc - H; });   // crossfade i is centred on the end of shot i
+  const lens = names.map((n, i) => (i === 0 ? 0 : n === 'lane' ? +laneLen.toFixed(4) : +(SHOT_LEN[n] + FADE).toFixed(4)));
   const total = offsets[offsets.length - 1] + laneLen;
   const { args, f } = chain(names, offsets, lens, `trim=duration=${total.toFixed(4)},setpts=PTS-STARTPTS`);
   const file = path.join(out, 'hero-intro.mp4');

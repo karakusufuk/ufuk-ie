@@ -383,6 +383,7 @@ export const MATCH = {
   cover: {
     kind: 'bar',
     rect: [106, 298, 190, 13],
+    once: true,
     track: '#0B1430',
     fill: 'linear-gradient(90deg,#1E8AE6,#7FD8FF)',
     screens: [{ img: 'loading.jpg', alt: 'Match ID loading screen' }],

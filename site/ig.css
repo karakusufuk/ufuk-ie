@@ -1,6 +1,6 @@
-/* Instagram grid in the dark contact block: small, secondary, drawn on a faint grid */
+/* Instagram grid in the dark contact block: small, secondary, drawn on a very faint grid (half as strong as before) */
 :root{--c:96px}
-.ig{--ig-line:rgba(160,178,222,.12);position:relative;display:grid;grid-template-columns:repeat(3,var(--c));grid-template-rows:repeat(5,var(--c));box-sizing:content-box;width:calc(var(--c)*3);
+.ig{--ig-line:rgba(160,178,222,.06);position:relative;display:grid;grid-template-columns:repeat(3,var(--c));grid-template-rows:repeat(5,var(--c));box-sizing:content-box;width:calc(var(--c)*3);
   border-right:1px solid var(--ig-line);border-bottom:1px solid var(--ig-line);
   background-image:linear-gradient(var(--ig-line) 1px,transparent 1px),linear-gradient(90deg,var(--ig-line) 1px,transparent 1px);background-size:var(--c) var(--c);margin-top:56px}
 .ig .ph{display:block;box-sizing:border-box;padding:1px 0 0 1px;min-width:0;min-height:0}
@@ -10,7 +10,7 @@
 .ig-link svg{flex:none}
 /* animation state, only once ig.js is running and only if motion is allowed */
 @media (prefers-reduced-motion:no-preference){
-  .ig.ig-ready .ph{opacity:0;transition:opacity .42s ease}
+  .ig.ig-ready .ph{opacity:0;transition:opacity 1.6s ease}
   .ig.ig-ready .ph.on{opacity:1}
   .ig.ig-ready.ig-snap .ph{transition:none}
 }

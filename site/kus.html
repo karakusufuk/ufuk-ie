@@ -585,12 +585,13 @@ html.pre body{visibility:hidden}
   /* each block's story, in the app's own points */
   var FLOW = {
     'b-profile': {
-      setup: function (b) { b.add('profile-off', 0); b.add('profile-on', 0); b.L['profile-on'].lift.style.opacity = 0; },
+      setup: function (b) { b.add('profile-off', 0); },
       run: async function (b) {
         var on = b.scr[0].querySelector('img.alt'), strip = b.scr[1].querySelector('.strip'), top9 = strip.querySelector('.s9t'), bot9 = strip.querySelector('.s9b');
-        await b.lift(['profile-off', 'profile-on']); await wait(600);
-        await Promise.all([fade(b.L['profile-on'].lift, 1, 350), fade(on, 1, 350)]); await wait(1100);
-        await b.down(['profile-off', 'profile-on']); await wait(250);
+        /* the card comes forward and goes back as the day-off card, so its size never changes while it is in front; only once it has settled does the page switch to the working day */
+        await b.lift(['profile-off']); await wait(1100);
+        await b.down(['profile-off']); await wait(700);
+        await fade(on, 1, 450); await wait(1300);
         await tap(b.ui, 200, 230); await b.go(1); await wait(1200);
         await anim(strip, [{ transform: 'translateY(0)' }, { transform: 'translateY(-726px)' }], { duration: 700, easing: 'cubic-bezier(.45,0,.2,1)' }); await wait(1200);
         await anim(strip, [{ transform: 'translateY(-726px)' }, { transform: 'translateY(-1175px)' }], { duration: 550, easing: 'cubic-bezier(.45,0,.2,1)' }); await wait(500);
@@ -601,7 +602,7 @@ html.pre body{visibility:hidden}
       reset: function (b) {
         var strip = b.scr[1].querySelector('.strip');
         strip.style.transform = ''; strip.querySelector('.s9t').style.opacity = 1; strip.querySelector('.s9b').style.transform = '';
-        b.scr[0].querySelector('img.alt').style.opacity = 0; b.L['profile-on'].lift.style.opacity = 0;
+        b.scr[0].querySelector('img.alt').style.opacity = 0;
       }
     },
     'b-tutorial': {

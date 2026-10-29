@@ -134,16 +134,27 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawPins);
   drawPins();
 
-  /* ---------- recordings play only while seen ---------- */
+  /* ---------- recordings play only while seen, always from their first frame ---------- */
+  /* A recording is fetched a little before it comes near the screen (so it is ready), but it only starts when at least a third of it is
+     in view, and it always starts at its very first frame: never already running, never halfway. A cover plays once, in its natural order,
+     and rests on its last frame; every other recording loops. Leaving the screen rewinds it, so the next visit starts fresh too. */
   var vids = [].slice.call(document.querySelectorAll('video[data-src]'));
+  vids.forEach(function (v) { if (v.closest('.cover')) { v.loop = false; v.setAttribute('data-once', ''); } });
+  function load(v) { if (!v.src) { v.preload = 'auto'; v.src = v.getAttribute('data-src'); } }
   if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) {
+    var pre = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { load(e.target); pre.unobserve(e.target); } }); }, { rootMargin: '700px 0px' });
+    var seen = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var v = e.target;
-        if (e.isIntersecting) { if (!v.src) { v.src = v.getAttribute('data-src'); } var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-        else if (!v.paused) v.pause();
+        if (e.isIntersecting && e.intersectionRatio >= 0.33) {
+          if (v._on) return; v._on = true; load(v);
+          try { v.currentTime = 0; } catch (x) {}
+          var p = v.play(); if (p && p.catch) p.catch(function () {});
+        } else if (!e.isIntersecting) {
+          if (!v._on) return; v._on = false; v.pause(); try { v.currentTime = 0; } catch (x) {}
+        }
       });
-    }, { rootMargin: '200px 0px' });
-    vids.forEach(function (v) { io.observe(v); });
-  } else vids.forEach(function (v) { v.src = v.getAttribute('data-src'); v.play(); });
+    }, { threshold: [0, 0.33] });
+    vids.forEach(function (v) { pre.observe(v); seen.observe(v); });
+  } else vids.forEach(function (v) { load(v); v.play(); });
 })();

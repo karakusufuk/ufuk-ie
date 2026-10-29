@@ -13,11 +13,11 @@ const NEXT = {
   fennel: { slug: 'fennel', name: 'Fennel Dental', sub: 'Dental clinic, Dublin', img: 'img/w/fennel-1.jpg' },
   kenilworth: { slug: 'kenilworth', name: 'Kenilworth Vets', sub: 'Veterinary clinic, Dublin 6', img: 'img/w/kenilworth-1.jpg' },
   garvey: { slug: 'garvey', name: 'Garvey Lennon', sub: 'Solicitors, Dublin 2', img: 'img/w/garvey-1.jpg' },
-  tierney: { slug: 'tierney', name: 'Tierney', sub: 'Logistics recruitment, Leinster', img: 'img/w/tierney-1.jpg' },
-  midland: { slug: 'midland', name: 'Midland Motors', sub: 'Used car dealer, Athlone', img: 'img/w/midland-1.jpg' },
+  tierney: { slug: 'tierney', name: 'Tierney', sub: 'Logistics recruitment, Leinster', img: 'img/w/tierney-1.jpg?v=2' },
+  midland: { slug: 'midland', name: 'Midland Motors', sub: 'Used car dealer, Athlone', img: 'img/w/midland-1.jpg?v=2' },
   monument: { slug: 'monument', name: 'Monument', sub: 'Estate agency, Dublin', img: 'img/w/monument-1.jpg' },
   lear: { slug: 'lear', name: 'Lear Residence', sub: 'Design-build developer, Kildare', img: 'img/w/lear-1.jpg' },
-  ashgrove: { slug: 'ashgrove', name: 'Ashgrove House', sub: 'Country house hotel, Kilkenny', img: 'img/w/ashgrove-1.jpg' },
+  ashgrove: { slug: 'ashgrove', name: 'Ashgrove House', sub: 'Country house hotel, Kilkenny', img: 'img/w/ashgrove-1.jpg?v=2' },
   kus: { slug: 'kus', name: 'KUS', sub: 'Staff app for a distribution centre', img: 'img/d/kus/card.jpg' },
 };
 
@@ -111,7 +111,7 @@ export const pages = [
     { h: 'Choosing a machine', blocks: [
       { side: 'r', span: 7, m: v('toggle'), b: 'By machine, or by part', p: 'A toolmaker who has to produce a hip stem doesn’t know which machine he needs; he knows the part. I added a switch that turns the machine strip into a strip of parts, each linked to the machines that make it, so he reaches the right machine without learning the catalogue.', pin: 6 },
       { side: 'l', span: 8, m: v('machine'), b: 'Buyers and owners on one page', p: 'A buyer weighing a €300,000 machine and an engineer who already runs one need different things from the same page. I put both behind one switch, specs and options for one, service, spares and upgrades for the other, so the dealer keeps selling to the customer long after the sale.', pin: 6 },
-      { side: 'r', span: 7, m: v('parts'), b: 'A phone number, not a form', p: 'Engineers won’t upload a confidential drawing to a dealer they’ve never met. So I ended every part family with a phone number instead of a form: the conversation moves to the showroom, where the sale is actually made.', pin: 6 },
+      { side: 'r', span: 7, m: im('parts'), b: 'A phone number, not a form', p: 'Engineers won’t upload a confidential drawing to a dealer they’ve never met. So I ended every part family with a phone number instead of a form: the conversation moves to the showroom, where the sale is actually made.', pin: 6 },
     ] },
     { h: 'After the sale', blocks: [
       { side: 'l', span: 8, m: v('checker'), b: 'Twenty years after the sale', p: 'A dealer earns most from a machine after it’s sold: used machines, spares, service and software. Competitors bury these in a footer menu. I gave them a full row on the homepage, so a buyer sees twenty years of support before he signs.', pin: 6 },
@@ -218,7 +218,7 @@ export const pages = [
   live: 'https://fennel.ufuk.ie', next: NEXT.kenilworth,
   fontLink: GF('family=Geist+Mono:wght@400'),
   sections: [
-    { t: 'cover', m: v('hero') },
+    { t: 'cover', m: im('hero') },
     { h: 'Before the chair', blocks: [
       { side: 'l', span: 8, m: v('treat'), b: 'Know the treatment before the chair', p: 'Many people put off the dentist because they don’t know what will happen in the chair. I showed each treatment on a single tooth, with its length, visits, how it feels and the fee, so a nervous patient books already knowing what to expect.', pin: 6 },
       { side: 'r', span: 5, m: im('today', { ar: null }), b: 'Today’s free slots', p: 'Someone with toothache wants to know one thing: can I be seen today? I put today’s free appointments and the earliest time right under the headline, so the answer is the first thing they read.', pin: 6 },
@@ -226,7 +226,7 @@ export const pages = [
     ] },
     { h: 'Choosing a person', blocks: [
       { side: 'r', span: 7, m: v('team'), b: 'Choose a person', p: 'People choose a dentist, not a clinic. I listed the team with each dentist’s next free slot on the same line, so choosing a person and booking an appointment become one decision.', pin: 6 },
-      { side: 'l', span: 7, m: v('aoife'), b: 'A page per dentist', p: 'For a nervous patient, how a dentist works matters more than the list of treatments. I gave every dentist a page that says exactly that, with her next free slots beside it.', pin: 6 },
+      { side: 'l', span: 7, m: im('aoife'), b: 'A page per dentist', p: 'For a nervous patient, how a dentist works matters more than the list of treatments. I gave every dentist a page that says exactly that, with her next free slots beside it.', pin: 6 },
       { side: 'r', span: 7, m: v('book'), b: 'Book in under a minute', p: 'Every extra step in a booking form loses a patient to the clinic down the road. I cut it to treatment, dentist, day and time, with no account and no text code.', pin: 6 },
     ] },
     { t: 'kit', h: 'Type and colour', fonts: [
@@ -282,7 +282,7 @@ export const pages = [
     { h: 'From a story to a person', blocks: [
       { side: 'l', span: 8, m: v('services'), b: 'Every area, with its solicitors', p: 'People hire a solicitor, not a firm. I put the names of the people who handle each area of law in the very first menu, so a client knows who they will talk to before they call.', pin: 6 },
       { side: 'r', span: 7, m: v('team'), b: 'The people you’ll sit down with', p: 'Someone with a family matter chooses the person before the price. I gave every solicitor a row with the law they handle and the languages they speak, with their photo appearing as you reach them, so the choice feels personal from the first screen.', pin: 6 },
-      { side: 'l', span: 7, m: v('area'), b: 'What the first meeting costs', p: 'The question people are most embarrassed to ask a solicitor on the phone is what the first meeting costs. I answered it on every area page, along with what happens at that meeting and who handles it.', pin: 6 },
+      { side: 'l', span: 7, m: v('area'), b: 'Who will handle your case', p: 'Someone with a family matter wants to know who will deal with it before they ring a firm. So I made every area page lead to the solicitor’s own page: a photo, the cases they usually take, how they work and their qualifications, one tab at a time. The client knows the person before the first call, and the firm starts each conversation with trust that a phone line alone could not build.', pin: 6 },
       { side: 'r', span: 6, m: v('lang'), b: 'English, Polish, Portuguese', p: 'Some of Dublin’s clients find it hard to explain a legal problem in English. So I put the languages each solicitor speaks next to their name and translated the whole flow into Polish and Portuguese. The firm reaches clients its competitors can’t, at the very first step.', pin: 6 },
     ] },
     { t: 'kit', h: 'Type and colour', fonts: [
@@ -392,7 +392,7 @@ export const pages = [
     { t: 'cover', m: v('hero') },
     { h: 'Three homes', blocks: [
       { side: 'l', span: 8, m: v('three'), b: 'Three homes. One landscape.', p: 'The developer designs and builds with one hand, so I showed the three house types as drawings first and photographs second: the drawing is the promise, the photograph is proof it was kept.', pin: 6 },
-      { side: 'r', span: 7, m: v('homes', { dark: true }), b: 'What you see is what was drawn', p: 'Buyers of a new estate worry that the finished house won’t match the brochure. I made every house fade from its photograph into the drawing it was built from, so they see that what was designed is exactly what was built.', pin: 6 },
+      { side: 'r', span: 7, m: v('homes', { dark: true }), b: 'The show home, booked in three taps', p: 'Someone buying a house that is not finished wants to walk through the real one. I gave the show home its own page and a booking card that takes a day, a time and the home they have in mind, with no form to fill in first. The developer gets a diary of real visits instead of enquiries to chase.', pin: 6 },
       { side: 'l', span: 7, m: v('house'), b: 'Inside the house', p: 'Someone buying a home that isn’t built yet needs to understand the space, not just admire it. I set photograph, drawing and cutaway side by side as they read, so the layout makes sense before the show home visit.', pin: 6 },
     ] },
     { h: 'The place and the firm', blocks: [

@@ -34,7 +34,7 @@
   setTimeout(go, 350); setTimeout(go, 900); setTimeout(function () { moved = true; }, 1600);
 })();</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="fonts/fonts.css"><link rel="stylesheet" href="apps-cards.css">
 <link rel="stylesheet" href="ig.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="ig.css"></noscript>
 <style>
 /* Layout: gallery page — work fills the frame, the page itself stays quiet; asymmetric white gaps (top + left) recur in hero and showcases */
@@ -237,7 +237,12 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
         <a class="card" href="brennock.html" data-kind="site case"><div class="card-img"><img src="img/d/brennock/hero.jpg" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/d/brennock/hero.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Brennock Haulage</h2></div></a>
     <a class="card" href="reilly.html" data-kind="site case"><div class="card-img"><img src="img/d/reilly/strip.jpg" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/d/reilly/strip.mp4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Reilly Engineering</h2></div></a>
     <a class="card" data-kind="site case" href="bawn.html"><div class="card-img"><img src="img/g_bawn.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_bawn.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video><span class="tag">Case study</span></div><div class="card-meta"><h2>Bawn Growers</h2></div></a>
-    <a class="card" href="kus.html" data-kind="app case"><div class="card-img"><div class="app-stage dark"><div class="phone"><div class="ph-top"><b>Roll call</b><span>Night shift · 22:00 · Aisle 4–12</span></div><div class="ph-body"><div class="ph-row"><span>Present</span><em class="ph-big">38</em></div><div class="ph-row"><span>A. Byrne</span><span class="pill g">In</span></div><div class="ph-row"><span>D. Silva</span><span class="pill r">Absent</span></div><div class="ph-row"><span>S. Kelly</span><span class="pill a">Late 12m</span></div></div></div></div><span class="tag">Case study</span></div><div class="card-meta"><h2>KUS</h2></div></a>
+    <a class="card" href="kus.html" data-kind="app case"><div class="card-img"><div class="ac dark" data-ac="kus"><div class="acs"><div class="acui">
+<div class="acl k-cover"><img src="img/d/kus/loading.jpg" width="804" height="1748" alt=""></div>
+<div class="acl go k-home"><img src="img/d/kus/home-on.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<div class="acl go k-prof"><div class="kstrip"><img src="img/d/kus/s757.jpg" style="top:0;height:766px" alt="" loading="lazy"><img class="fe" src="img/d/kus/s758.jpg" style="top:766px;height:730px" alt="" loading="lazy"><img src="img/d/kus/s760.jpg" style="top:1215px;height:834px" alt="" loading="lazy"><img class="fe s9t" src="img/d/kus/s759top.jpg" style="top:1215px;height:365px" alt="" loading="lazy"><img class="s9b" src="img/d/kus/s759bot.jpg" style="top:1580px;height:469px" alt="" loading="lazy"></div><img class="kfix" src="img/d/kus/s-status.jpg" style="top:0;height:44px" alt="" loading="lazy"></div>
+<img class="acr on" src="img/d/kus/loading.jpg" width="804" height="1748" alt="">
+</div></div></div><span class="tag">Case study</span></div><div class="card-meta"><h2>KUS</h2></div></a>
     <a class="card" data-kind="site" href="garvey.html"><div class="card-img"><img src="img/g_garvey.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_garvey.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Garvey Lennon</h2></div></a>
     <a class="card" data-kind="site" href="ashgrove.html"><div class="card-img"><img fetchpriority="low" src="img/g_ashgrove.jpg?v=6" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_ashgrove.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Ashgrove House</h2></div></a>
     <a class="card" data-kind="site" href="fennel.html"><div class="card-img"><img fetchpriority="low" src="img/g_fennel.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_fennel.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Fennel Dental</h2></div></a>
@@ -246,21 +251,20 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     <a class="card" data-kind="site" href="tierney.html"><div class="card-img"><img fetchpriority="low" src="img/g_tierney.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Tierney</h2></div></a>
     <a class="card" data-kind="site" href="lear.html"><div class="card-img"><img fetchpriority="low" src="img/g_lear.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Lear Residence</h2></div></a>
     <a class="card" data-kind="site" href="midland.html"><div class="card-img"><img fetchpriority="low" src="img/g_midland.jpg?v=6" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=6" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h2>Midland Motors</h2></div></a>
-    <a class="card" href="master-id.html" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>Master ID</span><span style="color:#C4577D">Q 7/10</span></div>
-        <div class="q">Which river runs through the centre of Lisbon?</div>
-        <div class="opts"><span>Douro</span><span class="ok">Tagus</span><span>Guadiana</span><span>Mondego</span></div>
-      </div></div></div><div class="card-meta"><h2>Master ID</h2></div></a>
-    <a class="card" href="match-id.html" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>Match ID</span><span style="color:#4B3A9A">Level 12</span></div>
-        <div class="q">Match each word to its pair</div>
-        <div class="tiles"><span class="m">harbour</span><span class="m">port</span><span>swift</span><span class="d">calm</span><span>brave</span><span>quick</span><span class="d">still</span><span>bold</span></div>
-      </div></div></div><div class="card-meta"><h2>Match ID</h2></div></a>
-    <a class="card" href="passpath.html" data-kind="app"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>PassPath</span><span style="color:#2F7D5B">Learner · 23/40</span></div>
-        <div class="q">On a learner permit, who must sit in the front passenger seat?</div>
-        <div class="opts"><span>Any adult passenger</span><span class="ok">A full licence holder of 2+ years</span><span>Nobody, if L-plates are on</span></div>
-      </div></div></div><div class="card-meta"><h2>PassPath</h2></div></a>
+    <a class="card" href="master-id.html" data-kind="app"><div class="card-img"><div class="ac" data-ac="master"><div class="acs"><div class="acui">
+<div class="acl m-cover"><img src="img/d/master-id/loading.jpg" width="804" height="1748" alt=""></div>
+<div class="acl go m-fb"><img src="img/d/master-id/football.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<div class="acl go m-q"><img src="img/ac/quiz-start.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<img class="acr on" src="img/d/master-id/loading.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h2>Master ID</h2></div></a>
+    <a class="card" href="match-id.html" data-kind="app"><div class="card-img"><div class="ac" data-ac="match"><div class="acs"><div class="acui">
+<div class="acl"><video src="img/d/match-id/snow.mp4" poster="img/d/match-id/snow-0.jpg" muted playsinline preload="none" aria-hidden="true"></video></div>
+<img class="acr on" src="img/d/match-id/snow-0.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h2>Match ID</h2></div></a>
+    <a class="card" href="passpath.html" data-kind="app"><div class="card-img"><div class="ac" data-ac="pass"><div class="acs"><div class="acui">
+<div class="acl"><video src="img/d/passpath/speedo.mp4" poster="img/ac/speedo-0.jpg" muted playsinline preload="none" aria-hidden="true"></video><img class="acfade" src="img/d/passpath/enter.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<img class="acr on" src="img/ac/speedo-0.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h2>PassPath</h2></div></a>
   </div>
 </section>
 </main>
@@ -307,5 +311,6 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   deal(f0);
 })();
 </script>
+<script src="apps-cards.js" defer></script>
 <script src="ig.js" defer></script>
 </body></html>

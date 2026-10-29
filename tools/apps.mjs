@@ -373,6 +373,7 @@ const BLOCKS_JS = String.raw`/* ---------- app blocks ----------
       for (;;) {
         fill.style.opacity = 1;
         await anim(fill, [{ width: '0px' }, { width: (c.w * .55) + 'px', offset: .55 }, { width: c.w + 'px' }], { duration: 1600, easing: 'cubic-bezier(.45,.05,.3,1)' });
+        if (c.once) return;                                        /* a loading bar that fills once and stays full */
         await wait(800);
         await anim(fill, [{ opacity: 1 }, { opacity: 0 }], { duration: 380 }); fill.style.width = '0px'; await wait(500);
       }

@@ -18,6 +18,7 @@ const live = (s) => ({ garvey: 'garveylennon', midland: 'midland' }[s] || s) + '
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let browser, failed = 0, passed = 0;
 const ok = (c, msg) => { if (!c) throw new Error(msg); };
+const getComputedStyleOk = (d) => parseFloat(d) >= 1.2;
 const near = (a, b, tol, msg) => ok(Math.abs(a - b) <= tol, `${msg}: ${a} vs ${b} (±${tol})`);
 
 async function newPage(opts = {}) {
@@ -42,7 +43,7 @@ const tests = [];
 const test = (name, fn) => tests.push([name, fn]);
 
 /* ---------------------------------------------------------------- homepage */
-test('home: no headline at 2 s, blur after intro, headline typed in full', async () => {
+test('home: no headline at 2 s, headline starts typing by 8 s over the still-playing film, typed in full', async () => {
   const page = await newPage();
   const t0 = Date.now();
   await go(page, 'index.html');
@@ -57,10 +58,18 @@ test('home: no headline at 2 s, blur after intro, headline typed in full', async
   }
   await page.waitForFunction(() => document.getElementById('stage').classList.contains('blur'), null, { timeout: 30000 });
   const blurAt = (Date.now() - t0) / 1000;
+  if (!refused) {
+    // the headline must not wait for the end of the film: the first letter is on screen no later than 8 s after load
+    await page.waitForFunction(() => document.querySelectorAll('#headline .ch.v').length > 0, null, { timeout: 8000 });
+    const firstAt = (Date.now() - t0) / 1000;
+    ok(firstAt <= 8, 'first letter of the headline at ' + firstAt.toFixed(1) + ' s (expected <= 8 s)');
+    ok(await page.evaluate(() => !document.getElementById('stage').classList.contains('loop')), 'the film was still playing when the headline started');
+    console.log('      first letter of the headline at ' + firstAt.toFixed(1) + ' s after load');
+  }
   await sleep(3400);
   const filter = await page.evaluate(() => getComputedStyle(document.getElementById('vloop')).filter);
   ok(/blur\(9px\)/.test(filter) && !/brightness/.test(filter), 'loop video should be blurred (9px) with no static brightness(): ' + filter);
-  // the darkening overlay follows the typing: 0 while line 1 is typed, 0.7 exactly when the last letter of line 2 appears
+  // the darkening overlay follows the typing: 0.55 from the start (the film is still playing under the headline), 0.7 exactly when the last letter of line 2 appears
   await page.evaluate(() => { window.__dim = []; const dim = document.getElementById('dim'), chars = [...document.querySelectorAll('#headline .ln')].map((l) => [...l.querySelectorAll('.ch')]);
     const snap = () => { const l1 = chars[0].filter((c) => c.classList.contains('v')).length, l2 = chars[1].filter((c) => c.classList.contains('v')).length; window.__dim.push([performance.now(), l1, l2, parseFloat(getComputedStyle(dim).opacity)]); };
     new MutationObserver(snap).observe(document.getElementById('headline'), { subtree: true, attributes: true, attributeFilter: ['class'] }); });
@@ -68,10 +77,10 @@ test('home: no headline at 2 s, blur after intro, headline typed in full', async
   const doneAt = (Date.now() - t0) / 1000;
   const dimLog = await page.evaluate(() => window.__dim);
   const l1done = dimLog.find((r) => r[1] === 23), last = dimLog.filter((r) => r[2] === 28).pop();
-  ok(l1done && l1done[3] < 0.02, 'overlay is ' + (l1done && l1done[3]) + ' when line 1 has just been typed (expected 0)');
-  ok(dimLog.filter((r) => r[2] === 0 && r[3] > 0.02).length === 0, 'overlay darkened before line 2 started');
+  ok(l1done && Math.abs(l1done[3] - 0.55) < 0.02, 'overlay is ' + (l1done && l1done[3]) + ' when line 1 has just been typed (expected 0.55)');
+  ok(dimLog.filter((r) => r[2] === 0 && r[3] > 0.57).length === 0, 'overlay darkened beyond 0.55 before line 2 started');
   const mid = dimLog.find((r) => r[2] === 14);
-  ok(mid && mid[3] > 0.15 && mid[3] < 0.55, 'overlay mid line 2 is ' + (mid && mid[3]) + ' (expected partial)');
+  ok(mid && mid[3] > 0.57 && mid[3] < 0.69, 'overlay mid line 2 is ' + (mid && mid[3]) + ' (expected partial)');
   ok(last && Math.abs(last[3] - 0.7) < 0.015, 'overlay is ' + (last && last[3]) + ' when the last letter appears (expected 0.70)');
   ok(Math.abs(parseFloat(await page.evaluate(() => getComputedStyle(document.getElementById('dim')).opacity)) - 0.7) < 0.001, 'overlay does not stay at 0.70');
   console.log(`      overlay: ${l1done[3].toFixed(3)} after line 1, ${mid[3].toFixed(3)} mid line 2, ${last[3].toFixed(3)} at the last letter`);
@@ -97,53 +106,202 @@ test('home: header bar hides in the hero, returns on scroll up, hides on scroll 
   await page.ctx.close();
 });
 
-test('home: Brennock showcase steps 0 > 1 > 2 without moving the page, then the next gesture scrolls', async () => {
+test('home: no showcase holds or steers the scroll (wheel down and up through the whole page)', async () => {
   const page = await newPage();
   await go(page, 'index.html'); await sleep(1000);
-  const top = await page.evaluate(() => document.querySelectorAll('.show')[0].getBoundingClientRect().top + scrollY);
-  await page.evaluate((y) => window.scrollTo(0, y), top); await sleep(300);
-  const y0 = await page.evaluate(() => scrollY);
-  ok(await dots(page, 0) === 1, 'start step is not 0');
-  const paused = await page.evaluate(() => { const v = document.querySelectorAll('.show')[0].querySelector('video'); return v.paused && v.currentTime === 0; });
-  ok(paused, 'step 0 video is not paused on frame 0');
-  await wheel(page); await sleep(900);
-  ok(await dots(page, 0) === 2, 'wheel 1 did not step to 1');
-  near(await page.evaluate(() => scrollY), y0, 1, 'scrollY after step 1');
-  await wheel(page); await sleep(900);
-  ok(await dots(page, 0) === 3, 'wheel 2 did not step to 2');
-  near(await page.evaluate(() => scrollY), y0, 1, 'scrollY after step 2');
-  // one gesture = many wheel events 30 ms apart: must still be one step only (already at the last step here, so the page must not run on)
-  await wheel(page); await sleep(900);
-  ok(await page.evaluate(() => scrollY) > y0 + 5, 'gesture after the last step did not scroll the page');
+  const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  await page.mouse.move(W / 2, H / 2);
+  let y = 0;
+  for (let i = 0; i < 120; i++) {
+    await page.mouse.wheel(0, 300); await sleep(110);
+    const ny = await page.evaluate(() => Math.round(scrollY));
+    ok(ny - y >= 290 || ny >= max - 5, 'scrolling down got stuck at ' + y + ' -> ' + ny);
+    y = ny; if (ny >= max - 1) break;
+  }
+  ok(y >= max - 5, 'never reached the bottom');
+  for (let i = 0; i < 120; i++) {
+    await page.mouse.wheel(0, -300); await sleep(110);
+    const ny = await page.evaluate(() => Math.round(scrollY));
+    ok(y - ny >= 290 || ny <= 5, 'scrolling up got stuck at ' + y + ' -> ' + ny);
+    y = ny; if (ny <= 0) break;
+  }
+  ok(y <= 5, 'never got back to the top');
+  ok(await page.evaluate(() => !document.querySelector('.show-steps') && getComputedStyle(document.querySelector('.show-pin')).position !== 'sticky'), 'a step indicator or a sticky pin is still there');
   ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
   await page.ctx.close();
 });
 
-test('home: one long gesture (many wheel events) gives exactly one step', async () => {
+test('home: Brennock loop: first frame 2 s, truck moving 2 s, back to the first frame, the same every time', async () => {
   const page = await newPage();
-  await go(page, 'index.html'); await sleep(1000);
-  const top = await page.evaluate(() => document.querySelectorAll('.show')[0].getBoundingClientRect().top + scrollY);
-  await page.evaluate((y) => window.scrollTo(0, y), top); await sleep(300);
-  await page.mouse.move(W / 2, H / 2);
-  for (let i = 0; i < 12; i++) { await page.mouse.wheel(0, 40); await sleep(30); }
-  await sleep(900);
-  ok(await dots(page, 0) === 2, 'a long gesture gave ' + (await dots(page, 0) - 1) + ' steps');
-  near(await page.evaluate(() => scrollY), top, 1, 'scrollY during the gesture');
+  await go(page, 'index.html'); await sleep(800);
+  await page.evaluate(() => { const e = document.getElementById('brennock'); window.scrollTo(0, e.getBoundingClientRect().top + scrollY); });
+  const log = await page.evaluate(() => new Promise((res) => {
+    const f = document.getElementById('brennockLoop'), v = f.querySelector('video'), st = f.querySelector('.loop-still'), out = []; let last = '', t0 = null;
+    const iv = setInterval(() => {
+      const k = st.classList.contains('on') ? 'still' : 'moving';
+      if (k !== last) { const t = performance.now(); if (t0 === null && k === 'moving') t0 = t; out.push([k, t0 === null ? 0 : (t - t0) / 1000]); last = k; }
+      if (t0 !== null && performance.now() - t0 > 12500) { clearInterval(iv); res(out); }
+    }, 20);
+  }));
+  const moving = log.filter((r) => r[0] === 'moving').map((r) => r[1]), still = log.filter((r) => r[0] === 'still').map((r) => r[1]);
+  // the truck starts moving at 0, 4, 8, 12 s and the picture goes back to the first frame 2 s into each moving phase (2, 6, 10 s)
+  ok(moving.length >= 3, 'moving phases: ' + moving.join(','));
+  moving.slice(1).forEach((t, i) => near(t, 4 * (i + 1), 0.15, 'start of moving phase ' + (i + 2)));
+  still.filter((t) => t > 0).forEach((t, i) => near(t, 4 * i + 2, 0.15, 'return to the first frame ' + (i + 1)));
+  console.log('      loop phases (s): ' + log.map((r) => r[0] + '@' + r[1].toFixed(2)).join('  '));
+  ok(!(await page.evaluate(() => document.querySelector('#brennockLoop video:nth-of-type(2)'))), 'a second (third-state) video is still in the Brennock frame');
   await page.ctx.close();
 });
 
-test('home: scrolling down into KUS snaps it to the top, ArrowDown and ArrowUp step it', async () => {
+test('home: KUS plays cover > home > profile > shift and break times, turning right to left all the way, no scroll lock', async () => {
   const page = await newPage();
-  await go(page, 'index.html'); await sleep(1000);
-  const top = await page.evaluate(() => document.getElementById('kus').getBoundingClientRect().top + scrollY);
-  await page.evaluate((y) => window.scrollTo(0, y), top - 400); await sleep(300);
-  await wheel(page); await sleep(1500);
-  near(await page.evaluate(() => document.getElementById('kus').getBoundingClientRect().top), 0, 3, 'KUS top after the snap');
-  ok(await page.evaluate(() => document.querySelectorAll('#kus .show-steps i').length) === 3, 'KUS has no three dashes');
-  await page.keyboard.press('ArrowDown'); await sleep(200);
-  ok(await page.evaluate(() => document.querySelectorAll('#kus .show-steps i.on').length) === 2, 'ArrowDown did not step KUS');
-  await page.keyboard.press('ArrowUp'); await sleep(200);
-  ok(await page.evaluate(() => document.querySelectorAll('#kus .show-steps i.on').length) === 1, 'ArrowUp did not step back');
+  await go(page, 'index.html'); await sleep(800);
+  await page.evaluate(() => { const e = document.getElementById('kus'); window.scrollTo(0, e.getBoundingClientRect().top + scrollY); });
+  const snap = () => page.evaluate(() => {
+    const m = (el, y) => { const t = getComputedStyle(el).transform; if (t === 'none') return 0; const v = t.match(/matrix(3d)?\(([^)]+)\)/)[2].split(',').map(Number); return v.length === 16 ? v[y ? 13 : 12] : v[y ? 5 : 4]; };
+    const solo = document.getElementById('kusSolo'), t = getComputedStyle(solo).transform, mm = t === 'none' ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] : t.match(/matrix3d\(([^)]+)\)/)[1].split(',').map(Number);
+    const ang = Math.atan2(mm[2], mm[0]) * 180 / Math.PI * -1;   // rotateY(+a) -> m13 = sin(a)... sign flipped so positive = facing right
+    const w = document.querySelector('.ks-home').getBoundingClientRect().width || 1;
+    return { ang, cover: Math.round(m(document.querySelector('.ks-cover'))), home: Math.round(m(document.querySelector('.ks-home'))), prof: Math.round(m(document.querySelector('.ks-prof'))), strip: Math.round(m(document.getElementById('kusStrip'), true)) };
+  });
+  const rows = []; const t0 = Date.now();
+  while (Date.now() - t0 < 12800) { rows.push([Date.now() - t0, await snap()]); await sleep(250); }
+  const at = (ms) => rows.reduce((b, r) => (Math.abs(r[0] - ms) < Math.abs(b[0] - ms) ? r : b))[1];
+  // order: cover alone, then home, then profile, then the profile scrolled
+  ok(at(900).home > 100 && at(900).prof > 100, 'at 0.9 s home/profile should still be waiting to the right: ' + JSON.stringify(at(900)));
+  ok(at(2900).home === 0 && at(2900).prof > 100, 'at 2.9 s the home page should be showing: ' + JSON.stringify(at(2900)));
+  ok(at(5200).prof === 0 && at(5200).strip === 0, 'at 5.2 s the profile should be showing, not yet scrolled: ' + JSON.stringify(at(5200)));
+  ok(at(6200).strip < -100 && at(6200).strip > -800, 'at 6.2 s the profile should be scrolling: ' + JSON.stringify(at(6200)));
+  ok(at(12000).strip === -1175 || Math.abs(at(12000).strip + 1175) < 3, 'at the end the profile should be on the shift and break times: ' + JSON.stringify(at(12000)));
+  // rotation: starts facing right (+), ends facing left (-), strictly decreasing, no jumps
+  const angs = rows.map((r) => r[1].ang);
+  ok(angs[0] > 15 && angs[angs.length - 1] < -15, 'rotation should run from right-facing to left-facing: ' + angs[0].toFixed(1) + ' -> ' + angs[angs.length - 1].toFixed(1));
+  for (let i = 1; i < angs.length; i++) ok(angs[i] <= angs[i - 1] + 0.05 && angs[i - 1] - angs[i] < 3.5, 'rotation not continuous at ' + rows[i][0] + ' ms: ' + angs[i - 1].toFixed(2) + ' -> ' + angs[i].toFixed(2));
+  console.log('      rotation ' + angs[0].toFixed(1) + '° -> ' + angs[angs.length - 1].toFixed(1) + '° (monotonic, steps <= 3.5°)');
+  const y0 = await page.evaluate(() => scrollY); await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 300); await sleep(300);
+  ok(await page.evaluate(() => scrollY) > y0 + 250, 'the page did not scroll freely while KUS was on screen');
+  await page.ctx.close();
+});
+
+for (const [kind, slug] of [['kus', 'kus'], ['master', 'master-id'], ['match', 'match-id'], ['pass', 'passpath']]) {
+  for (const file of kind === 'kus' ? ['work.html'] : ['index.html', 'work.html']) {
+    test('app card hover (' + file + '): ' + slug + ' plays its screens, only the top half shows, mouse-out returns to rest', async () => {
+      const page = await newPage();
+      await go(page, file); await sleep(1200);
+      const card = page.locator('.card:has(.ac[data-ac="' + kind + '"])').first();
+      await card.scrollIntoViewIfNeeded(); await sleep(400);
+      const geo = await card.evaluate((c) => { const a = c.querySelector('.acs').getBoundingClientRect(), u = c.querySelector('.acui').getBoundingClientRect(); return { w: a.width, h: a.height, uiH: u.height, hasPhone: !!c.querySelector('.phone') }; });
+      ok(!geo.hasPhone, 'a phone mock-up is still in the card');
+      ok(geo.uiH / geo.h > 1.9 && geo.uiH / geo.h < 2.2, 'the card should show about the top half of the screen, got ' + (geo.h / geo.uiH * 100).toFixed(0) + ' %');
+      const box = await card.locator('.card-img').boundingBox();
+      const state = () => card.evaluate((c, k) => {
+        const m = (el, y) => { const t = getComputedStyle(el).transform; if (t === 'none') return 0; const v = t.match(/matrix(3d)?\(([^)]+)\)/)[2].split(',').map(Number); return v.length === 16 ? v[y ? 13 : 12] : v[y ? 5 : 4]; };
+        const q = (s) => c.querySelector(s), r = q('.acr');
+        const o = { rest: +getComputedStyle(r).opacity };
+        if (k === 'kus') Object.assign(o, { home: Math.round(m(q('.k-home'))), prof: Math.round(m(q('.k-prof'))), strip: Math.round(m(q('.kstrip'), true)) });
+        if (k === 'master') Object.assign(o, { fb: Math.round(m(q('.m-fb'))), q: Math.round(m(q('.m-q'))) });
+        if (k === 'match') Object.assign(o, { t: +q('video').currentTime.toFixed(1), paused: q('video').paused });
+        if (k === 'pass') Object.assign(o, { t: +q('video').currentTime.toFixed(1), smoke: +getComputedStyle(q('.acfade')).opacity });
+        return o;
+      }, kind);
+      const rest0 = await state(); ok(rest0.rest > 0.99, 'at rest the resting screen is not showing: ' + JSON.stringify(rest0));
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await sleep(1300); const s1 = await state();
+      await sleep(5600); const s2 = await state();
+      ok(s1.rest < 0.01 && s2.rest < 0.01, 'the resting overlay stayed on during the hover');
+      if (kind === 'kus') { ok(s1.home === 0, 'KUS: home page not showing at 1.3 s ' + JSON.stringify(s1)); ok(s2.prof === 0 && Math.abs(s2.strip + 1320) < 3, 'KUS: profile should end on the shift and break times ' + JSON.stringify(s2)); }
+      if (kind === 'master') { ok(s1.fb === 0 && s1.q > 100, 'Master ID: Premier League screen not showing at 1.3 s ' + JSON.stringify(s1)); ok(s2.q === 0, 'Master ID: question start screen not showing at the end ' + JSON.stringify(s2)); }
+      if (kind === 'match') { ok(s1.t > 0.8 && !s1.paused, 'Match ID: the duel recording is not playing ' + JSON.stringify(s1)); ok(s2.t >= 4 && s2.t < 5 && s2.paused, 'Match ID: the recording should hold the snowy screen ' + JSON.stringify(s2)); }
+      if (kind === 'pass') { ok(s1.t > 0.8 && s1.smoke < 0.2, 'PassPath: the dial recording should be playing ' + JSON.stringify(s1)); ok(s2.smoke > 0.99, 'PassPath: the smoky screen should have faded in ' + JSON.stringify(s2)); }
+      await page.mouse.move(5, 5); await sleep(700); const s3 = await state();
+      ok(s3.rest < 0.01 && (kind !== 'kus' || (s3.home === 402 && s3.prof === 402 && s3.strip === 0)) && (kind !== 'master' || (s3.fb === 402 && s3.q === 402)) && (kind !== 'match' || s3.t === 0) && (kind !== 'pass' || (s3.t === 0 && s3.smoke === 0)), 'mouse-out did not return to rest ' + JSON.stringify(s3));
+      ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+      await page.ctx.close();
+    });
+  }
+}
+
+for (const slug of slugs) {
+  test('project ' + slug + ': every recording starts from its first frame when its block comes into view; covers play once; next-project bar image loads', async () => {
+    const page = await newPage();
+    await page.addInitScript(() => {
+      window.__v = [];
+      document.addEventListener('playing', (e) => { if (e.target.tagName === 'VIDEO') window.__v.push([e.target.getAttribute('data-src') || e.target.currentSrc, e.target.currentTime, e.target.loop]); }, true);
+    });
+    await go(page, slug + '.html'); await sleep(900);
+    const H = await page.evaluate(() => document.documentElement.scrollHeight);
+    await page.mouse.move(W / 2, H / 2 > 400 ? 400 : H / 2);
+    // real wheel gestures (the first one opens the page), down to the footer and back up to the top
+    for (let i = 0; i < 200; i++) { await page.mouse.wheel(0, 260); await sleep(140); if (await page.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 2)) break; }
+    await sleep(300);
+    // back up through the page: every recording that comes into view again starts from the beginning again
+    for (let i = 0; i < 200; i++) { await page.mouse.wheel(0, -260); await sleep(140); if (await page.evaluate(() => scrollY <= 0)) break; }
+    await sleep(500);
+    const ev = await page.evaluate(() => window.__v), n = await page.evaluate(() => document.querySelectorAll('video[data-src]').length);
+    ok(ev.length >= n, 'only ' + ev.length + ' of ' + n + ' recordings ever started');
+    const late = ev.filter((e) => e[1] > 0.4);
+    ok(late.length === 0, 'recordings that started halfway: ' + late.map((e) => e[0].split('/').pop() + '@' + e[1].toFixed(2)).join(', '));
+    const cover = await page.evaluate(() => { const v = document.querySelector('.cover video'); return v ? { loop: v.loop, once: v.hasAttribute('data-once') } : null; });
+    const still = await page.evaluate(() => !!document.querySelector('.cover img'));
+    ok(still || (cover && cover.loop === false && cover.once), 'the cover should play once (or be a still): ' + JSON.stringify(cover));
+    const nx = await page.evaluate(() => { const i = document.querySelector('.next img'); return i ? { w: i.naturalWidth, h: i.naturalHeight, src: i.getAttribute('src') } : null; });
+    await page.evaluate(() => document.querySelector('.next img').scrollIntoView()); await sleep(600);
+    const nx2 = await page.evaluate(() => { const i = document.querySelector('.next img'); return { w: i.naturalWidth, h: i.naturalHeight }; });
+    ok(nx2.w > 1000 && nx2.h > 500, 'the next-project image did not load: ' + JSON.stringify(nx2));
+    ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+    await page.ctx.close();
+  });
+}
+
+test('kenilworth: page-specific cover and emergency frames are hero height, every other cover keeps its own shape', async () => {
+  const page = await newPage();
+  await go(page, 'kenilworth.html'); await sleep(800);
+  const k = await page.evaluate(() => [...document.querySelectorAll('.frame')].slice(0, 4).map((f) => { const r = f.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), f.querySelector('video')?.getAttribute('data-src') || '']; }));
+  const cover = k[0], brings = k[1], emerg = k.find((f) => /emergency/.test(f[2]));
+  near(cover[0] / cover[1], 1440 / 720, 0.03, 'Kenilworth cover shape'); near(emerg[0] / emerg[1], 1440 / 720, 0.03, 'Emergency frame shape');
+  const reg = k.find((f) => /register/.test(f[2])); near(reg[0] / reg[1], 1440 / 900, 0.03, 'the registration frame keeps its height');
+  const pw = await page.evaluate(() => { const v = [...document.querySelectorAll('.frame video')].find((x) => /trust/.test(x.getAttribute('data-src'))); const r = v.parentElement.getBoundingClientRect(); return [r.width, r.height]; });
+  ok(pw[0] / pw[1] < 2.4, 'People we trust frame is still a strip: ' + (pw[0] / pw[1]).toFixed(2));
+  const other = await page.evaluate(async () => { const r = await fetch('work.css'); return (await r.text()).length; }); ok(other > 1000, 'work.css missing');
+  await page.ctx.close();
+  const p2 = await newPage(); await go(p2, 'brennock.html'); await sleep(600);
+  const bc = await p2.evaluate(() => { const r = document.querySelector('.cover .frame').getBoundingClientRect(); return r.width / r.height; }); near(bc, 1.6, 0.02, 'Brennock cover keeps 16:10'); await p2.ctx.close();
+});
+
+test('kus: the profile card comes forward and goes back as the day-off card, and only then switches to the working day', async () => {
+  const page = await newPage();
+  await go(page, 'kus.html'); await sleep(900);
+  await page.evaluate(() => window.scrollTo(0, document.getElementById('b-profile').getBoundingClientRect().top + scrollY - 80));
+  await sleep(300);
+  const log = await page.evaluate(() => new Promise((res) => {
+    const b = document.getElementById('b-profile'), out = []; const t0 = performance.now();
+    const iv = setInterval(() => {
+      const lifts = [...b.querySelectorAll('.lifts .lift')].filter((l) => getComputedStyle(l).visibility === 'visible');
+      const alt = b.querySelector('img.alt'); out.push([Math.round(performance.now() - t0), lifts.map((l) => l.getAttribute('src').split('/').pop()).join('|'), +(+getComputedStyle(alt).opacity).toFixed(2)]);
+      if (performance.now() - t0 > 9000) { clearInterval(iv); res(out); }
+    }, 60);
+  }));
+  const liftOn = log.filter((r) => r[1]), names = [...new Set(liftOn.map((r) => r[1]))];
+  ok(liftOn.length > 5 && names.join() === 'c-profile-off.png', 'the card in front should only ever be the day-off card: ' + names.join());
+  ok(!log.some((r) => r[1] && r[2] > 0.02), 'the page switched to the working day while the card was in front');
+  const lastLift = Math.max(...liftOn.map((r) => r[0])), switched = log.find((r) => r[2] > 0.5);
+  ok(switched && switched[0] > lastLift, 'the working day should appear only after the card has settled');
+  console.log('      card in front ' + liftOn[0][0] + '–' + lastLift + ' ms (day off); working day shown from ' + switched[0] + ' ms');
+  ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+  await page.ctx.close();
+});
+
+test('match-id: the loading bar fills once and stops', async () => {
+  const page = await newPage();
+  await go(page, 'match-id.html'); await sleep(500);
+  await page.evaluate(() => { const c = document.getElementById('b-cover'); window.scrollTo(0, c.getBoundingClientRect().top + scrollY - 40); });
+  const widths = []; const t0 = Date.now();
+  while (Date.now() - t0 < 12000) { widths.push(await page.evaluate(() => { const i = document.querySelector('#b-cover .bar i'); return Math.round(parseFloat(getComputedStyle(i).width)) + '/' + getComputedStyle(i).opacity; })); await sleep(150); }
+  const full = widths.indexOf('190/1');
+  ok(full >= 0, 'the bar never filled: ' + [...new Set(widths)].join(' '));
+  ok(widths.slice(full).every((w) => w === '190/1'), 'the bar emptied or restarted after it filled: ' + [...new Set(widths.slice(full))].join(' '));
+  ok(widths.slice(0, full).every((w) => w !== '0/0'), 'the bar emptied while filling');
+  console.log('      bar full after ' + (full * 0.15).toFixed(1) + ' s and stayed full for ' + ((widths.length - full) * 0.15).toFixed(1) + ' s');
   await page.ctx.close();
 });
 
@@ -452,7 +610,7 @@ test('contact: grid layout (3x5, link row, posts in the given cells) and the lin
   }
 });
 
-test('contact: Instagram grid cycle (wave in, hold, slot machine < 1 s, settle, wave out, rest, repeat) and it pauses when out of view', async () => {
+test('contact: Instagram grid cycle (slow fade-in one by one, the tall building last and late, hold, fade-out, rest, repeat; no shuffling) and it pauses when out of view', async () => {
   const page = await newPage();
   await page.addInitScript(() => {
     window.__ig = []; const start = () => { const g = document.querySelector('.ig'); if (!g) return setTimeout(start, 20); const t0 = performance.now(); const cells = [...g.querySelectorAll('.ph')];
@@ -462,27 +620,25 @@ test('contact: Instagram grid cycle (wave in, hold, slot machine < 1 s, settle, 
   await go(page, 'contact.html'); await sleep(27500);
   const ev = await page.evaluate(() => window.__ig);
   const on = ev.filter((e) => e[1] === 'class' && e[3]), off = ev.filter((e) => e[1] === 'class' && !e[3] && e[0] > 800);
-  ok(on.length >= 16, 'expected two fade-in waves, got ' + on.length + ' fades in');
+  ok(on.length >= 9, 'expected the first cycle and the start of the second, got ' + on.length + ' fades in');
   const wave1 = on.slice(0, 8), idx = wave1.map((e) => e[2]);
-  ok(idx.join() === '0,1,2,3,4,5,6,7', 'fade-in order is ' + idx.join() + ' (cells 1,2,3,7,8,9,11,14)');
-  const gaps = wave1.slice(1).map((e, i) => e[0] - wave1[i][0]); ok(gaps.every((g) => g > 150 && g < 280), 'fade-in steps (each starts as the previous is halfway, 210 ms): ' + gaps.map(Math.round).join(' '));
-  const allOn = wave1[7][0] + 420;
-  const slotEv = ev.filter((e) => e[1] === 'src' && e[0] > allOn);
-  ok(slotEv.length > 20, 'slot machine produced only ' + slotEv.length + ' changes');
-  const s0 = slotEv[0][0], s1 = slotEv.filter((e) => e[0] < s0 + 1500).pop()[0];
-  near(s0 - allOn, 3500, 400, 'hold before the slot moment'); ok(s1 - s0 < 1000, 'slot moment lasted ' + Math.round(s1 - s0) + ' ms (must be < 1000)');
-  const seen = new Set(slotEv.filter((e) => e[0] < s0 + 1500).map((e) => e[3])); ok(seen.size >= 6, 'slot showed only ' + seen.size + ' different posts');
-  const finalSrc = {}; slotEv.filter((e) => e[0] < s0 + 1500).forEach((e) => { finalSrc[e[2]] = e[3]; });
-  const mineSrc = ['01', '02', '03', '07', '08', '09', '11', '14'].map((n) => n + '.jpg'); ok(mineSrc.every((s, i) => finalSrc[i] === s), 'cells did not settle back on the exact order: ' + JSON.stringify(finalSrc));
-  ok(slotEv.some((e) => /^0[456]\.jpg$/.test(e[3])), 'posts 4, 5, 6 never appeared in the slot moment');
-  const outside = ev.filter((e) => e[1] === 'src' && (e[0] < allOn)); ok(outside.length === 0, 'photos changed outside the slot moment');
-  const out1 = off.slice(0, 8), oi = out1.map((e) => e[2]); ok(oi.join() === '0,1,2,3,4,5,6,7', 'fade-out order is ' + oi.join());
-  ok(on[8][0] - out1[7][0] > 1200 && on[8][0] - out1[7][0] < 2400, 'rest with the empty grid before the next cycle: ' + Math.round(on[8][0] - out1[7][0]) + ' ms (incl. last fade)');
-  console.log(`      wave-in steps ${gaps.map(Math.round).join('/')} ms; hold ${Math.round(s0 - allOn)} ms; slot ${Math.round(s1 - s0)} ms with ${seen.size} different posts; second cycle starts ${Math.round(on[8][0])} ms`);
+  ok(idx.join() === '0,1,2,3,4,5,7,6', 'fade-in order is ' + idx.join() + ' (cells 1,2,3,7,8,9,14, and the tall building 11 last)');
+  const gaps = wave1.slice(1).map((e, i) => e[0] - wave1[i][0]);
+  ok(gaps.slice(0, 6).every((g) => g > 800 && g < 1050), 'the first seven arrive one every ~0.9 s: ' + gaps.map(Math.round).join(' '));
+  ok(gaps[6] > 3800 && gaps[6] < 4500, 'the tall building should come in noticeably late (~4.1 s after the one before it): ' + Math.round(gaps[6]) + ' ms');
+  ok(getComputedStyleOk(await page.evaluate(() => getComputedStyle(document.querySelector('.ig .ph')).transitionDuration)), 'fade is not slow');
+  ok(ev.filter((e) => e[1] === 'src').length === 0, 'photos were swapped (' + ev.filter((e) => e[1] === 'src').length + ' src changes): the shuffling must be gone');
+  const allOn = wave1[7][0];
+  const out1 = off.slice(0, 8), oi = out1.map((e) => e[2]);
+  ok(oi.join() === '0,1,2,3,4,5,7,6', 'fade-out order is ' + oi.join());
+  near(out1[0][0] - allOn, 5200 + 900, 500, 'hold with every photo shown');
+  const og = out1.slice(1).map((e, i) => e[0] - out1[i][0]); ok(og.every((g) => g > 380 && g < 560), 'fade-out steps: ' + og.map(Math.round).join(' '));
+  ok(on[8][0] - out1[7][0] > 1900 && on[8][0] - out1[7][0] < 2700, 'rest with the empty grid before the next cycle: ' + Math.round(on[8][0] - out1[7][0]) + ' ms');
+  console.log(`      fade-in steps ${gaps.map(Math.round).join('/')} ms; hold ${Math.round(out1[0][0] - allOn)} ms; fade-out steps ${og.map(Math.round).join('/')} ms; second cycle starts ${Math.round(on[8][0])} ms`);
   // paused when out of view: scroll away, the grid resets and nothing moves any more
   const p2 = await newPage();
   await go(p2, 'index.html'); await sleep(1200);
-  await p2.evaluate(() => document.querySelector('.ig').scrollIntoView({ block: 'center' })); await sleep(1500);
+  await p2.evaluate(() => document.querySelector('.ig').scrollIntoView({ block: 'center' })); await sleep(3000);
   ok(await p2.evaluate(() => document.querySelectorAll('.ig .ph.on').length) > 2, 'animation did not start in view');
   await p2.evaluate(() => window.scrollTo(0, 0)); await sleep(800);
   ok(await p2.evaluate(() => document.querySelectorAll('.ig .ph.on').length) === 0, 'grid kept showing after leaving the view');

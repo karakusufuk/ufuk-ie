@@ -80,7 +80,7 @@
   setTimeout(go, 350); setTimeout(go, 900); setTimeout(function () { moved = true; }, 1600);
 })();</script>
 <link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="fonts/fonts.css"><link rel="stylesheet" href="apps-cards.css">
 <link rel="stylesheet" href="ig.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="ig.css"></noscript>
 <style>
 /* Layout: gallery page — work fills the frame, the page itself stays quiet; asymmetric white gaps (top + left) recur in hero and showcases */
@@ -108,10 +108,10 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 /* ---------- HERO ---------- */
 .hero{position:relative;height:100vh;min-height:620px;background:var(--ground)}
 .hero-stage{position:absolute;top:var(--gap);left:var(--gap);right:0;bottom:0;overflow:hidden;background:var(--night)}
-.hero-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hero-stage #vloop{opacity:0}
+.hero-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter 1.2s ease,transform 1.2s ease}
+.hero-stage #vloop{opacity:0;transition:filter 1.2s ease,transform 1.2s ease,opacity .4s linear}
 .hero-stage.loop #vloop{opacity:1}
-.hero-stage.loop #vid{opacity:0}
+.hero-stage.loop #vid{opacity:0;transition:opacity 0s .5s}
 .hero-stage.blur video{filter:blur(9px);transform:scale(1.03)}
 .hero-dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:1}
 .hero-title{opacity:0;transition:opacity .8s ease}.hero-stage.blur .hero-title{opacity:1}
@@ -139,7 +139,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 
 /* ---------- SHOWCASES ---------- */
 .show{position:relative}
-.show-pin{position:sticky;top:0;height:100vh;min-height:620px;display:grid;grid-template-columns:1fr 1fr;background:var(--ground);overflow:hidden}
+.show-pin{position:relative;height:100vh;min-height:620px;display:grid;grid-template-columns:1fr 1fr;background:var(--ground);overflow:hidden}
 .show-text{padding:0 64px 0 var(--gap);display:flex;flex-direction:column;justify-content:center;gap:22px;min-width:0}
 .show-text h2{font-size:clamp(44px,4.6vw,76px);line-height:.95;letter-spacing:-.04em}
 .show-sector{font-size:17px;color:var(--ink-2)}
@@ -161,9 +161,19 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .show-frame video.band{background:#2A332E}
 .show-frame video.sq{background:var(--ground)}
 .show-frame:has(video.sq.on){background:var(--ground)}
+/* KUS: one frameless phone screen that slowly turns from facing right to facing left while it plays */
+.show-frame > .kus-stage{opacity:1;transform:none;transition:none;display:flex;align-items:center;justify-content:center;perspective:1700px;overflow:hidden}
+.kus-solo{position:relative;height:84%;aspect-ratio:402/874;border-radius:var(--kr,38px);overflow:hidden;background:#08163a;transform:rotateY(22deg);will-change:transform;backface-visibility:hidden}
+.kui{position:absolute;left:0;top:0;width:402px;height:874px;transform-origin:0 0;transform:scale(var(--k,.7))}
+.ks{position:absolute;inset:0;background:#08163a;overflow:hidden}
+.ks-home,.ks-prof{transform:translateX(100%)}
+.ks > img{position:absolute;left:0;top:0;width:402px;height:874px;object-fit:cover;max-width:none}
+.kstrip{position:absolute;left:0;top:0;width:402px;height:2100px;will-change:transform}
+.kstrip img{position:absolute;left:0;width:402px;max-width:none}
+.kstrip .fe{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 26px);mask-image:linear-gradient(to bottom,transparent 0,#000 26px)}
+.kfix{position:absolute;left:0;width:402px;max-width:none;z-index:4}
 
 /* KUS screens */
-.kus-stage{display:flex;align-items:center;justify-content:center;gap:28px;background:#E2E6EC}
 .phone{width:min(300px,30%);aspect-ratio:9/19.5;background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;font-size:12px;color:#1C2330;box-shadow:0 1px 0 rgba(0,0,0,.04)}
 .phone.mid{width:min(330px,34%)}
 .ph-top{background:#1E3A5F;color:#fff;padding:22px 16px 14px;display:flex;flex-direction:column;gap:4px}
@@ -198,6 +208,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 .show.dark .show-steps i{background:#2A303B}
 .show.dark .show-steps i.on{background:var(--pink)}
 .show.dark .show-frame,.show.dark .kus-stage{background:#1A1F28}
+.show-frame > .loop-still{transition:opacity .35s ease;transform:none;object-fit:contain;background:var(--ground)}
+.show-frame > .loop-still:not(.on){opacity:0}
 .card-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#E4E8EE;grid-column:2;grid-row:1}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform 4s cubic-bezier(.25,.6,.3,1)}
 
@@ -241,14 +253,13 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 @media (max-width:900px){
   :root{--gap:24px}
   /* showcases on a phone, top to bottom: the title, the picture (it gets the middle of the screen), then the text, the steps and the button */
-  .show-pin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto auto}
+  .show-pin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto}
   .show-text{display:contents}
   .show-text h2{grid-row:1;padding:48px 24px 0}
   .show-sector{grid-row:2;padding:10px 24px 0}
   .show-frame{grid-row:3;margin:20px 0 20px 24px}
   .show-text p{grid-row:4;padding:0 24px}
-  .show-steps{grid-row:5;margin:18px 24px 0}
-  .show-link{grid-row:6;justify-self:start;margin:22px 24px 28px}
+  .show-link{grid-row:5;justify-self:start;margin:22px 24px 28px}
   .cols,.how{grid-template-columns:1fr}
   .col.r{padding-top:0!important}
   .cols{max-width:none}
@@ -261,7 +272,6 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   .show-sector{padding-top:6px;font-size:15px}
   .show-frame{margin:14px 0 14px 24px}
   .show-text p{font-size:16.5px;line-height:1.45}
-  .show-steps{margin-top:12px}
   .show-link{margin-top:14px;margin-bottom:20px;padding:13px 22px}
 }
 /* tablet, upright: the desktop composition scaled down — the whole 16:9 picture, same gaps in proportion */
@@ -279,12 +289,6 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   .hero-title{padding:0 12px}
   .hero-title h1{font-size:min(6.6vw,40px)}
 }
-/* KUS phone mock-ups keep their real size and are zoomed down together, so nothing inside them is cut */
-@media (max-width:600px){
-  .kus-stage{zoom:.5;gap:20px}
-  .kus-stage .phone{flex:none;width:300px}.kus-stage .phone.mid{width:330px}
-}
-@media (max-width:360px){.kus-stage{zoom:.42}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -294,7 +298,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   <a class="hero-mark" href="index.html" aria-label="ufuk.ie, home">ufuk.ie</a>
   <nav class="hero-nav" aria-label="Main"><a href="work.html">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
   <div class="hero-stage" id="stage">
-    <video id="vid" src="img/hero-intro.mp4?v=7" data-green="16.4000" autoplay muted playsinline preload="auto"></video>
+    <video id="vid" src="img/hero-intro.mp4?v=8" data-type="3.6000" data-green="12.5000" autoplay muted playsinline preload="auto"></video>
     <video id="vloop" src="img/hero-loop.mp4?v=7" muted loop playsinline preload="auto"></video>
     <div class="hero-dim" id="dim" aria-hidden="true"></div>
     <div class="hero-title"><h1 id="headline" aria-label="You know your business. I know what it needs online."><span class="ln" aria-hidden="true">You know your business.</span><span class="ln" aria-hidden="true">I know what it needs online.</span><i class="caret" aria-hidden="true"></i></h1></div>
@@ -302,113 +306,53 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 </section>
 
 <!-- SHOWCASE 1 -->
-<section class="show" data-frames="3" data-steps="0,0,1" data-play="0:-,1:play,2:play" aria-label="Brennock Haulage">
+<section class="show" id="brennock" aria-label="Brennock Haulage">
   <div class="show-pin">
     <div class="show-text">
       <h2>Brennock Haulage</h2>
       <p>A ten-truck haulier that used to win work by phone. Buyers now see the real fleet, check the certificates for their load and request a quote in two minutes, and drivers apply straight from the careers page.</p>
-      <div class="show-steps"><i></i><i></i><i></i></div>
       <a class="show-link" href="brennock.html">See the case study</a>
     </div>
-    <div class="show-frame">
-      <video class="fit sq" src="img/sc/brennock-1.mp4" poster="img/sc/brennock-1.jpg" muted playsinline preload="auto" aria-label="Brennock homepage: the truck arrives at the dock"></video>
-      <video class="fit band" src="img/sc/brennock-2.mp4?v=3" poster="img/sc/brennock-2.jpg?v=3" muted loop playsinline preload="auto" aria-label="Brennock homepage: the sectors band drifts across"></video>
+    <div class="show-frame" id="brennockLoop">
+      <video class="fit sq on" src="img/sc/brennock-1.mp4" poster="img/sc/brennock-1.jpg" muted playsinline preload="auto" aria-label="Brennock homepage: over every mile, then the truck drives in"></video>
+      <img class="loop-still on" src="img/sc/brennock-1.jpg" width="900" height="900" alt="">
     </div>
   </div>
 </section>
 
 <!-- SHOWCASE 2: KUS -->
-<section class="show dark" id="kus" data-frames="3" aria-label="KUS">
+<section class="show dark" id="kus" aria-label="KUS">
   <div class="show-pin">
     <div class="show-text">
       <h2>KUS</h2>
       <div class="show-sector">Internal software · Distribution warehouse</div>
       <p>Rosters, roll call, holiday booking and training for a 150-person warehouse floor. Designed on the floor by someone who works it, used by real staff every shift.</p>
-      <div class="show-steps"><i></i><i></i><i></i></div>
       <a class="show-link" href="kus.html">How it was made</a>
     </div>
     <div class="show-frame">
-      <div class="kus-stage">
-        <div class="phone">
-          <div class="ph-top"><b>My roster</b><span>Week 44 · Chilled picking</span></div>
-          <div class="ph-body">
-            <div class="ph-row"><span>Mon 27</span><em>06:00 – 14:30</em></div>
-            <div class="ph-row"><span>Tue 28</span><em>06:00 – 14:30</em></div>
-            <div class="ph-row"><span>Wed 29</span><em>14:00 – 22:30</em></div>
-            <div class="ph-row"><span>Thu 30</span><span class="pill a">Holiday</span></div>
-            <div class="ph-row"><span>Fri 31</span><span class="pill a">Holiday</span></div>
-            <div class="ph-row"><span>Sat 1</span><em>Off</em></div>
-          </div>
-        </div>
-        <div class="phone mid">
-          <div class="ph-top"><b>Roll call</b><span>Night shift · 22:00 · Aisle 4–12</span></div>
-          <div class="ph-body">
-            <div class="ph-row"><span>Present</span><em class="ph-big">38</em></div>
-            <div class="ph-row"><span>A. Byrne</span><span class="pill g">In</span></div>
-            <div class="ph-row"><span>K. Nowak</span><span class="pill g">In</span></div>
-            <div class="ph-row"><span>D. Silva</span><span class="pill r">Absent</span></div>
-            <div class="ph-row"><span>S. Kelly</span><span class="pill a">Late 12m</span></div>
-            <div class="ph-row"><span>M. Rossi</span><span class="pill g">In</span></div>
-            <div class="ph-btn">Submit roll call</div>
-          </div>
-        </div>
-      </div>
-      <div class="kus-stage">
-        <div class="phone mid">
-          <div class="ph-top"><b>Holiday booking</b><span>November · Max 5 off per day</span></div>
-          <div class="ph-body">
-            <div class="ph-cal">
-              <span class="h">M</span><span class="h">T</span><span class="h">W</span><span class="h">T</span><span class="h">F</span><span class="h">S</span><span class="h">S</span>
-              <span>3</span><span>4</span><span>5</span><span>6</span><span class="f">7</span><span>8</span><span>9</span>
-              <span>10</span><span class="x">11</span><span class="x">12</span><span class="x">13</span><span>14</span><span>15</span><span>16</span>
-              <span>17</span><span>18</span><span class="f">19</span><span class="f">20</span><span>21</span><span>22</span><span>23</span>
-              <span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+      <div class="kus-stage on" id="kusStage" role="img" aria-label="The KUS app: the cover, the home page, then the profile scrolling up to the shift and break times">
+        <div class="kus-solo" id="kusSolo"><div class="kui" id="kusUi">
+          <div class="ks ks-cover"><img src="img/d/kus/loading.jpg" width="804" height="1748" alt=""></div>
+          <div class="ks ks-home"><img src="img/d/kus/home-on.jpg" width="804" height="1748" alt=""></div>
+          <div class="ks ks-prof">
+            <div class="kstrip" id="kusStrip">
+              <img src="img/d/kus/s757.jpg" style="top:0;height:766px" alt="">
+              <img class="fe" src="img/d/kus/s758.jpg" style="top:766px;height:730px" alt="">
+              <img src="img/d/kus/s760.jpg" style="top:1215px;height:834px" alt="">
+              <img class="fe s9t" src="img/d/kus/s759top.jpg" style="top:1215px;height:365px" alt="">
+              <img class="s9b" src="img/d/kus/s759bot.jpg" style="top:1580px;height:469px" alt="">
             </div>
-            <div class="ph-row"><span>11–13 Nov</span><span class="pill g">3 days free</span></div>
-            <div class="ph-row"><span>19–20 Nov</span><span class="pill r">Full</span></div>
-            <div class="ph-btn">Request 11–13 Nov</div>
+            <img class="kfix" src="img/d/kus/s-status.jpg" style="top:0;height:44px" alt="">
+            <img class="kfix" src="img/d/kus/s-nav.jpg" style="top:766px;height:74px" alt="">
           </div>
-        </div>
-        <div class="phone">
-          <div class="ph-top"><b>Requests</b><span>Team lead · 6 waiting</span></div>
-          <div class="ph-body">
-            <div class="ph-row"><span>Holiday · J. Walsh</span><span class="pill a">Review</span></div>
-            <div class="ph-row"><span>Uniform · size L</span><span class="pill g">Sent</span></div>
-            <div class="ph-row"><span>Work letter</span><span class="pill g">Ready</span></div>
-            <div class="ph-row"><span>Payslip query</span><span class="pill a">Open</span></div>
-            <div class="ph-row"><span>Holiday · P. Lynch</span><span class="pill r">Declined</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="kus-stage">
-        <div class="phone mid">
-          <div class="ph-top"><b>Training</b><span>New starter · Chilled picking</span></div>
-          <div class="ph-body">
-            <div class="ph-row"><span>Safe lifting</span><span class="pill g">Passed</span></div>
-            <div class="ph-row"><span>Pallet build</span><span class="pill g">Passed</span></div>
-            <div class="ph-row"><span>Damage &amp; claims</span><span class="pill a">In progress</span></div>
-            <div class="ph-bar"><i style="width:68%"></i></div>
-            <div class="ph-row"><span>Voice picking</span><span class="pill r">Locked</span></div>
-            <div class="ph-row"><span>Final test</span><span class="pill r">Locked</span></div>
-            <div class="ph-btn">Continue lesson 3</div>
-          </div>
-        </div>
-        <div class="phone">
-          <div class="ph-top"><b>This week</b><span>Performance · Picker 2214</span></div>
-          <div class="ph-body">
-            <div class="ph-row"><span>Cases picked</span><em>4,862</em></div>
-            <div class="ph-row"><span>BSI score</span><em>104%</em></div>
-            <div class="ph-row"><span>Errors</span><em>2</em></div>
-            <div class="ph-row"><span>Announcements</span><span class="pill a">1 new</span></div>
-          </div>
-        </div>
+        </div></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- SHOWCASE 3 -->
-<section class="show" data-frames="1" aria-label="Reilly Engineering">
+<section class="show" id="reilly" aria-label="Reilly Engineering">
   <div class="show-pin">
     <div class="show-text">
       <h2>Reilly Engineering</h2>
@@ -417,7 +361,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
       <a class="show-link" href="reilly.html">See the case study</a>
     </div>
     <div class="show-frame">
-      <video class="fit" src="img/sc/reilly-1.mp4" poster="img/sc/reilly-1.jpg" muted loop playsinline preload="auto" aria-label="Reilly Engineering: four stages of the service life"></video>
+      <video class="fit on" src="img/sc/reilly-1.mp4" poster="img/sc/reilly-1.jpg" muted loop playsinline preload="auto" aria-label="Reilly Engineering: four stages of the service life"></video>
     </div>
   </div>
 </section>
@@ -433,27 +377,26 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
       <a class="card" href="garvey.html"><div class="card-img"><img src="img/g_garvey.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_garvey.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Garvey Lennon</h3></div></a>
       <a class="card" href="ashgrove.html"><div class="card-img"><img src="img/g_ashgrove.jpg?v=6" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_ashgrove.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Ashgrove House</h3></div></a>
       <a class="card" href="fennel.html"><div class="card-img"><img src="img/g_fennel.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_fennel.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Fennel Dental</h3></div></a>
-      <a class="card" href="master-id.html"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>Master ID</span><span style="color:#C4577D">Q 7/10</span></div>
-        <div class="q">Which river runs through the centre of Lisbon?</div>
-        <div class="opts"><span>Douro</span><span class="ok">Tagus</span><span>Guadiana</span><span>Mondego</span></div>
-      </div></div></div><div class="card-meta"><h3>Master ID</h3></div></a>
+      <a class="card" href="master-id.html"><div class="card-img"><div class="ac" data-ac="master"><div class="acs"><div class="acui">
+<div class="acl m-cover"><img src="img/d/master-id/loading.jpg" width="804" height="1748" alt=""></div>
+<div class="acl go m-fb"><img src="img/d/master-id/football.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<div class="acl go m-q"><img src="img/ac/quiz-start.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<img class="acr on" src="img/d/master-id/loading.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h3>Master ID</h3></div></a>
       <a class="card" href="monument.html"><div class="card-img"><img src="img/g_monument.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_monument.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Monument</h3></div></a>
-      <a class="card" href="match-id.html"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>Match ID</span><span style="color:#4B3A9A">Level 12</span></div>
-        <div class="q">Match each word to its pair</div>
-        <div class="tiles"><span class="m">harbour</span><span class="m">port</span><span>swift</span><span class="d">calm</span><span>brave</span><span>quick</span><span class="d">still</span><span>bold</span></div>
-      </div></div></div><div class="card-meta"><h3>Match ID</h3></div></a>
+      <a class="card" href="match-id.html"><div class="card-img"><div class="ac" data-ac="match"><div class="acs"><div class="acui">
+<div class="acl"><video src="img/d/match-id/snow.mp4" poster="img/d/match-id/snow-0.jpg" muted playsinline preload="none" aria-hidden="true"></video></div>
+<img class="acr on" src="img/d/match-id/snow-0.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h3>Match ID</h3></div></a>
     </div>
     <div class="col r">
       <a class="card" href="bawn.html"><div class="card-img"><img src="img/g_bawn.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_bawn.mp4?v=4" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Bawn Growers</h3></div></a>
       <a class="card" href="tierney.html"><div class="card-img"><img src="img/g_tierney.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_tierney.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Tierney</h3></div></a>
       <a class="card" href="lear.html"><div class="card-img"><img src="img/g_lear.jpg?v=5" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_lear.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Lear Residence</h3></div></a>
-      <a class="card" href="passpath.html"><div class="card-img"><div class="app-stage"><div class="phone">
-        <div class="mid-top"><span>PassPath</span><span style="color:#2F7D5B">Learner · 23/40</span></div>
-        <div class="q">On a learner permit, who must sit in the front passenger seat?</div>
-        <div class="opts"><span>Any adult passenger</span><span class="ok">A full licence holder of 2+ years</span><span>Nobody, if L-plates are on</span></div>
-      </div></div></div><div class="card-meta"><h3>PassPath</h3></div></a>
+      <a class="card" href="passpath.html"><div class="card-img"><div class="ac" data-ac="pass"><div class="acs"><div class="acui">
+<div class="acl"><video src="img/d/passpath/speedo.mp4" poster="img/ac/speedo-0.jpg" muted playsinline preload="none" aria-hidden="true"></video><img class="acfade" src="img/d/passpath/enter.jpg" width="804" height="1748" alt="" loading="lazy"></div>
+<img class="acr on" src="img/ac/speedo-0.jpg" width="804" height="1748" alt="">
+</div></div></div></div><div class="card-meta"><h3>PassPath</h3></div></a>
       <a class="card" href="kenilworth.html"><div class="card-img"><img src="img/g_kenilworth.jpg?v=5" width="960" height="600" alt="" loading="lazy"><video class="hv" src="img/h_kenilworth.mp4?v=5" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Kenilworth Vets</h3></div></a>
       <a class="card" href="midland.html"><div class="card-img"><img src="img/g_midland.jpg?v=6" width="1440" height="900" alt="" loading="lazy"><video class="hv" src="img/h_midland.mp4?v=6" muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="card-meta"><h3>Midland Motors</h3></div></a>
     </div>
@@ -497,13 +440,17 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
   if(vid.play){ var ap=vid.play(); if(ap&&ap.catch) ap.catch(function(){ setTimeout(function(){ toLoop(); },600); }); }
   /* the intro ends on a lane clip that fills the screen with solid green. On that very frame (read from the video, not from a timer)
      the picture turns blurred and the headline starts; the solid green hides the switch. After the green only dark shots play. */
-  var heroDone=false, blurred=false, greenAt=parseFloat(vid.getAttribute('data-green'))||0;
+  var heroDone=false, blurred=false, greenAt=parseFloat(vid.getAttribute('data-green'))||0, typeAt=parseFloat(vid.getAttribute('data-type'))||0;
+  /* the headline must not wait for the end of the film: it starts at data-type (3.6 s into the video) and the picture blurs under it */
+  if(typeAt>0&&(!greenAt||typeAt<greenAt)) greenAt=typeAt;
   function blurNow(){ if(blurred) return; blurred=true; stage.classList.add('blur'); window.dispatchEvent(new Event('herotype')); }
   function toLoop(){ if(heroDone) return; heroDone=true; blurNow(); try{vloop.currentTime=0;}catch(e){} var p=vloop.play(); if(p&&p.then){ p.then(function(){ stage.classList.add('loop'); }, function(){ stage.classList.add('loop'); }); } else stage.classList.add('loop'); }
   vid.addEventListener('ended',toLoop);
   if(greenAt>0){
     if('requestVideoFrameCallback' in vid){ vid.requestVideoFrameCallback(function cb(now,md){ if(blurred) return; if(md.mediaTime>=greenAt-0.002) blurNow(); else vid.requestVideoFrameCallback(cb); }); }
     else (function poll(){ if(blurred||heroDone) return; if(vid.currentTime>=greenAt-0.002) blurNow(); else requestAnimationFrame(poll); })();
+    /* backup for pages whose frame callbacks are throttled (background tab, embedded view): the clock still reaches the same time */
+    vid.addEventListener('timeupdate',function(){ if(!blurred&&vid.currentTime>=greenAt-0.002) blurNow(); });
   }
   setTimeout(function(){ if(!heroDone && (vid.paused || vid.readyState<2)) toLoop(); },22000);
 
@@ -528,7 +475,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     for(i=1;i<20;i++)K.push([i===6?560:r3[(i-1)%r3.length],1,i,L2[i]]);
     K.push([110,1,20,' '],[620,1,21,'o']);                       /* "needs" … "online" */
     for(i=22;i<L2.length;i++)K.push([r2[(i-22)%r2.length],1,i,L2[i]]);
-    /* darkening behind the headline: nothing while line 1 is typed, then linear up to 70 % over the typing of line 2 */
+    /* darkening behind the headline: 55 % as soon as it starts (the film is still playing under it), then linear up to 70 % over the typing of line 2 */
     var dim=document.getElementById('dim'), calm=false; try{calm=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
     function stepMs(e){var m=K[e][0];return m<200?m*1.15:m*1.6;}
     var end1=-1;for(var q=0;q<K.length;q++){if(K[q][1]===0&&K[q][2]===L1.length-1&&K[q][3]!==null)end1=q;}
@@ -538,7 +485,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
       if(calm||e<end1)return;
       var n=e+1;
       if(n>=K.length){dim.style.transition='none';dim.style.opacity='.7';return;}
-      dim.style.transition='opacity '+Math.round(stepMs(n))+'ms linear';dim.style.opacity=(0.7*cum[n]/sum).toFixed(4);
+      dim.style.transition='opacity '+Math.round(stepMs(n))+'ms linear';dim.style.opacity=(0.55+0.15*cum[n]/sum).toFixed(4);
     }
     var pos={l:0,i:0};
     function place(){
@@ -559,7 +506,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
         depth();place();dimTo(k-1);next();
       },d);
     }
-    function go(){place();caret.classList.add('live');setTimeout(next,500);}
+    function go(){place();caret.classList.add('live');if(!calm){dim.style.transition='opacity 1200ms ease';dim.style.opacity='.55';}setTimeout(next,500);}
     addEventListener('resize',function(){if(caret.classList.contains('live'))place();});
     var started=false;function once(){if(!started){started=true;go();}}
     addEventListener('herotype',once);
@@ -577,85 +524,65 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
     },{passive:true});
   })();
 
-  /* ---------- showcases: one scroll gesture shows one new step and nothing else; the page only moves on after the last step ---------- */
-  var shows=[].slice.call(document.querySelectorAll('.show'));
-  var wide=function(){ return window.innerWidth>900; };
-  shows.forEach(function(s){
-    s._frames=[].slice.call(s.querySelectorAll('.show-frame > *'));
-    s._dots=[].slice.call(s.querySelectorAll('.show-steps i'));
-    var n=+s.dataset.frames;
-    s._map=(s.dataset.steps||'').split(',').filter(Boolean).map(Number); if(!s._map.length){ s._map=[]; for(var i=0;i<n;i++) s._map.push(i); }
-    s._play={}; (s.dataset.play||'').split(',').filter(Boolean).forEach(function(x){ var kv=x.split(':'); s._play[kv[0]]=kv[1]; });
-    s._max=s._map.length-1; s._step=-1;
-  });
-  function setStep(s,i){
-    if(s._step===i) return; s._step=i;
-    var fi=s._map[i];
-    s._frames.forEach(function(f,j){
-      var on=j===fi; f.classList.toggle('on',on);
-      if(f.tagName==='VIDEO'){
-        if(!on){ f.pause(); return; }
-        var mode=s._play[i]||'play';
-        if(mode==='-'){ f.pause(); try{f.currentTime=0;}catch(e){} }
-        else { if(i===0||s._map[i-1]!==fi){ try{f.currentTime=0;}catch(e){} } var p=f.play(); if(p&&p.catch)p.catch(function(){}); }
-      }
-    });
-    s._dots.forEach(function(d,j){d.classList.toggle('on',j<=i);});
+  /* ---------- showcases: nothing holds or steers the scroll; each one plays by itself while it is on screen ---------- */
+  var calm=false; try{calm=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+  function whenSeen(el,on,off,thr){
+    if(!('IntersectionObserver' in window)){ on(); return; }
+    var seen=false;
+    new IntersectionObserver(function(es){ es.forEach(function(e){
+      if(e.isIntersecting&&e.intersectionRatio>=thr&&!seen){ seen=true; on(); }
+      else if(!e.isIntersecting&&seen){ seen=false; off(); }
+    }); },{threshold:[0,thr]}).observe(el);
   }
-  function layout(){
-    shows.forEach(function(s){
-      if(wide()){ s.style.height='100vh'; }
-      else { s.style.height=((s._max+1)*100+40)+'vh'; }
-    });
-    fitKus();
-  }
-  /* phones and tablets: the KUS mock-ups keep their real proportions and are zoomed down together so they fit the picture's height, never cut */
-  function fitKus(){
-    var st=document.querySelector('.kus-stage'); if(!st) return;
-    if(wide()){ st.style.zoom=''; return; }
-    var vw=window.innerWidth, fh=st.parentNode.clientHeight, base=vw<=360?.42:vw<=600?.5:1;
-    var natural=vw<=600?715:Math.min(330,.34*(vw-24))*19.5/9;        /* the tall phone's height at zoom 1 */
-    var z=Math.min(base,(fh-16)/natural);
-    st.style.zoom=z>=1?'':String(Math.max(.2,+z.toFixed(3)));
-  }
-  layout(); shows.forEach(function(s){ setStep(s,0); });
-  /* phones and tablets: the steps follow the scroll through a taller section */
-  function onScroll(){
-    if(wide()) return;
-    var vh=window.innerHeight;
-    shows.forEach(function(s){
-      var r=s.getBoundingClientRect(), prog=(-r.top)/(s.offsetHeight-vh); prog=Math.max(0,Math.min(0.9999,prog));
-      setStep(s,Math.floor(prog*(s._max+1)));
-    });
-  }
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',function(){layout();onScroll();});
-  window.addEventListener('load',fitKus); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitKus);
-  /* desktop: wheel gestures are read one at a time */
-  var lastWheel=0, busyUntil=0;
-  function snapTo(s){ window.scrollTo({top:s.getBoundingClientRect().top+window.scrollY,behavior:'smooth'}); }
-  window.addEventListener('wheel',function(e){
-    if(!wide()||e.ctrlKey) return;
-    var now=performance.now(), fresh=now-lastWheel>200; lastWheel=now;
-    var dir=e.deltaY>0?1:e.deltaY<0?-1:0; if(!dir) return;
-    var vh=window.innerHeight;
-    for(var k=0;k<shows.length;k++){
-      var s=shows[k], top=s.getBoundingClientRect().top;
-      if(Math.abs(top)<3){
-        var can=dir>0? s._step<s._max : s._step>0;
-        if(can){ e.preventDefault(); if(fresh&&now>busyUntil){ setStep(s,s._step+dir); busyUntil=now+700; } return; }
-        if(now<busyUntil){ e.preventDefault(); return; }
-      } else if(dir>0 && top>0 && top<vh*0.92 && s._step<s._max){
-        e.preventDefault(); if(fresh&&now>busyUntil){ snapTo(s); busyUntil=now+850; } return;
-      } else if(dir<0 && top<0 && top>-vh*0.92 && s._step>0){
-        e.preventDefault(); if(fresh&&now>busyUntil){ snapTo(s); busyUntil=now+850; } return;
-      }
+
+  /* Brennock: "over every mile" held for 2 s, then the truck drives in for 2 s, then back to the first frame, over and over */
+  (function(){
+    var frame=document.getElementById('brennockLoop'); if(!frame) return;
+    var v=frame.querySelector('video'), still=frame.querySelector('.loop-still'), timers=[], live=false;
+    function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
+    function play(){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); }
+    function home(){ v.pause(); try{v.currentTime=0;}catch(e){} still.classList.add('on'); }
+    function cycle(){
+      if(!live) return;
+      later(function(){ try{v.currentTime=0;}catch(e){} still.classList.remove('on'); play(); },2000);   /* 0-2 s: the first frame; 2-4 s: the truck moves */
+      later(function(){ still.classList.add('on'); },4000);                                                /* back to the first frame, softly */
+      later(home,4400);
+      later(cycle,4000);
     }
-  },{passive:false});
-  window.addEventListener('keydown',function(e){
-    if(!wide()) return; var dir=({ArrowDown:1,PageDown:1,' ':1,ArrowUp:-1,PageUp:-1})[e.key]; if(!dir) return;
-    for(var k=0;k<shows.length;k++){ var s=shows[k]; if(Math.abs(s.getBoundingClientRect().top)<3){ var can=dir>0? s._step<s._max : s._step>0; if(can){ e.preventDefault(); setStep(s,s._step+dir); } return; } }
-  });
+    if(calm) return;
+    whenSeen(frame,function(){ live=true; home(); cycle(); },function(){ live=false; timers.forEach(clearTimeout); timers=[]; home(); },.4);
+  })();
+
+  /* KUS: cover -> home -> profile -> the profile scrolls up to the shift and break times; the screen turns from facing right to facing left all the way */
+  (function(){
+    var stage=document.getElementById('kusStage'); if(!stage) return;
+    var solo=document.getElementById('kusSolo'), ui=document.getElementById('kusUi'), strip=document.getElementById('kusStrip');
+    var cover=ui.querySelector('.ks-cover'), home=ui.querySelector('.ks-home'), prof=ui.querySelector('.ks-prof');
+    var top9=strip.querySelector('.s9t'), bot9=strip.querySelector('.s9b'), runs=[];
+    var PUSH='cubic-bezier(.32,.72,0,1)', SCROLL='cubic-bezier(.45,0,.2,1)', END=11500, ANG=22;
+    function fit(){ /* corner radius: 28/300 of the width, like every phone screen on the site */ var k=solo.clientWidth/402; ui.style.setProperty('--k',k); solo.style.setProperty('--kr',(37.5*k)+'px'); }
+    function A(el,frames,start,dur,ease){ runs.push(el.animate(frames,{delay:start,duration:dur,easing:ease||'linear',fill:'forwards'})); }
+    function stop(){ runs.forEach(function(a){a.cancel();}); runs=[]; }
+    function finalState(){ home.style.transform=prof.style.transform='none'; cover.style.visibility=home.style.visibility='hidden'; strip.style.transform='translateY(-1175px)'; top9.style.opacity=0; bot9.style.transform='translateY(224px)'; solo.style.transform='none'; }
+    function play(){
+      stop();
+      A(solo,[{transform:'rotateY('+ANG+'deg)'},{transform:'rotateY('+(-ANG)+'deg)'}],0,END);                       /* the whole film: right-facing to left-facing */
+      A(home,[{transform:'translateX(100%)'},{transform:'translateX(0)'}],1500,650,PUSH);                          /* cover -> home */
+      A(cover,[{transform:'translateX(0)'},{transform:'translateX(-28%)'}],1500,650,PUSH);
+      A(prof,[{transform:'translateX(100%)'},{transform:'translateX(0)'}],3800,650,PUSH);                          /* home -> profile */
+      A(home,[{transform:'translateX(0)'},{transform:'translateX(-28%)'}],3800,650,PUSH);
+      A(strip,[{transform:'translateY(0)'},{transform:'translateY(-726px)'}],5700,700,SCROLL);                     /* the profile scrolls up */
+      A(strip,[{transform:'translateY(-726px)'},{transform:'translateY(-1175px)'}],7500,550,SCROLL);               /* to the day's shift */
+      A(top9,[{opacity:1},{opacity:0}],8550,200);                                                                   /* the day opens: blocks and breaks */
+      A(bot9,[{transform:'translateY(0)'},{transform:'translateY(224px)'}],8550,450,'cubic-bezier(.3,.7,.2,1)');
+    }
+    window.addEventListener('resize',fit); fit(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fit); window.addEventListener('load',fit);
+    if(calm){ finalState(); return; }
+    whenSeen(stage,play,stop,.6);
+  })();
+
+  /* Reilly keeps its own looping film; it only has to start */
+  (function(){ var v=document.querySelector('#reilly video'); if(v){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } })();
 
   /* ---------- grid: hover plays the site video from the start ---------- */
   [].slice.call(document.querySelectorAll('.card')).forEach(function(card){
@@ -687,5 +614,6 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance
 })();
 </script>
 
+<script src="apps-cards.js" defer></script>
 <script src="ig.js" defer></script>
 </body></html>

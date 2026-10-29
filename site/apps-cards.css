@@ -1,0 +1,18 @@
+/* App cards (homepage grid and Work page): the real app screen, top half only, no phone frame. Hover plays the app's own screens. */
+.ac{position:absolute;inset:0;display:flex;justify-content:center;background:#E6E9EF;--k:.7}
+.ac.dark{background:#1A1F28}
+.ac[data-ac=kus]{--cr:.47}
+.acs{position:relative;height:100%;aspect-ratio:calc(402 / (874 * var(--cr,.5)));overflow:hidden;flex:none;background:#08163a}
+.acui{position:absolute;left:0;top:0;width:402px;height:874px;transform-origin:0 0;transform:scale(var(--k))}
+.acl{position:absolute;inset:0;overflow:hidden;background:#08163a}
+.acl.go{transform:translateX(100%)}
+.ac .acui img,.ac .acui video{position:absolute;left:0;top:0;width:402px;height:874px;max-width:none;object-fit:cover;transition:none;transform:none}
+.ac .acui .kstrip{position:absolute;left:0;top:0;width:402px;height:2400px;will-change:transform}
+.ac .acui .kstrip img{left:0;width:402px}
+.ac .acui .kstrip .fe{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 26px);mask-image:linear-gradient(to bottom,transparent 0,#000 26px)}
+.ac .acui img.acfade{opacity:0}
+.ac .acui img.acr{z-index:20;opacity:0;pointer-events:none}
+.ac .acui img.acr.on{opacity:1;transition:opacity .26s ease}
+.tag{z-index:3}
+/* the PassPath recording has a thin bar down its left edge: the screen is trimmed by 2.5 % on every side so it never shows */
+.ac[data-ac=pass] .acl,.ac[data-ac=pass] .acui img.acr{transform:scale(1.05)}

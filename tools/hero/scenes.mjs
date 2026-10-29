@@ -143,7 +143,7 @@ export const scenes = {
 // intro: sharp, light and dark shots, closing on the lane clip that ends in solid green (the blur starts on that frame).
 // loop: after the green only shots with a dark ground play behind the headline (mean luma <= 90, see luma.mjs). Light-ground sites live in the intro only.
 export const order = {
-  intro: ['brennock', 'garvey', 'reilly', 'lear', 'ashgrove', 'fennel', 'monument', 'lane'],
+  intro: ['brennock', 'garvey', 'reilly', 'lear', 'ashgrove', 'fennel', 'lane'],
   // order chosen with order-search.mjs: the clips with bright details under the headline (Reilly implant, Brennock truck) come when the overlay is already darker
   loop: ['midland', 'lear', 'bawn', 'reilly', 'brennockNight'],
 };

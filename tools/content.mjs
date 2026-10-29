@@ -18,10 +18,11 @@ const NEXT = {
   monument: { slug: 'monument', name: 'Monument', sub: 'Estate agency, Dublin', img: 'img/w/monument-1.jpg' },
   lear: { slug: 'lear', name: 'Lear Residence', sub: 'Design-build developer, Kildare', img: 'img/w/lear-1.jpg' },
   ashgrove: { slug: 'ashgrove', name: 'Ashgrove House', sub: 'Country house hotel, Kilkenny', img: 'img/w/ashgrove-1.jpg' },
+  kus: { slug: 'kus', name: 'KUS', sub: 'Staff app for a distribution centre', img: 'img/d/kus/card.jpg' },
 };
 
 
-/* ===================================================================== KUS (case study, waiting for material)
+/* ===================================================================== KUS is hand-built as site/kus.html; this object is not used.
    Not in the pages list yet: it goes live only when the real recordings are in ../site/img/d/kus/.
    To publish: move this object into `pages` right after Brennock, set NEXT chain (brennock → kus → reilly),
    add NEXT.kus, then rebuild. Every block needs a real recording; no placeholder text ever ships.
@@ -49,7 +50,7 @@ export const pages = [
   slug: 'brennock', title: 'Brennock Haulage', name: ['Brennock', 'Haulage'],
   sum: 'A ten-truck haulier that won work by phone. The new site lets a buyer see the trucks, check the paperwork for their load and ask for a price in two minutes.',
   facts: { sector: 'Road haulage, Co. Meath', role: 'Research, design and build', built: 'Figma, HTML, CSS, JavaScript' },
-  live: 'https://brennock.ufuk.ie', next: NEXT.reilly,
+  live: 'https://brennock.ufuk.ie', next: NEXT.kus,
   fontLink: GF('family=Archivo:wdth,wght@125,800&family=Instrument+Sans:wght@400;600'),
   sections: [
     { t: 'cover', m: v('hero') },

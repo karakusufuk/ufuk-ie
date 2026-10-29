@@ -12,6 +12,7 @@ const only = process.argv[5] || '';
 const here = path.dirname(new URL(import.meta.url).pathname);
 const type = { chromium, webkit, firefox }[bname];
 const slugs = ['brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
+const appSlugs = ['kus', 'master-id', 'passpath', 'match-id'];   // hand-built project pages (kus.html) and the three made by apps.mjs
 const live = (s) => ({ garvey: 'garveylennon', midland: 'midland' }[s] || s) + '.ufuk.ie';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -332,7 +333,7 @@ test('navigation: every project page opens at the top (Work card, Next project, 
     ok((await page.evaluate(() => window.__bad)).length === 0, `${s} via ${how}: page was visible away from the top`);
   };
   // from the Work page, scrolled to the bottom
-  for (const s of slugs) {
+  for (const s of [...slugs, ...appSlugs]) {
     await go(page, 'work.html'); await sleep(500);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await sleep(250);
     await page.locator(`a.card[href="${s}.html"]`).first().scrollIntoViewIfNeeded();
@@ -351,7 +352,7 @@ test('navigation: every project page opens at the top (Work card, Next project, 
   // along the Next project chain, from the bottom of each page
   await go(page, 'brennock.html');
   const seen = ['brennock'];
-  for (let i = 0; i < slugs.length - 1; i++) {
+  for (let i = 0; i < slugs.length + appSlugs.length - 1; i++) {
     await page.waitForFunction(() => !document.documentElement.classList.contains('pre'));
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await sleep(500);
     const next = await page.evaluate(() => document.querySelector('.next a').getAttribute('href').replace('.html', ''));
@@ -404,7 +405,7 @@ test('back: returns to the card the visitor came from (homepage grid, Work, Work
 
 test('contact: every header "Contact" link opens contact.html; the Instagram link opens the profile; hello@ufuk.ie is plain text', async () => {
   const page = await newPage();
-  for (const f of ['index', 'work', 'about', 'contact', ...slugs]) {
+  for (const f of ['index', 'work', 'about', 'contact', ...slugs, ...appSlugs]) {
     await go(page, f + '.html'); await sleep(f === 'index' ? 500 : 300);
     const links = await page.evaluate(() => [...document.querySelectorAll('header a, nav a')].filter((a) => a.textContent.trim() === 'Contact').map((a) => a.getAttribute('href')));
     ok(links.length > 0 && links.every((h) => h === 'contact.html'), f + ': Contact links ' + JSON.stringify(links));
@@ -516,24 +517,57 @@ test('about: print line reveals the page and lands on the footer; no console err
 
 test('every page loads without console errors or failed requests', async () => {
   const page = await newPage();
-  for (const f of ['index', 'work', 'about', 'contact', ...slugs]) { await go(page, f + '.html'); await sleep(1200); }
+  for (const f of ['index', 'work', 'about', 'contact', ...slugs, ...appSlugs]) { await go(page, f + '.html'); await sleep(1200); }
   ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
   await page.ctx.close();
 });
 
-const kusExists = fs.existsSync(path.join(here, '../site/kus.html'));
-if (kusExists) test('KUS slot: links and chain', async () => {
+/* the chain of project pages: ... → Brennock → KUS → Master ID → PassPath → Match ID → Reilly → ... */
+const CHAIN = [['brennock', 'kus'], ['kus', 'master-id'], ['master-id', 'passpath'], ['passpath', 'match-id'], ['match-id', 'reilly']];
+test('app pages: chain, cards and links', async () => {
   const page = await newPage();
-  await go(page, 'work.html'); await sleep(500);
-  ok(await page.evaluate(() => !!document.querySelector('a.card[href="kus.html"]')), 'Work KUS card does not point to kus.html');
+  for (const f of appSlugs) ok(fs.existsSync(path.join(here, '../site', f + '.html')), f + '.html does not exist');
+  for (const [from, to] of CHAIN) {
+    await go(page, from + '.html'); await sleep(400);
+    ok(await page.evaluate(() => document.querySelector('.next a').getAttribute('href')) === to + '.html', `${from}: next is not ${to}`);
+    if (appSlugs.includes(from)) ok(await page.evaluate((t) => [...document.querySelectorAll('.dock a')].some((a) => a.getAttribute('href') === t), to + '.html'), `${from}: the dock does not link to ${to}`);
+    ok(await page.evaluate(() => { const i = document.querySelector('.next img'); return i && i.getAttribute('src'); }), from + ': no next picture');
+  }
+  for (const f of ['work.html', 'index.html']) {   // the homepage has KUS as a showcase button (checked below), the other three as cards
+    await go(page, f); await sleep(500);
+    for (const s of f === 'work.html' ? ['kus', 'master-id', 'match-id', 'passpath'] : ['master-id', 'match-id', 'passpath']) ok(await page.evaluate((h) => !!document.querySelector(`a.card[href="${h}"]`), s + '.html'), `${f}: no card links to ${s}.html`);
+    ok(!(await page.evaluate(() => document.body.innerHTML.includes('Passpad'))), f + ' still says Passpad');
+  }
   await go(page, 'index.html'); await sleep(500);
   ok(await page.evaluate(() => !!document.querySelector('#kus a.show-link[href="kus.html"]')), 'homepage KUS button does not point to kus.html');
-  await go(page, 'brennock.html'); await sleep(500);
-  ok(await page.evaluate(() => document.querySelector('.next a').getAttribute('href')) === 'kus.html', 'Brennock next is not KUS');
-  await go(page, 'kus.html'); await sleep(500);
-  ok(await page.evaluate(() => document.querySelector('.next a').getAttribute('href')) === 'reilly.html', 'KUS next is not Reilly');
   await page.ctx.close();
-}); else console.log('skip   KUS slot: site/kus.html does not exist yet');
+});
+
+test('app pages: live head, no placeholders, no outside requests, no empty buttons', async () => {
+  const page = await newPage(); const outside = [];
+  page.on('request', (r) => { const u = new URL(r.url()); if (!['localhost', '127.0.0.1'].includes(u.hostname)) outside.push(r.url()); });
+  for (const f of appSlugs) {
+    await go(page, f + '.html'); await sleep(1500);
+    const r = await page.evaluate(() => ({
+      title: document.title, canonical: document.querySelector('link[rel=canonical]').href,
+      desc: document.querySelector('meta[name=description]').content, sum: document.querySelector('.open .sum').textContent,
+      lang: document.documentElement.lang, hash: [...document.querySelectorAll('a')].filter((a) => a.getAttribute('href') === '#').length,
+      empty: [...document.querySelectorAll('a')].filter((a) => !a.getAttribute('href')).length,
+      text: document.body.innerText, wa: !!document.querySelector('.foot a[href^="https://wa.me/"]'), mail: document.querySelector('.foot .mail').textContent,
+      current: document.querySelector('.top nav a[aria-current=page]').getAttribute('href'), ig: document.querySelectorAll('.foot .ig .ph').length,
+    }));
+    ok(r.lang === 'en', f + ': lang'); ok(/ · ufuk\.ie$/.test(r.title), f + ': title ' + r.title);
+    ok(r.canonical === `https://ufuk.ie/${f}.html`, f + ': canonical ' + r.canonical);
+    ok(r.desc === r.sum, f + ': description is not the summary sentence');
+    ok(r.hash === 0 && r.empty === 0, f + ': a link with href="#" or no href');
+    ok(!/Screen to come/i.test(r.text), f + ': placeholder text on the page');
+    ok(r.wa && r.mail === 'hello@ufuk.ie' && r.ig === 8 && r.current === 'work.html', f + ': header or footer is not the live one');
+    ok(await page.evaluate(() => [...document.querySelectorAll('.scr')].every((s) => s.querySelector('img,video') || s.querySelector('.bar'))), f + ': a screen without a picture');
+  }
+  ok(outside.length === 0, 'requests to other hosts: ' + [...new Set(outside)].slice(0, 5).join(' | '));
+  ok(page.errors.length === 0, 'console: ' + page.errors.join(' | '));
+  await page.ctx.close();
+});
 
 /* ---------------------------------------------------------------- run */
 // PIN_DNS=1: map ufuk.ie to a GitHub Pages address (Chrome only), so a stale local DNS cache cannot hide the live result

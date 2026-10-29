@@ -1,4 +1,4 @@
-// Checks all 14 pages at 390x844, 430x932 and 768x1024 in WebKit for breakage only:
+// Checks all 20 pages at 390x844, 430x932 and 768x1024 in WebKit for breakage only:
 // horizontal scroll, elements sticking out of the viewport, overlapping text blocks, tap targets under 24 px.
 // Usage: node phones.mjs [baseUrl] [outDir]
 import fs from 'node:fs';
@@ -7,7 +7,7 @@ import path from 'node:path';
 import { webkit } from 'playwright';
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
 const out = process.argv[3] || path.join(os.tmpdir(), 'phones');
-const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', '404'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', 'kus', 'master-id', 'passpath', 'match-id', '404'];
 const sizes = [[390, 844], [430, 932], [768, 1024]];
 const b = await webkit.launch();
 let bad = 0;

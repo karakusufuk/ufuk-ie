@@ -1,4 +1,4 @@
-// Parses all 14 pages and checks title, description, canonical and OG image are present, unique and valid.
+// Parses every page (all .html in ../site except 404) and checks title, description, canonical and OG image are present, unique and valid.
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';

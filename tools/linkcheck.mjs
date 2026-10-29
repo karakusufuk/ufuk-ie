@@ -2,7 +2,7 @@
 // WhatsApp is only checked for its URL shape, nothing is sent. node linkcheck.mjs <baseUrl>
 import { chromium } from 'playwright';
 const base = (process.argv[2] || 'http://localhost:8101').replace(/\/?$/, '/');
-const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', '404'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', 'kus', 'master-id', 'passpath', 'match-id', '404'];
 const b = await chromium.launch({ channel: 'chrome' }); const ctx = await b.newContext({ ignoreHTTPSErrors: false }); const p = await ctx.newPage();
 const internal = new Map(), external = new Map();
 for (const pg of pages) {

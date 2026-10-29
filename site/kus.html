@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KUS · ufuk.ie</title>
+<meta name="theme-color" content="#EEF1F5">
+<meta name="description" content="KUS is the staff app for a busy distribution centre. New starters learn the loading rules on their phone before their first cage, to bring down the yearly claim rate and the amount of wasted product, and everyone gets their shifts, holidays and news in one place.">
+<link rel="canonical" href="https://ufuk.ie/kus.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ufuk.ie"><meta property="og:locale" content="en_IE">
+<meta property="og:title" content="KUS · ufuk.ie"><meta property="og:description" content="KUS is the staff app for a busy distribution centre. New starters learn the loading rules on their phone before their first cage, to bring down the yearly claim rate and the amount of wasted product, and everyone gets their shifts, holidays and news in one place."><meta property="og:url" content="https://ufuk.ie/kus.html">
+<meta property="og:image" content="https://ufuk.ie/img/og/kus.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest">
+<script>try{history.scrollRestoration='manual'}catch(e){}if(!location.hash){document.documentElement.className='pre';window.scrollTo(0,0);setTimeout(function(){document.documentElement.classList.remove('pre')},1500);}</script>
+<link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" crossorigin><link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-wght-normal.woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="fonts/p-kus.css">
+<style>
+/* ufuk.ie project page (KUS case study board). Same tokens as the live site.
+   Each block is a half-page blue panel with the phone screen sunk into it; the cards inside the app lift out of the screen,
+   turn towards the note on the other half, then settle back into their place. */
+:root{
+  --ground:#EEF1F5; --panel:#FFFFFF; --ink:#1A2238; --ink-2:#4D5873; --ink-3:#7A8398;
+  --hair:#C9D0DB; --pink:#F7D2DE; --night:#151C2E;
+  --blue-1:#1B49BA; --blue-2:#0F2D88; --blue-3:#0A1D58;
+  --slot:#E4E8EE;
+  --f-display:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --f-body:'Geist','Helvetica Neue',Arial,sans-serif;
+  --f-app:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --gap:100px; --wrap:1240px;
+  --cw:300px; --ch:calc(var(--cw) * 874 / 402); --cr:calc(var(--cw) * .135);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ground)}
+body{margin:0;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img,video{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance}
+p{margin:0}
+
+.top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:76px;z-index:40;background:var(--ground);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gap)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--ground)}
+.top .mark{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+.top nav{display:flex;gap:32px;font-size:16px}
+.top nav a{color:var(--ink-2);transition:color .2s}.top nav a:hover,.top nav a[aria-current]{color:var(--ink)}
+.wrap{width:min(var(--wrap),calc(100vw - 2*var(--gap)));margin:0 auto}
+
+/* opening */
+.open{position:relative;padding-top:max(140px,24vh)}
+.open-in .wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:end}
+.open h1{font-size:clamp(56px,7.4vw,122px);line-height:.9;letter-spacing:-.045em}
+.open h1 span{display:block}
+.open .sum{font-size:21px;line-height:1.45;color:var(--ink-2);max-width:26em;padding-bottom:10px}
+.facts{padding-top:96px}
+.facts-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:32px;align-items:start}
+.facts dl{display:contents}
+.facts dt{font-size:14px;color:var(--ink-3);margin-bottom:6px}
+.facts dd{margin:0;font-size:17px}
+.live-top{cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:17px;color:var(--ink);padding-top:22px;white-space:nowrap;background:none;border:0;font-family:inherit}
+.live-top i{font-style:normal;display:inline-block;animation:nudge 1.6s ease-in-out infinite;transform-origin:50% 30%}
+@keyframes nudge{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(4px) scale(1.25)}}
+html.pre body{visibility:hidden}
+.laser{position:fixed;left:0;right:0;top:0;height:2px;background:var(--pink);z-index:30;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
+.veil{position:fixed;left:0;right:0;top:0;height:120vh;background:var(--ground);z-index:29;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
+
+.dock{position:fixed;right:32px;bottom:28px;z-index:35;display:flex;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;visibility:hidden;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s}
+.dock.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition-delay:0s}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--pink);color:var(--night);font-weight:500;font-size:17px;line-height:1.2;padding:16px 26px;white-space:nowrap;transition:background .25s,color .25s}
+.btn:hover{background:var(--night);color:#fff}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+
+/* ---------- cover: the app loading in a slot cut into the page ---------- */
+.cover{display:flex;justify-content:center;margin-top:64px}
+.cslot{position:relative;width:var(--cw);height:var(--ch);border-radius:var(--cr);background:var(--slot);
+  box-shadow:inset 0 2px 3px rgba(26,34,56,.20),inset 0 -1px 0 rgba(255,255,255,.75),0 1px 0 rgba(255,255,255,.9)}
+
+/* ---------- the phone screen, sunk into a blue panel ---------- */
+.stage{position:relative;width:var(--cw);height:var(--ch);flex:none}
+.screen{position:absolute;inset:0;border-radius:var(--cr);overflow:hidden;background:#08163a;clip-path:inset(0 round var(--cr))}
+.sunk{position:absolute;inset:0;border-radius:var(--cr);pointer-events:none;z-index:2;
+  box-shadow:inset 0 5px 12px rgba(0,4,24,.62),inset 0 0 0 1.5px rgba(0,6,30,.55),inset 0 -1px 0 rgba(255,255,255,.10),
+             0 1px 0 rgba(255,255,255,.18),0 -1px 0 rgba(0,4,24,.45)}
+.lifts{position:absolute;inset:0;pointer-events:none;z-index:3}
+.ui{position:absolute;left:0;top:0;width:402px;height:874px;transform-origin:0 0;transform:scale(var(--k,.746));font-family:var(--f-app)}
+.scr{position:absolute;inset:0;transform:translateX(100%);background:#08163a;overflow:hidden}
+.scr.on{transform:none}
+.scr>img,.scr>video{position:absolute;left:0;top:0;width:402px;height:874px;object-fit:cover;max-width:none}
+.scr .dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:9}
+.scr img.alt{opacity:0}
+.hole{position:absolute;max-width:none;opacity:0}
+.hs{position:absolute;opacity:0;box-shadow:inset 0 4px 10px rgba(0,0,12,.65),inset 0 0 0 1px rgba(0,0,12,.35),inset 0 -1px 0 rgba(255,255,255,.08)}
+.lift{position:absolute;max-width:none;visibility:hidden;transform-origin:50% 50%;will-change:transform,filter}
+.tap{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.55);opacity:0;pointer-events:none;z-index:8}
+
+/* profile page: one long page built from the app's screens, scrolled */
+.strip{position:absolute;left:0;top:0;width:402px;height:2100px;will-change:transform}
+.strip img{position:absolute;left:0;width:402px;max-width:none}
+.strip .fe{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 26px);mask-image:linear-gradient(to bottom,transparent 0,#000 26px)}
+.fix{position:absolute;left:0;width:402px;max-width:none;z-index:4}
+
+/* overlays in the app's own 402 × 874 points */
+.bar{position:absolute;left:99px;top:595.3px;height:13.7px;width:0;border-radius:7px;background:linear-gradient(90deg,#F2E2B4,#F6D35F 62%,#FFFBEF)}
+.typed{position:absolute;left:84px;top:485px;font-size:16px;color:#E9EEF2;white-space:nowrap;line-height:20px;z-index:3}
+.typed.ph{color:rgba(225,232,236,.55)}
+.typed .caret{display:inline-block;width:1.5px;height:18px;background:#8C7CF0;vertical-align:-3px;margin-left:1px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.lb-rows{position:absolute;left:16px;right:16px;top:0;height:874px}
+.lb-row{position:absolute;left:0;right:0;height:50px;display:flex;align-items:center;transition:top .75s cubic-bezier(.5,0,.2,1)}
+.lb-row .rk{position:absolute;left:18px;font-weight:600;font-size:15px;width:20px}
+.lb-row .nm{position:absolute;left:52px;font-weight:500;font-size:14.5px;color:#AEB6C6;display:flex;align-items:center;gap:8px}
+.lb-row.top3 .nm{color:#F2F4F8}
+.lb-row .nm em{font-style:normal;font-size:10px;font-weight:600;color:#6FA0FF;border:1.5px solid #3E6FC4;background:rgba(62,111,196,.22);border-radius:999px;padding:1px 8px}
+.lb-row .sc{position:absolute;right:15px;text-align:right;top:6px}
+.lb-row .sc b{display:block;font-size:16px;font-weight:700;line-height:18px;font-variant-numeric:tabular-nums}
+.lb-row .sc small{display:block;font-size:10.5px;color:#8A93A6;margin-top:3px}
+.g{color:#2DBE5C}.o{color:#E9A23A}
+.lock{position:absolute;inset:0;overflow:hidden;background:#0A1A44}
+.lock>img{position:absolute;left:-20px;top:-20px;width:442px;height:914px;max-width:none;filter:blur(14px) brightness(.5) saturate(1.1)}
+.lock .time{position:absolute;left:0;right:0;top:182px;text-align:center;color:#F4F6FA;font-weight:600;font-size:84px;letter-spacing:-.03em;line-height:1}
+.lock .date{position:absolute;left:0;right:0;top:154px;text-align:center;color:rgba(244,246,250,.85);font-weight:500;font-size:18px}
+/* the break notification is bigger than the phone: it drops in from the top and hangs over both edges */
+.note-b{position:absolute;left:-46px;right:-46px;top:40px;border-radius:30px;background:rgba(44,50,68,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:20px 24px 22px 100px;color:#F2F4F8;opacity:0;transform:translateY(-160px);box-shadow:0 26px 50px rgba(0,0,12,.5)}
+.note-b img{position:absolute;left:22px;top:22px;width:60px;height:60px;border-radius:14px}
+.note-b .hd{display:flex;justify-content:space-between;font-size:17px;color:rgba(242,244,248,.7);margin-bottom:4px}
+.note-b .hd b{color:#F2F4F8;font-weight:600}
+.note-b .t{font-weight:600;font-size:22px;line-height:1.25}
+.note-b .x{font-size:19px;line-height:1.35;color:rgba(242,244,248,.88);margin-top:2px}
+
+/* ---------- sections and half-page blocks ---------- */
+.sec{margin-top:200px}
+.sec>h2{font-size:clamp(34px,3.2vw,52px);line-height:1;letter-spacing:-.035em;margin-bottom:64px}
+.blk{position:relative;width:100vw;margin-left:calc(50% - 50vw);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;margin-bottom:120px}
+.blk:last-child{margin-bottom:0}
+.blk .pnl{grid-row:1;position:relative;display:flex;justify-content:center;align-items:center;padding-block:64px;
+  background:radial-gradient(120% 90% at 30% 10%,var(--blue-1) 0%,var(--blue-2) 55%,var(--blue-3) 100%)}
+.blk[data-side="r"] .pnl{grid-column:2}
+.blk[data-side="l"] .pnl{grid-column:1}
+.blk .note{grid-row:1;position:relative;z-index:1;min-width:0}
+.blk[data-side="r"] .note{grid-column:1;padding-left:max(var(--gap),calc((100vw - var(--wrap)) / 2));padding-right:88px}
+.blk[data-side="l"] .note{grid-column:2;padding-left:88px;padding-right:max(var(--gap),calc((100vw - var(--wrap)) / 2))}
+.note>div{max-width:440px}
+.blk[data-side="r"] .note>div{margin-left:auto}
+.note b{display:block;font-family:var(--f-display);font-weight:600;font-size:23px;letter-spacing:-.02em;line-height:1.15;margin-bottom:10px}
+.note p{color:var(--ink-2);font-size:17px;line-height:1.55}
+.blk svg.pin{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:5}
+.pin line.a{stroke:var(--ink);stroke-width:3}
+.pin line.b{stroke:#fff;stroke-width:3}
+.pin circle{fill:#fff}
+
+.kit{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px}
+.kit .p{background:var(--panel);padding:44px 48px}
+.kit .p small{display:block;font-size:14px;color:var(--ink-3);margin-bottom:28px}
+.type-row+.type-row{margin-top:36px;padding-top:36px;border-top:1px solid #E3E7ED}
+.type-row .aa{font-size:96px;line-height:.9;letter-spacing:-.02em;font-family:var(--f-app)}
+.type-row .nm{margin-top:14px;font-size:15px;color:var(--ink-2)}
+.type-row .sp{margin-top:10px;font-size:22px;line-height:1.3;font-family:var(--f-app)}
+.sw{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sw div{display:flex;flex-direction:column;gap:10px}
+.sw i{display:block;height:84px}
+.sw span{font-size:14px;color:var(--ink-2)}
+
+.deep{margin-top:220px;padding-top:80px;border-top:1px solid var(--hair)}
+.deep>h2{font-size:clamp(34px,3.2vw,52px);line-height:1;letter-spacing:-.035em;margin-bottom:24px}
+.deep>.lede{max-width:36em;color:var(--ink-2);font-size:19px;margin-bottom:96px}
+.deep-row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px;padding:56px 0;border-top:1px solid #DCE1E8}
+.deep-row h3{font-size:26px;letter-spacing:-.02em;line-height:1.1}
+.deep-row .tx{min-width:0}
+.deep-row .tx p{color:var(--ink-2);font-size:18px;line-height:1.6;max-width:40em}
+.deep-row .tx p+p{margin-top:16px}
+.deep-row ul{margin:20px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;max-width:42em}
+.deep-row li{position:relative;padding-left:22px;color:var(--ink-2);font-size:17px}
+.deep-row li::before{content:"";position:absolute;left:0;top:.72em;width:10px;height:1px;background:var(--ink)}
+.deep-row li b{color:var(--ink);font-weight:500}
+.vs{display:flex;flex-direction:column;max-width:46em}
+.vs>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;padding:20px 0;border-top:1px solid #DCE1E8}
+.vs>div:first-child{border-top:0;padding-top:0}
+.vs .o2{color:var(--ink-3);font-size:16px;line-height:1.55}
+.vs .o2::before{content:"Others";display:block;font-size:13px;margin-bottom:4px}
+.vs .me{color:var(--ink);font-size:17px;line-height:1.55}
+.vs .me::before{content:"What I did";display:block;font-size:13px;margin-bottom:4px;color:var(--ink-3)}
+
+.closing{margin-top:200px}
+.closing p{font-size:19px;color:var(--ink-2);max-width:34em}
+.next{margin-top:120px}
+.next a{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:center;background:var(--panel);padding:16px}
+.next small{display:block;font-size:15px;color:var(--ink-3);margin-bottom:10px;padding-left:24px}
+.next b{display:block;font-family:var(--f-display);font-weight:600;font-size:clamp(34px,3.6vw,56px);letter-spacing:-.035em;line-height:1;padding-left:24px}
+.next span{display:block;margin-top:12px;color:var(--ink-2);padding-left:24px}
+.next .frame{aspect-ratio:16/9;overflow:hidden;max-width:100%}
+.next .frame img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.next a:hover .frame img{transform:scale(1.03)}
+.end{margin-top:200px;margin-left:var(--gap);position:relative;z-index:31}
+.foot{background:var(--night);color:#EEF0F4;padding:140px var(--gap) 56px}
+.foot h2{font-size:clamp(52px,7vw,120px);line-height:.92;letter-spacing:-.045em;color:var(--pink);max-width:12ch}
+.foot .row{display:flex;flex-wrap:wrap;gap:28px;align-items:center;margin-top:48px}
+.foot .btn svg{width:20px;height:20px}
+.foot .btn:hover{background:#fff;color:var(--night)}
+.foot a:focus-visible{outline-color:var(--pink)}
+.foot .mail{font-size:20px;user-select:all}
+.foot .base{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-top:96px;color:#8D95A3;font-size:15px}
+
+@media (max-width:900px){
+  :root{--gap:20px;--cw:min(270px,70vw)}
+  .top{height:64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}.top nav{gap:20px;font-size:15px}
+  .open{padding-top:120px}.open-in .wrap{grid-template-columns:1fr;gap:18px}
+  .open .sum{font-size:18px}
+  .facts{padding-top:72px}.facts-row{grid-template-columns:1fr 1fr;gap:20px}
+  .dock{left:16px;right:16px;bottom:16px}.dock .btn{flex:1;justify-content:center;padding:14px 12px;font-size:15px}
+  .blk{grid-template-columns:minmax(0,1fr);margin-bottom:80px}
+  .blk .pnl,.blk .note{grid-column:1!important;grid-row:auto}
+  .blk .pnl{padding-block:56px}
+  .blk .note{padding:28px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))!important}
+  .blk svg.pin{display:none}
+  .kit,.deep-row,.next a{grid-template-columns:1fr}
+  .kit .p{padding:28px 24px}
+  .vs>div{grid-template-columns:1fr;gap:12px}
+  .sec{margin-top:140px}.sec>h2{margin-bottom:40px}
+  .end{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<link rel="stylesheet" href="ig.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="ig.css"></noscript>
+</head><body>
+<header class="top"><a class="mark" href="index.html">ufuk.ie</a><nav aria-label="Main"><a href="work.html" aria-current="page">Work</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></header>
+<div class="veil" aria-hidden="true"></div><div class="laser" aria-hidden="true"></div>
+
+<main>
+<section class="open" aria-label="KUS">
+  <div class="open-in"><div class="wrap"><h1><span>Key Utility</span><span>System</span></h1><p class="sum">KUS is the staff app for a busy distribution centre. New starters learn the loading rules on their phone before their first cage, to bring down the yearly claim rate and the amount of wasted product, and everyone gets their shifts, holidays and news in one place.</p></div></div>
+  <div class="facts"><div class="wrap"><div class="facts-row"><dl>
+    <div><dt>Sector</dt><dd>Warehouse and distribution</dd></div>
+    <div><dt>Role</dt><dd>Research, design and build</dd></div>
+    <div><dt>Built with</dt><dd>Figma, Flutter, Dart</dd></div>
+  </dl>
+  <button class="live-top" type="button" id="seeIt">See it working <i aria-hidden="true">↓</i></button></div></div></div>
+</section>
+
+<!-- 1 · opening: no card, the app loads in its slot -->
+<div class="cover"><div class="cslot" id="b-loading"><div class="stage"><div class="screen"><div class="ui">
+  <div class="scr on"><img src="img/d/kus/loading.jpg" alt="KUS loading screen"></div>
+  <div class="bar"></div>
+</div></div></div></div></div>
+
+<section class="sec wrap" id="first"><h2>Your day at a glance</h2>
+<!-- 2 · profile -->
+<div class="blk" data-side="r" id="b-profile">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/home-off.jpg" alt="Home screen on a day off"><img class="alt" src="img/d/kus/home-on.jpg" alt="Home screen on a working day"><div class="dim"></div></div>
+    <div class="scr"><div class="strip">
+        <img src="img/d/kus/s757.jpg" style="top:0;height:766px" alt="Profile page">
+        <img class="fe" src="img/d/kus/s758.jpg" style="top:766px;height:730px" alt="">
+        <img src="img/d/kus/s760.jpg" style="top:1215px;height:834px" alt="">
+        <img class="fe s9t" src="img/d/kus/s759top.jpg" style="top:1215px;height:365px" alt="">
+        <img class="s9b" src="img/d/kus/s759bot.jpg" style="top:1580px;height:469px" alt="">
+      </div>
+      <img class="fix" src="img/d/kus/s-status.jpg" style="top:0;height:44px" alt="">
+      <img class="fix" src="img/d/kus/s-nav.jpg" style="top:766px;height:74px" alt="">
+      <div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>Am I in today?</b><p>That is the first question anyone on a warehouse floor asks, so I opened the app on the answer: working or off, the shift, and the next day in. One tap opens the profile with the month’s roster and the day’s break times, so people plan their own shift instead of asking a supervisor.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+</section>
+
+<section class="sec wrap"><h2>Learning the job</h2>
+<!-- 3 · tutorial and tests -->
+<div class="blk" data-side="l" id="b-tutorial">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/home-scroll.jpg" alt="Home with the handbook"><div class="dim"></div></div>
+    <div class="scr"><video src="img/d/kus/tutorial.mp4" poster="img/d/kus/tutorial.jpg" muted playsinline preload="auto"></video><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>Taught before the first pick</b><p>Most damaged product starts as a cage loaded the wrong way by someone still learning. I turned the loading rules into a short lesson a new starter plays on their phone, then let them load a cage themselves and see straight away when a crate would crush a carton. The aim is a lower claim rate and less wasted product, because the rules are learned before the first shift instead of from the first mistake.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+<!-- 4 · health and safety -->
+<div class="blk" data-side="r" id="b-safety" data-py="341" data-pys="1">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/menu.jpg" alt="KUS menu"><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/safety.jpg" alt="Safety tests with due dates"><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/survey-q1.jpg" alt="Test question one"><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/survey-q2.jpg" alt="Test question two"><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>Safety training with a due date</b><p>Paper sign-off sheets get lost, and nobody can see who is behind. I put every safety test in one list with its due date, so a manager sees who is overdue at a glance and each person can open the test and clear it in ten minutes on a break.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+</section>
+
+<section class="sec wrap"><h2>Time and time off</h2>
+<!-- 5 · roster -->
+<div class="blk" data-side="l" id="b-roster">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/roster-month.jpg" alt="Monthly roster"><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>The roster in your pocket</b><p>A printed roster on the canteen wall is out of date the day a shift changes. I put each person’s month on their phone with every working day marked, so a change reaches them the moment it is made.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+<!-- 6 · holiday request -->
+<div class="blk" data-side="r" id="b-holiday" data-py="247">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/requests.jpg" alt="Requests"><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/holiday-pick.jpg" alt="Picking holiday days on the calendar"><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/holiday-send.jpg" alt="Days picked, balance left and the send button"><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>Holidays without the paper form</b><p>A holiday used to mean a form, a tray and a wait. Now people tap the days they want, see how many they have left and send the request, and it lands with the manager, who checks it against the rest of the team.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+</section>
+
+<section class="sec wrap"><h2>One channel for the floor</h2>
+<!-- 7 · messaging -->
+<div class="blk" data-side="l" id="b-messages">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/messages.jpg" alt="Team message board"><div class="dim"></div><span class="typed ph">Say something…</span></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>The team’s own message board</b><p>Shift swaps and “running late” messages usually end up in private group chats the company has no part in. I gave every team a message board inside the app, so those conversations stay with the company and a manager can see them and answer.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+<!-- 8 · announcements -->
+<div class="blk" data-side="r" id="b-news">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/announcements.jpg" alt="Announcements"><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>News that reaches everyone</b><p>A notice in the canteen reaches whoever walks past it. An announcement reaches every phone on site the moment it is posted, from the safety test deadline to the summer barbecue.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+</section>
+
+<section class="sec wrap"><h2>The break</h2>
+<!-- 10 · game and leaderboard -->
+<div class="blk" data-side="l" id="b-game">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="scr on"><img src="img/d/kus/games.jpg" alt="Games"><video src="img/d/kus/snake.mp4" muted playsinline preload="auto" style="opacity:0"></video><div class="dim"></div></div>
+    <div class="scr"><img src="img/d/kus/leaderboard.jpg" alt="Snake leaderboard"><div class="lb-rows"></div><div class="dim"></div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui"></div></div></div></div>
+  <div class="note"><div><b>A reason to open it every day</b><p>An app people open only when they have to is an app they forget. I added a small game and a site leaderboard, a bit of friendly competition between teams that brings people back on every break, and with them the announcements and tests waiting inside.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+<!-- 11 · break notification: no card, it drops in and the page ends -->
+<div class="blk" data-side="r" id="b-break">
+  <div class="pnl"><div class="stage"><div class="screen"><div class="ui">
+    <div class="lock"><img src="img/d/kus/home-on.jpg" alt=""><div class="date">Wednesday 28 October</div><div class="time">7:50</div></div>
+  </div></div><div class="sunk"></div><div class="lifts"><div class="ui">
+    <div class="note-b"><img src="img/d/kus/kus-icon.png" alt=""><div class="hd"><b>KUS</b><span>now</span></div><div class="t">Your break has started</div><div class="x">Ten minutes, all yours. See you back on the floor at 08:00.</div></div>
+  </div></div></div></div>
+  <div class="note"><div><b>Every minute of it yours</b><p>The day ends where the floor stops: on a break. The app tells each person when their break starts, so nobody has to watch the clock and nobody loses minutes of it.</p></div></div>
+  <svg class="pin" aria-hidden="true"></svg>
+</div>
+</section>
+
+<section class="sec wrap"><h2>Type and colour</h2>
+<div class="kit"><div class="p"><small>Type</small>
+  <div class="type-row"><div class="aa" style="font-weight:700">Aa</div><div class="nm">SF Pro Display · headings</div><div class="sp" style="font-weight:700">You’re working today.</div></div>
+  <div class="type-row"><div class="aa" style="font-weight:400">Aa</div><div class="nm">SF Pro Text · text</div><div class="sp" style="font-weight:400">Swipe to turn. Walls end the run.</div></div>
+</div><div class="p"><small>Colour</small><div class="sw">
+  <div><i style="background:#4A35B2"></i><span>Deep violet</span></div>
+  <div><i style="background:#A796F4"></i><span>Lilac</span></div>
+  <div><i style="background:#0B1F5E"></i><span>Night navy</span></div>
+  <div><i style="background:#1E4FD0"></i><span>Royal blue</span></div>
+</div></div></div>
+</section>
+
+<section class="deep wrap"><h2>Behind it</h2><p class="lede">For agencies and anyone who wants the reasoning: what the site needed, what others do, what I left out and how the app is built.</p>
+<div class="deep-row"><h3>The brief</h3><div class="tx"><p>A distribution centre runs on people who start quickly and learn on the floor. While they learn, loading mistakes turn into damaged product and customer claims.</p><p>The site needed two things in one app: a way to teach and test the loading and safety rules before a new starter’s first shift, and one place for everything people ask about every day, from shifts and holidays to news.</p></div></div>
+<div class="deep-row"><h3>What others do, what I did</h3><div class="tx"><div class="vs">
+  <div><p class="o2">Off-the-shelf HR apps are built for offices: payslips and leave, nothing about the work itself.</p><p class="me">I built it around the floor: the shift, the breaks, the case count and the loading rules.</p></div>
+  <div><p class="o2">Training is a talk or a video in a meeting room on day one.</p><p class="me">I made the rules something a new starter plays on their phone and is tested on, cage by cage.</p></div>
+  <div><p class="o2">Rosters, swaps and news live on a wall and in private group chats.</p><p class="me">I put them in one app the company controls, with each team’s message board inside it.</p></div>
+</div></div></div>
+<div class="deep-row"><h3>What I left out</h3><div class="tx"><ul>
+  <li>Clocking in and payroll changes. They belong to the systems the site already runs.</li>
+  <li>Public sign-up. A manager adds each person, and the account is tied to their phone.</li>
+  <li>Leaderboards of work performance. The board ranks a game, never anyone’s pick rate.</li>
+</ul></div></div>
+<div class="deep-row"><h3>How it is built</h3><div class="tx"><p>One Flutter app for iPhone and Android. Each person sees only the sections for their role, so floor staff, team leaders and managers share one app without seeing each other’s tools.</p><ul>
+  <li><b>Training.</b> A separate app, so a new starter can learn the loading rules before their account is set up.</li>
+  <li><b>Distribution.</b> Released privately to the company, never listed in the public app stores.</li>
+  <li><b>Staff details.</b> Names, photos and staff numbers on this page are changed.</li>
+</ul></div></div>
+</section>
+
+<section class="closing wrap"><p>KUS is an internal app, so there is no public link. Every screen above is from the working app.</p></section>
+<section class="next wrap" aria-label="Next project"><a href="master-id.html"><div><small>Next project</small><b>Master ID</b><span>Quiz game</span></div><div class="frame"><img src="img/d/master-id/card.jpg" width="1200" height="675" alt="" loading="lazy"></div></a></section>
+</main>
+
+<div class="end"><footer class="foot">
+  <h2>Tell me about your business.</h2>
+  <div class="row"><a class="btn" href="https://wa.me/353832079387?text=Hi%20Ufuk%2C%20I%20found%20you%20on%20ufuk.ie." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.76 4.88-1.28A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-2.9.76.78-2.83-.2-.3A8.2 8.2 0 1 1 12 20.2z"/><path fill="currentColor" d="M16.6 14.1c-.25-.13-1.48-.73-1.7-.81-.23-.08-.4-.13-.56.12-.17.25-.65.81-.8.98-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.43 1.03 2.6.12.16 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.48-.6 1.69-1.19.21-.58.21-1.08.15-1.19-.06-.1-.23-.17-.48-.29z"/></svg>Chat on WhatsApp</a><span class="mail">hello@ufuk.ie</span></div>
+  <div class="ig" data-ig data-base="img/ig/" data-pool="1,2,3,4,5,6,7,8,9,11,14"><span class="ph" data-n="1" style="grid-area:1/1"><img src="img/ig/01.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="2" style="grid-area:1/2"><img src="img/ig/02.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="3" style="grid-area:1/3"><img src="img/ig/03.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="7" style="grid-area:3/1"><img src="img/ig/07.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="8" style="grid-area:3/2"><img src="img/ig/08.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="9" style="grid-area:3/3"><img src="img/ig/09.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="11" style="grid-area:4/2"><img src="img/ig/11.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><span class="ph" data-n="14" style="grid-area:5/2"><img src="img/ig/14.jpg" width="600" height="600" alt="" loading="lazy" fetchpriority="low"></span><a class="ig-link" href="https://www.instagram.com/ufukkarakus/" target="_blank" rel="noopener" aria-label="Instagram: ufukkarakus"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg><span>/ufukkarakus</span></a></div>
+  <div class="base"><span>Ufuk Karakuş · Designer and developer · Ireland</span><span>© 2026 ufuk.ie</span></div>
+</footer></div>
+<div class="dock" aria-label="Quick links"><a class="btn" href="master-id.html">Master ID <span aria-hidden="true">→</span></a></div>
+
+<script>
+/* ---------- opening line (same behaviour as the live project pages) ---------- */
+(function () {
+  var html = document.documentElement, line = document.querySelector('.laser'), veil = document.querySelector('.veil'),
+      end = document.querySelector('.end'), bar = document.querySelector('.top'), dock = document.querySelector('.dock'),
+      sum = document.querySelector('.open .sum'), h1 = document.querySelector('.open h1');
+  var reduce = false; try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var ready = false, user = false;
+  (function check(tries, still) {
+    if (!location.hash && window.scrollY !== 0) { window.scrollTo(0, 0); still = 0; } else still++;
+    if ((still >= 3 || tries > 40) && document.readyState !== 'loading') { ready = true; html.classList.remove('pre'); return; }
+    requestAnimationFrame(function () { check(tries + 1, still); });
+  })(0, 0);
+  var opened = false, openedAt = 0, print = 0, drop = 0, started = 0;
+  function open() { if (opened || !ready) return; opened = true; openedAt = performance.now(); }
+  if (reduce || location.hash) { opened = true; print = 1; drop = 1; }
+  addEventListener('wheel', function (e) {
+    if (e.ctrlKey) return; user = true;
+    if (!opened) { e.preventDefault(); if (e.deltaY > 0) open(); return; }
+    if (performance.now() - openedAt < 900 && scrollY < 4) e.preventDefault();
+  }, { passive: false });
+  var ty = null;
+  addEventListener('touchstart', function (e) { user = true; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', function (e) {
+    if (!opened && ty != null && ty - e.touches[0].clientY > 8) { if (e.cancelable) e.preventDefault(); open(); }
+  }, { passive: false });
+  addEventListener('keydown', function (e) { if (!opened && ['ArrowDown', 'PageDown', ' ', 'End'].indexOf(e.key) > -1) { user = true; e.preventDefault(); open(); } });
+  addEventListener('scroll', function () { if (user && ready && scrollY > 30) open(); }, { passive: true });
+  document.getElementById('seeIt').addEventListener('click', function () {
+    user = true; var go = function () { document.getElementById('b-loading').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+    if (!opened) { open(); setTimeout(go, 1000); } else go();
+  });
+  function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  var last = 0;
+  function frame(ts) {
+    var dt = last ? Math.min(64, ts - last) : 16; last = ts;
+    if (ready && !started) started = ts;
+    if (ready && print < 1 && ts - started > 250) print = Math.min(1, print + dt / 1500);
+    if (opened && print >= 1 && drop < 1) drop = Math.min(1, drop + dt / 950);
+    if (opened && print < 1) print = Math.min(1, print + dt / 400);
+    var vh = innerHeight, hb = bar.getBoundingClientRect().bottom, ft = end.getBoundingClientRect().top;
+    var textEnd = Math.max(sum.getBoundingClientRect().bottom, h1.getBoundingClientRect().bottom);
+    var home = Math.min(vh - 60, textEnd + 44), low = vh - 36;
+    var y = hb + (home - hb) * easeOut(print);
+    if (drop > 0) y = home + (low - home) * ease(drop);
+    if (drop >= 1) y = low;
+    y = Math.max(hb, y);
+    var locked = ft <= y + .5; if (locked) y = ft;
+    var v = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
+    line.style.transform = v; veil.style.transform = v;
+    line.style.opacity = locked ? '0' : '1';
+    dock.classList.toggle('on', ft > vh - 10 && drop >= 1 && scrollY > 240);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* note lines: one straight line from the note, across the blue panel, a short way into the screen */
+  var pins = [].slice.call(document.querySelectorAll('.blk'));
+  function drawPins() {
+    pins.forEach(function (b) {
+      var svg = b.querySelector('svg.pin'); if (!svg) return;
+      if (innerWidth <= 900) { svg.innerHTML = ''; return; }
+      var br = b.getBoundingClientRect(), p = b.querySelector('.pnl').getBoundingClientRect(), m = b.querySelector('.stage').getBoundingClientRect(), n = b.querySelector('.note b').getBoundingClientRect();
+      var noteLeft = n.left < p.left, depth = m.width * .07;
+      var y = n.top - br.top + n.height / 2, py = b.getAttribute('data-py');
+      if (py) y = m.top - br.top + (+py) * m.height / 874;   /* this note points at one thing on the screen */
+      else y = Math.max(m.top - br.top + 40, Math.min(m.bottom - br.top - 40, y));
+      var nx = noteLeft ? n.right - br.left + 22 : n.left - br.left - 22;
+      var pe = noteLeft ? p.left - br.left : p.right - br.left;
+      var se = noteLeft ? m.left - br.left : m.right - br.left;
+      var px = noteLeft ? se + depth : se - depth;
+      svg.setAttribute('viewBox', '0 0 ' + br.width + ' ' + br.height);
+      svg.innerHTML = '<line class="a" x1="' + nx + '" y1="' + y + '" x2="' + pe + '" y2="' + y + '"/><line class="b" x1="' + pe + '" y1="' + y + '" x2="' + px + '" y2="' + y + '"/><circle cx="' + px + '" cy="' + y + '" r="6"/>';
+    });
+  }
+  addEventListener('resize', drawPins); addEventListener('load', drawPins);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawPins);
+  drawPins();
+})();
+
+/* ---------- KUS blocks ----------
+   The screen stays sunk in its panel. A card inside the app comes right out of the phone, slides towards the note
+   and turns to face it, holds, flattens and settles back; then the app moves on (taps, sideways pushes,
+   scrolling, a drawer), at least 2 s per screen. Back to the start while resting, then again. */
+(function () {
+  var reduce = false; try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  function fit() { document.querySelectorAll('.stage').forEach(function (s) { var k = s.clientWidth / 402; s.querySelectorAll('.ui').forEach(function (u) { u.style.setProperty('--k', k); }); }); }
+  addEventListener('resize', fit); fit();
+  function anim(el, frames, opt) {
+    return new Promise(function (res) {
+      var a = el.animate(frames, Object.assign({ fill: 'forwards' }, opt));
+      a.onfinish = function () { try { a.commitStyles(); } catch (e) {} a.cancel(); res(); };
+    });
+  }
+  function tap(ui, x, y) {
+    var t = document.createElement('i'); t.className = 'tap'; t.style.left = x + 'px'; t.style.top = y + 'px'; ui.appendChild(t);
+    return anim(t, [{ opacity: .6, transform: 'scale(.4)' }, { opacity: .45, transform: 'scale(1)', offset: .4 }, { opacity: 0, transform: 'scale(1.5)' }], { duration: 560, easing: 'ease-out' }).then(function () { t.remove(); });
+  }
+
+  /* cards cut out of the screens: where they sit (app points), their corner radius, and the screen they belong to */
+  var CUT = {
+    'profile-off': { card: [16, 74, 370, 291], hole: [14, 72, 374, 295], r: 22 },
+    'profile-on':  { card: [16, 74, 370, 291], hole: [14, 72, 374, 295], r: 22 },
+    'handbook':    { card: [16, 373, 370, 153], hole: [14, 371, 374, 157], r: 22, shape: [16, 382, 370, 144] },
+    'overdue':     { card: [16, 182, 370, 62.3], hole: [14, 180, 374, 66.3], r: 18 },
+    'calendar':    { card: [16, 63, 370, 523.3], hole: [14, 61, 374, 527.3], r: 24 },
+    'holiday':     { card: [16, 210, 370, 75], hole: [14, 208, 374, 79], r: 18 },
+    'karen':       { card: [72, 183.3, 314, 127.7], hole: [70, 181.3, 318, 131.7], r: 20 },
+    'feature':     { card: [20, 205.3, 362, 268], hole: [18, 203.3, 366, 272], r: 18 },
+    'survey':      { card: [16, 304, 370, 70], hole: [14, 302, 374, 74], r: 18 },
+    'snake':       { card: [207, 209, 179, 149], hole: [205, 207, 183, 153], r: 20 }
+  };
+  function px(v) { return v + 'px'; }
+  function place(el, r) { el.style.left = px(r[0]); el.style.top = px(r[1]); el.style.width = px(r[2]); el.style.height = px(r[3]); }
+
+  function Blk(el) {
+    this.el = el; this.ui = el.querySelector('.screen .ui'); var lf = el.querySelector('.lifts .ui'); this.lui = lf;
+    this.scr = [].slice.call(this.ui.children).filter(function (c) { return c.classList.contains('scr'); }); this.i = 0;
+    var s = el.getAttribute('data-side') === 'r' ? -1 : 1;   /* panel on the right: the note is left, so the card turns left */
+    this.toward = 13 * s; this.dx = 30 * s; this.L = {};
+  }
+  Blk.prototype.add = function (name, scrIndex) {
+    var c = CUT[name], scr = this.scr[scrIndex];
+    var h = document.createElement('img'); h.className = 'hole'; h.src = 'img/d/kus/h-' + (name === 'profile-on' ? 'profile-off' : name) + '.jpg'; h.alt = ''; place(h, c.hole);
+    var hs = document.createElement('div'); hs.className = 'hs'; place(hs, c.shape || c.card); hs.style.borderRadius = px(c.r);
+    var dim = scr.querySelector('.dim'); scr.insertBefore(h, dim); scr.insertBefore(hs, dim);
+    var l = document.createElement('img'); l.className = 'lift'; l.src = 'img/d/kus/c-' + name + '.png'; l.alt = ''; place(l, c.card); this.lui.appendChild(l);
+    this.L[name] = { hole: h, hs: hs, lift: l };
+  };
+  function P(x, y, r, s) { return 'perspective(1100px) translate3d(' + x + 'px,' + y + 'px,0) rotateY(' + r + 'deg) scale(' + s + ')'; }
+  /* the card comes right out of the phone: bigger than the screen, slid towards the note and turned to face it */
+  var SH0 = 'drop-shadow(0 0 0 rgba(0,0,12,0))', SH1 = 'drop-shadow(0 26px 22px rgba(0,0,12,.6))', S = 1.17, UP = -10;
+  Blk.prototype.lift = function (names) {
+    var b = this, all = [];
+    names.forEach(function (n) {
+      var o = b.L[n]; o.hole.style.opacity = 1; o.hs.style.opacity = 1; o.lift.style.visibility = 'visible';
+      all.push(anim(o.lift, [
+        { transform: P(0, 0, 0, 1), filter: SH0 },
+        { transform: P(b.dx, UP, b.toward, S), filter: SH1 }
+      ], { duration: 620, easing: 'cubic-bezier(.3,.0,.2,1)' }));
+    });
+    return Promise.all(all);
+  };
+  Blk.prototype.down = function (names) {
+    var b = this;
+    return Promise.all(names.map(function (n) {
+      var l = b.L[n].lift;
+      return anim(l, [{ transform: P(b.dx, UP, b.toward, S), filter: SH1 }, { transform: P(b.dx * .5, UP, 0, S), filter: SH1, offset: .4 }, { transform: P(0, 0, 0, 1), filter: SH0 }], { duration: 620, easing: 'cubic-bezier(.45,0,.3,1)' });
+    })).then(function () {
+      names.forEach(function (n) { var o = b.L[n]; o.lift.style.visibility = 'hidden'; o.hole.style.opacity = 0; o.hs.style.opacity = 0; });
+    });
+  };
+  Blk.prototype.go = function (n, mode) {
+    var a = this.scr[this.i], b = this.scr[n]; this.i = n;
+    var E = 'cubic-bezier(.32,.72,0,1)', D = 380;
+    return Promise.all([
+      anim(b, [{ transform: 'translateX(100%)' }, { transform: 'translateX(0)' }], { duration: D, easing: E }),
+      anim(a, [{ transform: 'translateX(0)' }, { transform: 'translateX(-30%)' }], { duration: D, easing: E }),
+      anim(a.querySelector('.dim'), [{ opacity: 0 }, { opacity: .35 }], { duration: D, easing: E })
+    ]).then(function () { a.style.transform = 'translateX(100%)'; a.querySelector('.dim').style.opacity = 0; });
+  };
+  Blk.prototype.home = function () {
+    if (this.i === 0) return Promise.resolve();
+    var a = this.scr[this.i], f = this.scr[0]; this.i = 0;
+    f.style.transform = 'none'; f.style.zIndex = 2;
+    return anim(f, [{ opacity: 0 }, { opacity: 1 }], { duration: 350 }).then(function () { a.style.transform = 'translateX(100%)'; f.style.zIndex = ''; f.style.opacity = ''; });
+  };
+  function playVideo(v) {
+    return new Promise(function (res) {
+      v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () {});
+      var done = false, fin = function () { if (!done) { done = true; res(); } };
+      v.onended = fin; setTimeout(fin, ((v.duration || 11) * 1000 / (v.playbackRate || 1)) + 600);
+    });
+  }
+  function fade(el, to, ms) { return anim(el, [{ opacity: getComputedStyle(el).opacity }, { opacity: to }], { duration: ms || 600 }); }
+
+  /* Snake leaderboard: Daniel's new best takes him up one place */
+  var people = [['nightowl', 60], ['dan_o', 50], ['pallet_pro', 40], ['k.whelan', 30], ['chill_ed', 10], ['daniel.b', 10, true], ['mo_on_lates', 0], ['the_forklift', 0]];
+  function rowHTML(p, i) {
+    var cls = i < 3 ? 'g' : 'o';
+    return '<div class="lb-row' + (i < 3 ? ' top3' : '') + '" style="top:' + (265 + 50 * i) + 'px"><span class="rk ' + cls + '">' + (i + 1) + '</span>' +
+      '<span class="nm">' + p[0] + (p[2] ? '<em>You</em>' : '') + '</span><span class="sc"><b class="' + cls + '">' + p[1] + '</b><small>' + (3 + p[1] / 10) + ' long</small></span></div>';
+  }
+  function board(b) {
+    var box = b.ui.querySelector('.lb-rows'); box.innerHTML = people.map(rowHTML).join('');
+    var rows = box.querySelectorAll('.lb-row'), me = rows[5], other = rows[4];
+    return wait(600).then(function () { me.querySelector('.sc b').textContent = '20'; me.querySelector('.sc small').textContent = '5 long'; return wait(300); })
+      .then(function () { me.style.top = (265 + 200) + 'px'; other.style.top = (265 + 250) + 'px'; return wait(760); })
+      .then(function () { me.querySelector('.rk').textContent = '5'; other.querySelector('.rk').textContent = '6'; });
+  }
+
+  /* each block's story, in the app's own points */
+  var FLOW = {
+    'b-profile': {
+      setup: function (b) { b.add('profile-off', 0); b.add('profile-on', 0); b.L['profile-on'].lift.style.opacity = 0; },
+      run: async function (b) {
+        var on = b.scr[0].querySelector('img.alt'), strip = b.scr[1].querySelector('.strip'), top9 = strip.querySelector('.s9t'), bot9 = strip.querySelector('.s9b');
+        await b.lift(['profile-off', 'profile-on']); await wait(600);
+        await Promise.all([fade(b.L['profile-on'].lift, 1, 350), fade(on, 1, 350)]); await wait(1100);
+        await b.down(['profile-off', 'profile-on']); await wait(250);
+        await tap(b.ui, 200, 230); await b.go(1); await wait(1200);
+        await anim(strip, [{ transform: 'translateY(0)' }, { transform: 'translateY(-726px)' }], { duration: 700, easing: 'cubic-bezier(.45,0,.2,1)' }); await wait(1200);
+        await anim(strip, [{ transform: 'translateY(-726px)' }, { transform: 'translateY(-1175px)' }], { duration: 550, easing: 'cubic-bezier(.45,0,.2,1)' }); await wait(500);
+        await tap(b.ui, 336, 281);
+        await Promise.all([fade(top9, 0, 200), anim(bot9, [{ transform: 'translateY(0)' }, { transform: 'translateY(224px)' }], { duration: 450, easing: 'cubic-bezier(.3,.7,.2,1)' })]);
+        await wait(2000);
+      },
+      reset: function (b) {
+        var strip = b.scr[1].querySelector('.strip');
+        strip.style.transform = ''; strip.querySelector('.s9t').style.opacity = 1; strip.querySelector('.s9b').style.transform = '';
+        b.scr[0].querySelector('img.alt').style.opacity = 0; b.L['profile-on'].lift.style.opacity = 0;
+      }
+    },
+    'b-tutorial': {
+      setup: function (b) { b.add('handbook', 0); },
+      run: async function (b) {
+        await b.lift(['handbook']); await wait(1100); await b.down(['handbook']); await wait(200);
+        await tap(b.ui, 200, 454); await b.go(1); await playVideo(b.scr[1].querySelector('video')); await wait(300);
+      }
+    },
+    'b-safety': {
+      setup: function () {},
+      run: async function (b) {
+        await wait(300); await tap(b.ui, 92, 582); await b.go(1); await wait(1000);
+        await tap(b.ui, 200, 341); await b.go(2); await wait(400); await tap(b.ui, 100, 570); await wait(700);
+        await tap(b.ui, 199, 639); await b.go(3); await wait(400); await tap(b.ui, 78, 518); await wait(1200);
+      }
+    },
+    'b-roster': {
+      setup: function (b) { b.add('calendar', 0); },
+      run: async function (b) { await b.lift(['calendar']); await wait(1500); await b.down(['calendar']); await wait(300); }
+    },
+    'b-holiday': {
+      setup: function (b) { b.add('holiday', 0); },
+      run: async function (b) {
+        await b.lift(['holiday']); await wait(1100); await b.down(['holiday']); await wait(200);
+        await tap(b.ui, 150, 247); await b.go(1); await wait(1000);
+        await tap(b.ui, 200, 487); await b.go(2); await wait(900);
+        await tap(b.ui, 200, 798); await wait(900);
+      }
+    },
+    'b-messages': {
+      setup: function () {},
+      run: async function (b) {
+        var el = b.ui.querySelector('.typed'), msg = 'I’m running a bit late';
+        await wait(500); el.classList.remove('ph');
+        for (var i = 0; i <= msg.length; i++) { el.innerHTML = msg.slice(0, i) + '<span class="caret"></span>'; await wait(30 + Math.random() * 25); }
+        await wait(500); await tap(b.ui, 351, 494); el.classList.add('ph'); el.textContent = 'Say something…'; await wait(1000);
+      }
+    },
+    'b-news': {
+      setup: function (b) { b.add('feature', 0); },
+      run: async function (b) { await b.lift(['feature']); await wait(1500); await b.down(['feature']); await wait(400); }
+    },
+    'b-game': {
+      setup: function () {},
+      run: async function (b) {
+        var v = b.scr[0].querySelector('video');
+        await wait(500); await tap(b.ui, 296, 283); v.style.opacity = 1; v.playbackRate = 1.6; await playVideo(v);
+        await b.go(1); await board(b); await wait(1400);
+      },
+      reset: function (b) { b.scr[0].querySelector('video').style.opacity = 0; }
+    }
+  };
+
+  async function run(el) {
+    var b = new Blk(el), f = FLOW[el.id];
+    b.scr.forEach(function (s, i) { s.style.transform = i ? 'translateX(100%)' : 'none'; });
+    f.setup(b);
+    if (reduce) return;
+    await wait(1000);
+    for (;;) {
+      await f.run(b);
+      await b.home(); if (f.reset) f.reset(b);
+      await wait(1000);
+    }
+  }
+  async function loading() {
+    var bar = document.querySelector('#b-loading .bar');
+    if (reduce) { bar.style.width = '204px'; return; }
+    for (;;) {
+      bar.style.opacity = 1;
+      await anim(bar, [{ width: '0px' }, { width: '120px', offset: .55 }, { width: '204px' }], { duration: 1500, easing: 'cubic-bezier(.45,.05,.3,1)' });
+      await wait(800);
+      await anim(bar, [{ opacity: 1 }, { opacity: 0 }], { duration: 400 }); bar.style.width = '0px'; await wait(500);
+    }
+  }
+  async function brk() {
+    var n = document.querySelector('#b-break .note-b');
+    if (reduce) { n.style.opacity = 1; n.style.transform = 'none'; return; }
+    await wait(700);
+    for (;;) {
+      await anim(n, [{ opacity: 0, transform: 'translateY(-160px)' }, { opacity: 1, transform: 'translateY(8px)', offset: .7 }, { opacity: 1, transform: 'translateY(0)' }], { duration: 520, easing: 'cubic-bezier(.2,.8,.3,1)' });
+      await wait(2600);
+      await anim(n, [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-160px)' }], { duration: 320, easing: 'cubic-bezier(.5,0,.8,.4)' });
+      await wait(1200);
+    }
+  }
+
+  /* each block starts the first time it comes into view, then keeps looping */
+  var starts = { 'b-loading': loading, 'b-break': brk };
+  document.querySelectorAll('.blk[id], #b-loading').forEach(function (el) {
+    var go = function () { if (el._go) return; el._go = 1; if (starts[el.id]) starts[el.id](); else run(el); };
+    if ('IntersectionObserver' in window) {
+      var full = el.id === 'b-loading', io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (full ? e.intersectionRatio >= .98 : e.isIntersecting) { go(); io.disconnect(); } }); }, { threshold: full ? [.98, 1] : .35 });
+      io.observe(el);
+    } else go();
+  });
+})();
+</script>
+<script src="ig.js" defer></script>
+</body></html>

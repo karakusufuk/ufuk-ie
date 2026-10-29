@@ -22,14 +22,17 @@ const cover = (pg) => {
 };
 const asData = (f) => 'data:image/jpeg;base64,' + fs.readFileSync(f).toString('base64');
 
+const projectCard = (src, title) => `<body style="background:#EEF1F5"><img src="${src}" style="position:absolute;left:260px;top:36px;width:680px;height:425px;object-fit:cover"><div style="position:absolute;left:64px;bottom:64px;font-size:60px;line-height:1;letter-spacing:-.015em;color:#1A2238">${title}</div></body>`;
+
 const cards = [
   ...['index', 'work', 'about', 'contact'].map((n) => ({
     name: n,
     html: `<body style="background:#151C2E"><h1 style="position:absolute;left:64px;right:64px;bottom:64px;font-size:84px;line-height:1.04;letter-spacing:-.02em;color:#F7D2DE;font-weight:600">${n === 'contact' ? 'Tell me about your business.' : 'You know your business. I know what it needs online.'}</h1><div style="position:absolute;left:64px;top:56px;font-size:34px;color:#EEF1F5">ufuk.ie</div></body>`,
   })),
-  ...pages.map((pg) => ({
-    name: pg.slug,
-    html: `<body style="background:#EEF1F5"><img src="${asData(cover(pg))}" style="position:absolute;left:260px;top:36px;width:680px;height:425px;object-fit:cover"><div style="position:absolute;left:64px;bottom:64px;font-size:60px;line-height:1;letter-spacing:-.015em;color:#1A2238">${pg.title}</div></body>`,
+  ...pages.map((pg) => ({ name: pg.slug, html: projectCard(asData(cover(pg)), pg.title) })),
+  // the hand-built app pages (kus.html and the three apps.mjs writes): the picture is the page's own card.jpg
+  ...[['kus', 'KUS'], ['master-id', 'Master ID'], ['passpath', 'PassPath'], ['match-id', 'Match ID']].map(([slug, title]) => ({
+    name: slug, html: projectCard(asData(path.join(site, 'img/d', slug, 'card.jpg')), title),
   })),
 ];
 

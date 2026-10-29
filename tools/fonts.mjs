@@ -45,6 +45,11 @@ const perPage = {
   monument: [st('Libre Caslon Display', 'libre-caslon-display', [400]), st('Hanken Grotesk', 'hanken-grotesk', [400])],
   lear: [st('Gloock', 'gloock', [400]), st('Instrument Sans', 'instrument-sans', [400])],
   ashgrove: [st('Anton', 'anton', [400]), st('Manrope', 'manrope', [400, 600])],
+  // the four app pages draw the text inside their app screens (leaderboard rows, typed message, notification) in Inter
+  kus: [st('Inter', 'inter', [400, 500, 600, 700])],
+  'master-id': [st('Inter', 'inter', [400, 500, 600, 700])],
+  passpath: [st('Inter', 'inter', [400, 500, 600, 700])],
+  'match-id': [st('Inter', 'inter', [400, 500, 600, 700])],
 };
 for (const [slug, parts] of Object.entries(perPage)) fs.writeFileSync(path.join(out, `p-${slug}.css`), parts.join('\n') + '\n');
 

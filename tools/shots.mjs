@@ -1,11 +1,11 @@
 // Usage: node shots.mjs <baseUrl> <outDir> [browser]
-// Screenshots all 14 pages at 1440x900 and 1920x1080 (top, then every 900px), logs console errors and 404s.
+// Screenshots all 19 pages at 1440x900 and 1920x1080 (top, then every 900px), logs console errors and 404s.
 import { chromium, webkit, firefox } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const [base, out, bname = 'chromium'] = process.argv.slice(2);
-const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove'];
+const pages = ['index', 'work', 'about', 'contact', 'brennock', 'reilly', 'bawn', 'fennel', 'kenilworth', 'garvey', 'tierney', 'midland', 'monument', 'lear', 'ashgrove', 'kus', 'master-id', 'passpath', 'match-id'];
 const sizes = [[1440, 900], [1920, 1080]];
 const type = { chromium, webkit, firefox }[bname];
 const browser = await type.launch(bname === 'chromium' ? { channel: 'chrome' } : {});

@@ -545,7 +545,7 @@ test('app pages: chain, cards and links', async () => {
 
 test('app pages: live head, no placeholders, no outside requests, no empty buttons', async () => {
   const page = await newPage(); const outside = [];
-  page.on('request', (r) => { const u = new URL(r.url()); if (!['localhost', '127.0.0.1'].includes(u.hostname)) outside.push(r.url()); });
+  page.on('request', (r) => { const u = new URL(r.url()); if (u.hostname !== new URL(base).hostname) outside.push(r.url()); });
   for (const f of appSlugs) {
     await go(page, f + '.html'); await sleep(1500);
     const r = await page.evaluate(() => ({

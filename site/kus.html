@@ -61,6 +61,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 html.pre body{visibility:hidden}
 .laser{position:fixed;left:0;right:0;top:0;height:2px;background:var(--pink);z-index:30;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
 .veil{position:fixed;left:0;right:0;top:0;height:120vh;background:var(--ground);z-index:29;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
+/* scroll hint: a tiny pink box at the centre of the waiting line; the arrow slides down out of it and the next one slides in from the top */
+.laser .hint{position:absolute;left:50%;top:1px;width:14px;height:20px;margin:-10px 0 0 -7px;box-sizing:border-box;border:1px solid var(--pink);border-radius:3px;background:var(--ground);overflow:hidden;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
+.laser .hint.on{opacity:1;visibility:visible;transition:opacity .8s ease}
+.laser .hint span{position:absolute;left:0;right:0;top:-18px;animation:hint 2.8s infinite}
+.laser .hint:not(.on) span{animation-play-state:paused}
+.laser .hint i{display:block;height:18px;font-size:12px;line-height:18px;font-style:normal;text-align:center;color:var(--pink)}
+@keyframes hint{0%{transform:translateY(0)}50%{transform:translateY(0);animation-timing-function:cubic-bezier(.45,0,.3,1)}100%{transform:translateY(18px)}}
 
 .dock{position:fixed;right:32px;bottom:28px;z-index:35;display:flex;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;visibility:hidden;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s}
 .dock.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition-delay:0s}
@@ -405,10 +412,14 @@ html.pre body{visibility:hidden}
   var opened = false, openedAt = 0, print = 0, drop = 0, started = 0;
   function open() { if (opened || !ready) return; opened = true; openedAt = performance.now(); }
   if (reduce || location.hash) { opened = true; print = 1; drop = 1; }
+  var lastWheel = 0;
   addEventListener('wheel', function (e) {
     if (e.ctrlKey) return; user = true;
+    var now = performance.now(), gap = now - lastWheel; lastWheel = now;
     if (!opened) { e.preventDefault(); if (e.deltaY > 0) open(); return; }
-    if (performance.now() - openedAt < 900 && scrollY < 4) e.preventDefault();
+    /* the gesture that opened the page never also scrolls it: its trailing inertia is absorbed for 0.9 s, and for as long as it
+       keeps coming without a pause (up to 1.6 s); a new gesture after a pause scrolls normally */
+    if (scrollY < 4 && (now - openedAt < 900 || (gap < 200 && now - openedAt < 1600))) e.preventDefault();
   }, { passive: false });
   var ty = null;
   addEventListener('touchstart', function (e) { user = true; ty = e.touches[0].clientY; }, { passive: true });
@@ -423,6 +434,9 @@ html.pre body{visibility:hidden}
   });
   function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  /* the scroll hint sits on the line while it waits under the title, and leaves for good once the visitor scrolls */
+  var hint = null;
+  if (line) { hint = document.createElement('span'); hint.className = 'hint'; hint.innerHTML = '<span><i>↓</i><i>↓</i></span>'; line.appendChild(hint); }
   var last = 0;
   function frame(ts) {
     var dt = last ? Math.min(64, ts - last) : 16; last = ts;
@@ -441,6 +455,7 @@ html.pre body{visibility:hidden}
     var v = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
     line.style.transform = v; veil.style.transform = v;
     line.style.opacity = locked ? '0' : '1';
+    if (hint) hint.classList.toggle('on', print >= 1 && !opened);
     dock.classList.toggle('on', ft > vh - 10 && drop >= 1 && scrollY > 240);
     requestAnimationFrame(frame);
   }

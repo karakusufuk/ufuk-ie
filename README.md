@@ -7,3 +7,5 @@ Personal portfolio of Ufuk Karakuş, designer and developer in Ireland. A static
 - **Check the generator:** `npm run check` in `tools/` regenerates the 11 pages and compares them byte for byte with `site/`.
 - **Deploy:** push to `main`; `.github/workflows/deploy.yml` publishes `site/` to GitHub Pages.
 - Media in `site/img/` is final. Never re-encode, resize, crop or rename it.
+- `site/sw.js` (registered from `ig.js`) only rides out GitHub Pages' rare 5xx errors: every request still goes to the network first, is retried on a server error, and only then falls back to the last good copy. A new page or script needs no change there.
+- Recordings that must glide without a dropped frame use `recordStepped` in `tools/rec/recorder.mjs` (a frozen, stepped page clock); see the `reilly-parts` scene.

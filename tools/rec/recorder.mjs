@@ -70,3 +70,38 @@ export async function record(scene, { outDir = path.join(SITE_IMG, scene.slug), 
   fs.rmSync(dir, { recursive: true, force: true });
   return { file, frames: frames.length, marks, errors };
 }
+
+/** A frame-exact take for motion that must not judder: the page's clock (timers, requestAnimationFrame, Date, performance.now)
+ *  is frozen and moved on by exactly two of its 16 ms animation frames (32 ms) before each picture, and the page's CSS transitions are stepped on the same clock,
+ *  so every picture moves exactly as much as the last whatever the machine is doing; played at 30 a second the take runs 4 % slow. The scene gives
+ *  setup(page, wait) and take(page, frame): wait(ms) moves the frozen clock on, frame() takes one picture. */
+export async function recordStepped(scene, { outDir = path.join(SITE_IMG, scene.slug), crf = 26 } = {}) {
+  const W = scene.width || 1440, H = scene.height || 900;
+  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1, serviceWorkers: 'block', reducedMotion: 'no-preference' });
+  const page = await ctx.newPage();
+  const errors = []; page.on('pageerror', (e) => errors.push(String(e)));
+  await page.clock.install();
+  await page.goto(scene.url, { waitUntil: 'networkidle' }).catch(async () => { await page.goto(scene.url, { waitUntil: 'load' }); });
+  await page.addStyleTag({ content: 'html{scroll-snap-type:none!important;scroll-behavior:auto!important}' });
+  await page.clock.pauseAt(await page.evaluate(() => Date.now()) + 1000);
+  let vt = 0, ms = 0;
+  const step = async (d) => {                                   /* the clock and every running CSS transition move on together */
+    await page.clock.runFor(d); vt += d;
+    await page.evaluate((t) => { document.getAnimations().forEach((a) => { if (a._v == null) { a._v = t; a.pause(); } a.currentTime = t - a._v; }); }, vt);
+  };
+  const wait = async (d) => { for (let left = d; left > 0; left -= 50) await step(Math.min(50, left)); };
+  await scene.setup(page, wait);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rec-')); let n = 0;
+  const frame = async () => {
+    await step(32); ms += 32;            /* two of the page's 16 ms animation frames per picture: every picture moves the same */
+    await page.screenshot({ path: path.join(dir, String(n++).padStart(5, '0') + '.png') });
+  };
+  await scene.take(page, frame);
+  await ctx.close();
+  fs.mkdirSync(outDir, { recursive: true });
+  const file = path.join(outDir, scene.name + '.mp4');
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-framerate', String(FPS), '-i', path.join(dir, '%05d.png'), '-vf', 'format=yuv420p', '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-crf', String(crf), '-r', String(FPS), '-an', '-movflags', '+faststart', file]);
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', path.join(dir, '00000.png'), '-q:v', '4', path.join(outDir, scene.name + '.jpg')]);
+  fs.rmSync(dir, { recursive: true, force: true });
+  return { file, frames: n, marks: { seconds: ms / 1000 }, errors };
+}

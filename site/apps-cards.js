@@ -48,12 +48,14 @@
     function clear(){ runs.forEach(function(a){a.cancel();}); runs=[]; timers.forEach(clearTimeout); timers=[]; if(vid){ vid.pause(); try{vid.currentTime=0;}catch(e){} } }
     function start(){
       clearTimeout(resetT); rest.style.transition='none'; rest.classList.remove('on'); clear();
+      ac.classList.add('play');                                                                                  /* the still cover fades off the playing screens */
       story[kind](ac,anim,at);
     }
     function leave(){
       timers.forEach(clearTimeout); timers=[];
       rest.style.transition=''; rest.classList.add('on');                                                       /* the resting screen fades back over whatever is showing */
-      clearTimeout(resetT); resetT=setTimeout(function(){ clear(); rest.style.transition='none'; rest.classList.remove('on'); },300);
+      ac.classList.remove('play');                                                                               /* and the still cover fades back over the card */
+      clearTimeout(resetT); resetT=setTimeout(function(){ clear(); rest.style.transition='none'; rest.classList.remove('on'); },360);
     }
     if(calm) return;
     card.addEventListener('mouseenter',start); card.addEventListener('mouseleave',leave);

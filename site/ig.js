@@ -47,3 +47,8 @@
     document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else { var r = el.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) start(); } });
   });
 })();
+
+/* every page loads this file, so it also starts the small helper (sw.js) that rides out GitHub Pages' rare server errors */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+}

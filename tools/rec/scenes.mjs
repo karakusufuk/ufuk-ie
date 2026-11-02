@@ -71,3 +71,46 @@ scenes['lear-show-home'] = {
     await sleep(3200);
   },
 };
+
+/* ---------------- Reilly: "By machine, or by part" (toggle.mp4): the strip is already on "By part" (the switch itself is hidden,
+   its space kept), the parts glide right at the cover's speed through one full round of six and settle on the part they started
+   from, so the clip loops without a seam. No switching moment, nothing loads during the take. */
+const stripPos = (page) => page.evaluate(() => {
+  const s = document.getElementById('stripEl'), r = s.getBoundingClientRect(), c = [...s.querySelectorAll('.slot')].find((e) => e.dataset.rel === '0');
+  const tx = new DOMMatrix(getComputedStyle(c).transform).m41, card = c.offsetWidth, step = card + parseFloat(getComputedStyle(s).getPropertyValue('--gap'));
+  return { idx: +c.dataset.key.split(':')[1], frac: (r.width / 2 - tx - card / 2) / step, step, card, left: r.left, top: r.top, w: r.width, h: r.height };
+});
+scenes['reilly-parts'] = {
+  name: 'toggle', slug: 'reilly', url: 'https://reilly.ufuk.ie/', width: 1440, height: 900,
+  async setup(page, wait) {
+    await page.locator('#sw .lab.r').click();                                   // "By part", before the take
+    await page.addStyleTag({ content: '#sw{visibility:hidden!important}' });
+    await page.evaluate(() => Promise.all(window.RE.families.map((f) => { const i = new Image(); i.src = '/assets/img/' + f.hero.replace(/\.(jpg|png)$/, '.webp'); return i.decode().catch(() => {}); })));
+    await wait(600);
+    await page.evaluate(() => dispatchEvent(new Event('resize')));             // the site draws the part strip once with the machines' sizes
+                                                                                // and sits 20 px off centre until something moves: its own redraw puts it right
+    await page.mouse.move(720, 60); await wait(2500);                          // everything settled: labels, side cards, images
+  },
+  async take(page, frame) {
+    const g = await stripPos(page), y = g.top + g.h / 2, cx = g.left + g.w / 2, dz0 = g.w / 2 - g.card / 2, edge = cx + g.card / 2;
+    const want = 553 / g.step;                                                  // the cover's pace: ~553 px/s
+    const f = Math.sqrt(Math.max(0, (want - 0.3) / 1.5)), x = edge + f * dz0;
+    const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    let last = g.idx + g.frac, done = 0; this.trace = [];
+    const track = async () => { const p = await stripPos(page); let cur = p.idx + p.frac; while (cur - last < -3) cur += 6; while (cur - last > 3) cur -= 6; done += cur - last; last = cur; return done; };
+    const shot = async () => { await frame(); this.trace.push(+((await track()) * g.step).toFixed(2)); };
+    const glide = async (from, to, frames) => { for (let i = 1; i <= frames; i++) { await page.mouse.move(from + (to - from) * ease(i / frames), y); await shot(); } };
+    await page.mouse.move(cx, y);                                               // the centre card: the strip stays still
+    for (let i = 0; i < 30; i++) await shot();                                  // 1 s on the first part
+    await page.mouse.move(edge + 1, y);                                         // just past the centre card: the slowest drive
+    await glide(edge + 1, x, 10);                                               // easing up to the cover's pace
+    while (done < 6 - this.lead) await shot();
+    await glide(x, edge + 1, 10);                                               // easing back down to the slowest drive
+    const hand = 0.3 / 7;                                                       // where the site's own snap starts at that same slow speed
+    while (done < 6 - hand) await shot();
+    await page.mouse.move(cx, y);                                               // onto the centre card: the snap carries it home
+    for (let i = 0; i < 66; i++) await shot();                                  // settles, then rests on the part it started from
+    this.travelled = done;
+  },
+  lead: 0.30,
+};

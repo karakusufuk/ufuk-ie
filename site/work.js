@@ -30,10 +30,14 @@
   var opened = false, openedAt = 0, print = 0, drop = 0, started = 0;
   function open() { if (opened || !ready) return; opened = true; openedAt = performance.now(); body.classList.add('opened'); }
   if (reduce || location.hash) { opened = true; print = 1; drop = 1; body.classList.add('opened'); }
+  var lastWheel = 0;
   addEventListener('wheel', function (e) {
     if (e.ctrlKey) return; user = true;
+    var now = performance.now(), gap = now - lastWheel; lastWheel = now;
     if (!opened) { if (e.deltaY > 0) { e.preventDefault(); open(); } else e.preventDefault(); return; }
-    if (performance.now() - openedAt < 900 && scrollY < 4) e.preventDefault();
+    /* the gesture that opened the page never also scrolls it: its trailing inertia is absorbed for 0.9 s, and for as long as it
+       keeps coming without a pause (up to 1.6 s); a new gesture after a pause scrolls normally */
+    if (scrollY < 4 && (now - openedAt < 900 || (gap < 200 && now - openedAt < 1600))) e.preventDefault();
   }, { passive: false });
   var ty = null;
   addEventListener('touchstart', function (e) { user = true; ty = e.touches[0].clientY; }, { passive: true });
@@ -87,6 +91,9 @@
   /* ---------- the line ---------- */
   function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  /* the scroll hint sits on the line while it waits under the title, and leaves for good once the visitor scrolls */
+  var hint = null;
+  if (line) { hint = document.createElement('span'); hint.className = 'hint'; hint.innerHTML = '<span><i>↓</i><i>↓</i></span>'; line.appendChild(hint); }
   var last = 0;
   function frame(ts) {
     var dt = last ? Math.min(64, ts - last) : 16; last = ts;
@@ -105,6 +112,7 @@
     var v = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
     line.style.transform = v; veil.style.transform = v;
     line.style.opacity = locked ? '0' : '1';
+    if (hint) hint.classList.toggle('on', print >= 1 && !opened);
     if (dock) dock.classList.toggle('on', ft > vh - 10 && ((drop >= 1 && scrollY > 240) || docked));
     requestAnimationFrame(frame);
   }

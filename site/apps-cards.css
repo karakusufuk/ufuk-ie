@@ -13,6 +13,9 @@
 .ac .acui img.acfade{opacity:0}
 .ac .acui img.acr{z-index:20;opacity:0;pointer-events:none}
 .ac .acui img.acr.on{opacity:1;transition:opacity .26s ease}
-.tag{z-index:3}
+/* the still cover fills the whole card, like the website cards' pictures; it fades away while the screens play */
+.ac img.acc{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:30;opacity:1;transition:opacity .35s ease;pointer-events:none}
+.ac.play img.acc{opacity:0}
+.tag{z-index:31}
 /* the PassPath recording has a thin bar down its left edge: the screen is trimmed by 2.5 % on every side so it never shows */
 .ac[data-ac=pass] .acl,.ac[data-ac=pass] .acui img.acr{transform:scale(1.05)}

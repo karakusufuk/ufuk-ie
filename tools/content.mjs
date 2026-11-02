@@ -109,7 +109,7 @@ export const pages = [
   sections: [
     { t: 'cover', m: v('strip') },
     { h: 'Choosing a machine', blocks: [
-      { side: 'r', span: 7, m: v('toggle'), b: 'By machine, or by part', p: 'A toolmaker who has to produce a hip stem doesn’t know which machine he needs; he knows the part. I added a switch that turns the machine strip into a strip of parts, each linked to the machines that make it, so he reaches the right machine without learning the catalogue.', pin: 6 },
+      { side: 'r', span: 7, m: v('toggle', { ver: 6 }), b: 'By machine, or by part', p: 'A toolmaker who has to produce a hip stem doesn’t know which machine he needs; he knows the part. I added a switch that turns the machine strip into a strip of parts, each linked to the machines that make it, so he reaches the right machine without learning the catalogue.', pin: 6 },
       { side: 'l', span: 8, m: v('machine'), b: 'Buyers and owners on one page', p: 'A buyer weighing a €300,000 machine and an engineer who already runs one need different things from the same page. I put both behind one switch, specs and options for one, service, spares and upgrades for the other, so the dealer keeps selling to the customer long after the sale.', pin: 6 },
       { side: 'r', span: 7, m: im('parts'), b: 'A phone number, not a form', p: 'Engineers won’t upload a confidential drawing to a dealer they’ve never met. So I ended every part family with a phone number instead of a form: the conversation moves to the showroom, where the sale is actually made.', pin: 6 },
     ] },

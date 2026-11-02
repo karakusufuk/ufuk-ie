@@ -99,9 +99,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
 .a-head{padding-block:120px 96px}
 .a-head h1{font-size:clamp(64px,9.4vw,156px);line-height:.88;letter-spacing:-.05em;max-width:9ch}
 .a-body{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:96px;align-items:start;padding-bottom:140px}
-.portrait{aspect-ratio:4/5;max-width:100%;background:linear-gradient(180deg,#E6EAF1 0%,#DAE0EA 100%);overflow:hidden;position:sticky;top:calc(var(--head) + 40px)}
-.portrait::after{content:"";position:absolute;left:50%;bottom:-6%;width:66%;aspect-ratio:1/1.15;transform:translateX(-50%);border-radius:48% 48% 0 0/38% 38% 0 0;background:#CBD2DE}
-.portrait::before{content:"";position:absolute;left:50%;top:22%;width:30%;aspect-ratio:1/1.2;transform:translateX(-50%);border-radius:50%;background:#CBD2DE;z-index:1}
+.portrait{display:block;width:100%;max-width:100%;height:auto;position:sticky;top:calc(var(--head) + 40px)}   /* the portrait, cut out: no box behind it */
 .story{display:flex;flex-direction:column;gap:30px;max-width:36em}
 .story p{font-size:21px;line-height:1.6;color:var(--ink-2)}
 .story p.lead{font-family:var(--f-display);font-weight:500;font-size:clamp(28px,2.6vw,38px);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}

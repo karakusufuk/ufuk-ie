@@ -51,7 +51,16 @@ function block(b, slug) {
 </div>`;
 }
 
+function clockBlock(s, slug) {
+  const base = D(slug) + 'clock/', m = JSON.parse(fs.readFileSync(path.join(MEDIA, slug, 'clock/clock.json'), 'utf8'));
+  return `<section class="clk" aria-labelledby="clk-h" data-frames="${m.frames}" data-base="${base}" data-ver="${s.ver || 1}">
+  <div class="clk-tx"><small>${esc(s.eyebrow)}</small><h2 id="clk-h">${esc(s.h)}</h2><p>${esc(s.p)}</p></div>
+  <div class="clk-track"><div class="clk-pin"><div class="frame phone clk-ph" role="img" aria-label="${esc(s.alt)}"><img src="${base}000.webp?v=${s.ver || 1}" alt="" width="${m.width}" height="${m.height}" decoding="async"><canvas width="${m.width}" height="${m.height}" aria-hidden="true"></canvas></div></div></div>
+</section>`;
+}
+
 function section(s, slug) {
+  if (s.t === 'clock') return clockBlock(s, slug);
   if (s.t === 'cover') return `<figure class="cover" style="margin:0 auto">${media(s.m, slug)}</figure>`;
   let inner = '';
   if (s.blocks) inner = s.blocks.map((b) => block(b, slug)).join('\n');
@@ -126,7 +135,7 @@ ${deep(pg.deep)}
 </footer></div>
 <div class="dock" aria-label="Quick links"><a class="btn" href="${pg.live}" target="_blank" rel="noopener">Visit the live site</a></div>
 <script src="work.js"></script>
-${IG_SCRIPT()}
+${pg.sections.some((s) => s.t === 'clock') ? '<script src="clock.js" defer></script>\n' : ''}${IG_SCRIPT()}
 </body></html>
 `;
   fs.writeFileSync(path.join(OUT, pg.slug + '.html'), await addSizes(html, path.resolve(MEDIA, '../..')));

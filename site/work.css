@@ -100,6 +100,19 @@ html.pre body{visibility:hidden}
 .phones .frame{aspect-ratio:390/844}
 .phones figcaption{margin-top:18px;color:var(--ink-2);font-size:15px;text-align:center}
 
+/* the clock block: the text and a phone with the Ashgrove programme pin while the page scrolls; the phone's content follows the scroll
+   (clock.js draws the recorded frame for the scroll position); when the last stop is reached the pin lets go and the page goes on */
+.clk{--hh:76px;--clkLen:3000px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:40px;width:min(var(--wrap),calc(100vw - 2*var(--gap)));margin:200px auto 0}
+.clk-tx{grid-column:1;grid-row:1;position:sticky;top:var(--hh);height:calc(100vh - var(--hh));height:calc(100svh - var(--hh));align-self:start;display:flex;flex-direction:column;justify-content:center}
+.clk-tx small{display:block;font-size:14px;color:var(--ink-3);margin-bottom:28px}
+.clk-tx h2{font-size:clamp(34px,3.2vw,52px);line-height:1;letter-spacing:-.035em;margin-bottom:28px}
+.clk-tx p{max-width:26em;color:var(--ink-2);font-size:19px;line-height:1.55}
+.clk-track{grid-column:2;grid-row:1;height:calc(100vh - var(--hh) + var(--clkLen));height:calc(100svh - var(--hh) + var(--clkLen))}
+.clk-pin{position:sticky;top:var(--hh);height:calc(100vh - var(--hh));height:calc(100svh - var(--hh));display:flex;align-items:center;justify-content:center;padding:24px 0 88px}   /* the bottom 88 px stay clear for the fixed "Visit the live site" button */
+.clk-ph{width:min(calc((100vh - var(--hh) - 112px)*390/844),100%);width:min(calc((100svh - var(--hh) - 112px)*390/844),100%);aspect-ratio:390/844;flex:none;border-radius:9.3333%/4.3128%;isolation:isolate;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.clk-ph>img,.clk-ph>canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:inherit;pointer-events:none}
+.clk-ph>canvas{display:block}
+
 /* font and colour panels */
 .kit{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px}
 .kit .p{background:var(--panel);padding:44px 48px}
@@ -173,6 +186,10 @@ html.pre body{visibility:hidden}
   .blk svg.pin,.blk svg.pin-in{display:none}
   .phones{gap:14px}.phones figure{width:31%}
   /* the phone screens shrink with the page, so their corners do too: 28/300 of the width, as on desktop (circular corners, so the vertical radius is 28/649 of the height) */
+  .clk{--hh:64px;display:block;margin-top:140px}
+  .clk-tx{position:static;height:auto;display:block;margin-bottom:40px}
+  .clk-tx small{margin-bottom:20px}.clk-tx h2{margin-bottom:20px}.clk-tx p{font-size:18px}
+  .clk-track{height:calc(100vh - var(--hh) + var(--clkLen));height:calc(100svh - var(--hh) + var(--clkLen))}
   .frame.phone{border-radius:9.3333%/4.3128%;isolation:isolate}
   .frame.phone>img,.frame.phone>video{border-radius:inherit}
   .kit,.deep-row,.next a{grid-template-columns:1fr}

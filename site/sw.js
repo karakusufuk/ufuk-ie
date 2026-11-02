@@ -2,8 +2,9 @@
    GitHub Pages now and then answers a request with its own server error page ("We're having a really bad day", a 503) or not at
    all, and a refresh a moment later works. Here every page and file still comes from the network first, so nothing is ever older
    than the live site while it answers; when it answers with a server error, or fails, the request is tried again, and if it still
-   fails the last good copy is used. The pages, styles and scripts are kept from the first visit on; pictures and recordings are
-   only tried again, never stored (video byte ranges are left to the browser). */
+   fails the last good copy is used. The pages, styles and scripts are kept from the first visit on. Pictures and recordings never
+   pass through here at all: the browser fetches them itself, as it did before this file existed (on an iPhone a picture held up
+   in a helper like this one can stay empty). */
 var CACHE = 'ufuk-pages-1';
 var PAGES = ['/', '/index.html', '/work.html', '/about.html', '/contact.html', '/404.html',
   '/brennock.html', '/kus.html', '/master-id.html', '/passpath.html', '/match-id.html', '/reilly.html', '/bawn.html', '/fennel.html',
@@ -36,10 +37,10 @@ var KEEP = /\.(html|css|js|woff2)$|\/$/;
 self.addEventListener('fetch', function (e) {
   var req = e.request, url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== location.origin || req.headers.has('range')) return;
-  var keep = req.mode === 'navigate' || KEEP.test(url.pathname);
+  if (req.mode !== 'navigate' && !KEEP.test(url.pathname)) return;           // pictures and recordings: straight to the network
   e.respondWith(network(req).then(function (r) {
     if (r && r.ok) {
-      if (keep && r.type === 'basic') { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(url.pathname, copy); }); }
+      if (r.type === 'basic') { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(url.pathname, copy); }); }
       return r;
     }
     return caches.match(url.pathname, { ignoreSearch: true }).then(function (hit) { return hit || r || fetch(req); });

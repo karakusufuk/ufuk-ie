@@ -55,13 +55,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 html.pre body{visibility:hidden}
 .laser{position:fixed;left:0;right:0;top:0;height:2px;background:var(--pink);z-index:30;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
 .veil{position:fixed;left:0;right:0;top:0;height:120vh;background:var(--ground);z-index:29;pointer-events:none;will-change:transform;transform:translate3d(0,76px,0)}
-/* scroll hint: a tiny pink box at the centre of the waiting line; the arrow slides down out of it and the next one slides in from the top */
-.laser .hint{position:absolute;left:50%;top:1px;width:14px;height:20px;margin:-10px 0 0 -7px;box-sizing:border-box;border:1px solid var(--pink);border-radius:3px;background:var(--ground);overflow:hidden;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
+/* scroll hint: a small pink box at the centre of the waiting line; the dark arrow slides down out of it and the next one slides in from the top */
+.laser .hint{position:absolute;left:50%;top:1px;width:35px;height:50px;margin:-25px 0 0 -17.5px;box-sizing:border-box;border:1px solid var(--pink);border-radius:7.5px;background:var(--ground);overflow:hidden;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s .4s}
 .laser .hint.on{opacity:1;visibility:visible;transition:opacity .8s ease}
-.laser .hint span{position:absolute;left:0;right:0;top:-18px;animation:hint 2.8s infinite}
+.laser .hint span{position:absolute;left:0;right:0;top:-48px;animation:hint 2.8s infinite}
 .laser .hint:not(.on) span{animation-play-state:paused}
-.laser .hint i{display:block;height:18px;font-size:12px;line-height:18px;font-style:normal;text-align:center;color:var(--pink)}
-@keyframes hint{0%{transform:translateY(0)}50%{transform:translateY(0);animation-timing-function:cubic-bezier(.45,0,.3,1)}100%{transform:translateY(18px)}}
+.laser .hint i{display:block;height:48px;font-size:30px;line-height:48px;font-style:normal;text-align:center;color:var(--ink)}
+@keyframes hint{0%{transform:translateY(0)}50%{transform:translateY(0);animation-timing-function:cubic-bezier(.45,0,.3,1)}100%{transform:translateY(48px)}}
 .dock{position:fixed;right:32px;bottom:28px;z-index:35;display:flex;gap:10px;opacity:0;transform:translateY(16px);pointer-events:none;visibility:hidden;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s}
 .dock.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition-delay:0s}
 .btn{display:inline-flex;align-items:center;gap:10px;background:var(--pink);color:var(--night);font-weight:500;font-size:17px;line-height:1.2;padding:16px 26px;white-space:nowrap;transition:background .25s,color .25s}

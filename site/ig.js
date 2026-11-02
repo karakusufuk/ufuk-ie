@@ -52,3 +52,23 @@
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
 }
+
+/* A recording whose file fails to arrive (a dropped connection on a phone, or one of GitHub Pages' server errors, which reach the
+   browser's own byte-range requests directly) would otherwise leave its frame empty for good: the browser drops the poster as well.
+   So the recording goes back to its poster at once and is fetched again a moment later, up to three times; if it never arrives,
+   the poster simply stays. */
+(function () {
+  function mend(v) {
+    var src = v.getAttribute('src'); if (!src) return;
+    var go = !v.paused, n = v._mend = (v._mend || 0) + 1;
+    v.removeAttribute('src'); try { v.load(); } catch (x) {}                 // back to its poster
+    if (n > 3) return;
+    setTimeout(function () {
+      if (v.getAttribute('src')) return;                                     // the page has already set it again
+      v.setAttribute('src', src); try { v.load(); } catch (x) {}
+      if (go && v._on !== false) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    }, 1200 * n);
+  }
+  document.addEventListener('error', function (e) { if (e.target && e.target.tagName === 'VIDEO') mend(e.target); }, true);
+  [].forEach.call(document.querySelectorAll('video'), function (v) { if (v.error) mend(v); });   // failed before this file arrived
+})();

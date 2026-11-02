@@ -72,8 +72,8 @@ scenes['lear-show-home'] = {
   },
 };
 
-/* ---------------- Reilly: "By machine, or by part" (toggle.mp4): the strip is already on "By part" (the switch itself is hidden,
-   its space kept), the parts glide right at the cover's speed through one full round of six and settle on the part they started
+/* ---------------- Reilly: "By machine, or by part" (toggle.mp4): the strip is already on "By part" and the switch shows it,
+   at rest from the first frame; the parts glide right at the cover's speed through one full round of six and settle on the part they started
    from, so the clip loops without a seam. No switching moment, nothing loads during the take. */
 const stripPos = (page) => page.evaluate(() => {
   const s = document.getElementById('stripEl'), r = s.getBoundingClientRect(), c = [...s.querySelectorAll('.slot')].find((e) => e.dataset.rel === '0');
@@ -84,7 +84,7 @@ scenes['reilly-parts'] = {
   name: 'toggle', slug: 'reilly', url: 'https://reilly.ufuk.ie/', width: 1440, height: 900,
   async setup(page, wait) {
     await page.locator('#sw .lab.r').click();                                   // "By part", before the take
-    await page.addStyleTag({ content: '#sw{visibility:hidden!important}' });
+    await page.evaluate(() => document.activeElement && document.activeElement.blur());   // the switch shows "By part", with no focus left on it
     await page.evaluate(() => Promise.all(window.RE.families.map((f) => { const i = new Image(); i.src = '/assets/img/' + f.hero.replace(/\.(jpg|png)$/, '.webp'); return i.decode().catch(() => {}); })));
     await wait(600);
     await page.evaluate(() => dispatchEvent(new Event('resize')));             // the site draws the part strip once with the machines' sizes

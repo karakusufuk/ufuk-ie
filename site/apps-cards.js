@@ -60,6 +60,7 @@
     if(calm) return;
     card.addEventListener('mouseenter',start); card.addEventListener('mouseleave',leave);
     card.addEventListener('focusin',function(){ if(card.matches(':focus-visible')) start(); }); card.addEventListener('focusout',leave);
+    addEventListener('pageshow',function(e){ if(e.persisted){ clearTimeout(resetT); clear(); ac.classList.remove('play'); rest.style.transition='none'; rest.classList.remove('on'); } });   /* back from another page: the card is at rest under its cover */
   });
 
   function fitAll(){ cards.forEach(fit); }

@@ -72,3 +72,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   document.addEventListener('error', function (e) { if (e.target && e.target.tagName === 'VIDEO') mend(e.target); }, true);
   [].forEach.call(document.querySelectorAll('video'), function (v) { if (v.error) mend(v); });   // failed before this file arrived
 })();
+
+/* ?diag in the address: a panel with every recording's state (diag.js), for checking a phone */
+if (/[?&]diag\b/.test(location.search)) { var dg = document.createElement('script'); dg.src = 'diag.js'; document.head.appendChild(dg); }
